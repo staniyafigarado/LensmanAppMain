@@ -77,7 +77,7 @@ export const ItemList = (props) => {
       onPress={() => onAction && onAction()}
       style={Styles.itemListWrapper}>
       <View style={[Styles.itemListImage, {alignItems: 'center'}]}>
-        {discount && (
+        {discount !== '0' && (
           <View style={Styles.discountBadge}>
             <Text style={Styles.discountBadgeText}>{discount && discount}</Text>
           </View>

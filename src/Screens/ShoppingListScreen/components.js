@@ -30,10 +30,10 @@ export const FilterItem = (props) => {
 };
 
 export const CustomSelectList = (props) => {
-  const {label, isActive} = props;
+  const {label, isActive, onPress} = props;
   const {TTComM18} = CommonStyles;
   return (
-    <TouchableOpacity style={{paddingRight: 10}}>
+    <TouchableOpacity style={{paddingRight: 10}} onPress={() => onPress()}>
       <Text style={isActive ? TTComM18 : [TTComM18, {opacity: 0.5}]}>
         {label}
       </Text>

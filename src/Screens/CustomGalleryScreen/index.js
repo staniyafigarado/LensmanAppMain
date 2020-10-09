@@ -17,7 +17,7 @@ import {
   CustomToaster,
   CommonStyles,
 } from '../../SharedComponents';
-import {BaseUrlSchool} from '../../utils/constants';
+import {BaseUrlSchool, BaseUrl} from '../../utils/constants';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class CustomGalleryScreen extends React.Component {
@@ -32,20 +32,32 @@ class CustomGalleryScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.getPhotosList();
+    this.getLoginDeatails();
   }
 
-  getPhotosList = () => {
-    this.setState({isLoading: true}, () => {
-      axios
-        .get(BaseUrlSchool + `/api/student/50/photos`)
+  getPhotosList = (id) => {
+    console.warn(id);
+
+    this.setState({isLoading: true}, async () => {
+      await axios
+        .get(`http://15.185.152.100/api/student/${id}/photos`)
         .then((res) => {
-          console.log('Res School List Photos', res.data.result);
-          res.data.result.forEach((data) => {
-            data.path = BaseUrlSchool + data.path;
-            console.log('Data 110', data);
+          const array = [];
+          for (let index = 0; index < res.data.result.length; index++) {
+            const element = res.data.result[index].photos.map((item) => {
+              return BaseUrlSchool + item.path;
+            });
+            array.push(...element);
+          }
+          console.warn(
+            'Res School List Photos',
+
+            array,
+          );
+          this.setState({
+            isLoading: false,
+            photsList: array,
           });
-          this.setState({isLoading: false, photsList: res.data.result});
         })
         .catch((err) => {
           this.setState({
@@ -70,11 +82,11 @@ class CustomGalleryScreen extends React.Component {
     let data = await AsyncStorage.getItem('loginDetails');
     if (data !== null) {
       let datas = JSON.parse(data);
-      this.setState({id: datas.id});
+      this.setState({id: datas.id}, () => this.getPhotosList(this.state.id));
     }
   };
   render() {
-    const {isLoading, photsList, isCustomToaster} = this.state;
+    const {isLoading, photsList, isCustomToaster, id} = this.state;
     return (
       <View style={{flex: 1, backgroundColor: '#fff'}}>
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
@@ -101,9 +113,18 @@ class CustomGalleryScreen extends React.Component {
                   marginTop: 70,
                   marginBottom: 10,
                 }}>
-                {photsList && photsList.length ? (
+                {photsList && id && photsList.length ? (
                   photsList.map((images, index) => {
-                    return <ImageCard image={{uri: images.path}} key={index} />;
+                    console.warn(images);
+
+                    return (
+                      <ImageCard
+                        image={{
+                          uri: images,
+                        }}
+                        key={index}
+                      />
+                    );
                   })
                 ) : (
                   <View

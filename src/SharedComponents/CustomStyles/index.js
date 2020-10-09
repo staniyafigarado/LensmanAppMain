@@ -4,7 +4,7 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 const CommonStyles = StyleSheet.create({
   txtPrimary: {
     fontSize: RFPercentage(18) / 7, //18
-    fontFamily: 'TTCommons-Bold',
+    fontFamily: 'TTCommons-Medium',
     color: '#FFFFFF',
   },
   txtSecondary: {
@@ -18,8 +18,8 @@ const CommonStyles = StyleSheet.create({
   },
   customInputLabel: {
     fontSize: RFPercentage(18) / 7, //18,
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     color: '#000',
     paddingBottom: 15,
   },
@@ -65,20 +65,20 @@ const CommonStyles = StyleSheet.create({
   },
   // commont font family with size
   TTComDB28: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(28) / 7,
     color: '#000',
   },
   TTComDB20: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(20) / 7,
     color: '#000',
   },
   TTComDB18: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(18) / 7,
     color: '#000',
   },
@@ -98,14 +98,14 @@ const CommonStyles = StyleSheet.create({
     color: '#000',
   },
   TTComDB17: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(17) / 7,
     color: '#000',
   },
   TTComDB16: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(16) / 7,
     color: '#000',
   },
@@ -115,8 +115,8 @@ const CommonStyles = StyleSheet.create({
     color: '#000',
   },
   TTComDB14: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(14) / 7,
     color: '#000',
   },
@@ -126,8 +126,8 @@ const CommonStyles = StyleSheet.create({
     color: '#000',
   },
   TTComDB12: {
-    fontFamily:
-      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily: 'TTCommons-Medium',
+    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(12) / 7,
     color: '#000',
   },

@@ -10,6 +10,7 @@ import {
   CustomButton,
 } from '../../SharedComponents';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import AsyncStorage from '@react-native-community/async-storage';
 class SchoolPhotoSectionConfirmScreen extends React.Component {
   constructor(props) {
     super();
@@ -26,7 +27,13 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
     if (params.image) {
       this.setState({lastImage: params.image});
     }
+    this.resetAlreadyTakenStoreage();
   }
+
+  resetAlreadyTakenStoreage = async () => {
+    await AsyncStorage.removeItem('AlreadyTakePhoto');
+  };
+
   render() {
     const {TTComDB28, TTComM14, TTComDB18, TTComDB16} = CommonStyles;
     const {lastImage} = this.state;

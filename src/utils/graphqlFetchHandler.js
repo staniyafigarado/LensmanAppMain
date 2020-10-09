@@ -16,6 +16,7 @@ const graphQlhandler = (body, onSuccess, onFail) => {
         .json()
         .then((data) => {
           onSuccess(data);
+          console.warn(data);
         })
         .catch((error) => {
           onFail(error);

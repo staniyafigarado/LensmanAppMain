@@ -26,7 +26,7 @@ import {
 } from '../../SharedComponents';
 
 import {CommonStyles} from '../../SharedComponents';
-
+import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
 import {CategoryList, CustomSelectList, FilterItem} from './components';
 
 class ShoppingListScreen extends Component {
@@ -37,102 +37,117 @@ class ShoppingListScreen extends Component {
       productList: [],
       categoriesList: [],
       isLoading: false,
+      image: '',
+      whichCategory: '',
     };
   }
 
   componentDidMount() {
     this.getCategoryList();
-    this.getProductList();
+    this.getProductList('All');
   }
 
   getCategoryProductlList = (data) => {
-    // console.log('data in shope list', data);
-    this.setState({isLoading: true}, () => {
-      axios
-        .get(
-          BaseUrl +
-            '/admin/api/2020-07/collections/' +
-            data.id +
-            '/products.json',
-          {
-            headers: {
-              Authorization: base64Auth,
-            },
-          },
-        )
-        .then((res) => {
-          //   console.log('Res get Custom Product from  Categories ', res.data);
-          if (res.data.products && res.data.products.length) {
-            this.setState({productList: res.data.products, isLoading: false});
-          }
-        })
-        .catch((err) => {
-          this.setState({isLoading: false});
-          console.log('Err in get Product list in Dashboard', err);
-        });
+    const Product = [
+      {item: 'Cameras', id: '224918962341'},
+      {item: 'Electronics', id: '224923615397'},
+      {item: 'Audio', id: '220604661925'},
+      {item: 'Editing', id: '224924500133'},
+      {item: 'Camera Equipment', id: '224927219877'},
+      {item: 'Camera Accessories', id: '218930675877'},
+      {item: 'Express Deals', id: '216724308133'},
+    ];
+    const id = Product.filter((item) => {
+      return item.item === data.title;
     });
-  };
-
-  getCategoryList = () => {
-    this.setState({isLoading: true}, () => {
-      axios
-        .get(BaseUrl + '/admin/api/2020-07/custom_collections.json', {
-          headers: {
-            Authorization: base64Auth,
-          },
-        })
-        .then((res) => {
-          //   console.log('Res get Custom Product Categories ', res.data);
-          if (
-            res.data.custom_collections &&
-            res.data.custom_collections.length
-          ) {
-            this.setState({
-              categoriesList: res.data.custom_collections,
-              isLoading: false,
-            });
-          }
-        })
-        .catch((err) => {
-          this.setState({isLoading: false});
-          console.warn(err);
-        });
-    });
-  };
-
-  getProductList = (id) => {
-    this.setState({isLoading: true}, () => {
-      if (id) {
-        axios
-          .get(BaseUrl + '/admin/api/2020-07/products/' + id + '.json', {
-            headers: {
-              Authorization: base64Auth,
-            },
-          })
-          .then((res) => {
-            // if (res.data.product && res.data.products.length) {
-            this.setState(
-              {productList: [res.data.product], isLoading: false},
-              () => {
-                // console.log(
-                //   'Res get Product list in Dashboard with Id ',
-                //   this.state.product,
-                // );
+    this.setState({isLoading: true}, async () => {
+      if (id.length && id !== null && id !== '') {
+        await axios
+          .get(
+            BaseUrl +
+              `/admin/api/2020-07/products.json?collection_id=${id[0].id}`,
+            {
+              headers: {
+                Authorization: base64Auth,
               },
-            );
+            },
+          )
+          .then((res) => {
+            if (res.data.products && res.data.products.length) {
+              this.setState({productList: res.data.products, isLoading: false});
+            }
           })
           .catch((err) => {
             this.setState({isLoading: false});
             console.log('Err in get Product list in Dashboard', err);
           });
-      } else {
+      }
+    });
+  };
+
+  getProductList = (area) => {
+    this.setState({isLoading: true}, async () => {
+      if (area == 'Print') {
         axios
-          .get(BaseUrl + '/admin/api/2020-07/products.json', {
-            headers: {
-              Authorization: base64Auth,
+          .get(
+            BaseUrl +
+              '/admin/api/2020-07/products.json?collection_id=224954450085',
+            {
+              headers: {
+                Authorization: base64Auth,
+              },
             },
-          })
+          )
           .then((res) => {
+            console.warn('Print', res);
+
+            if (res.data.product && res.data.products.length) {
+              this.setState({
+                productList: [res.data.product],
+                isLoading: false,
+              });
+            } else {
+              this.setState({isLoading: false, productList: []});
+            }
+          })
+          .catch((err) => {
+            this.setState({isLoading: false});
+          });
+      } else if (area == 'Buy') {
+        await axios
+          .get(
+            BaseUrl +
+              '/admin/api/2020-07/products.json?collection_id=224956088485',
+            {
+              headers: {
+                Authorization: base64Auth,
+              },
+            },
+          )
+          .then((res) => {
+            console.warn('Buy', res);
+            if (res.data.products && res.data.products.length) {
+              this.setState({productList: res.data.products, isLoading: false});
+            } else {
+              this.setState({isLoading: false, productList: []});
+            }
+          })
+          .catch((err) => {
+            this.setState({isLoading: false});
+          });
+      } else if (area == 'Rent') {
+        await axios
+          .get(
+            BaseUrl +
+              '/admin/api/2020-07/products.json?collection_id=224574767269',
+            {
+              headers: {
+                Authorization: base64Auth,
+              },
+            },
+          )
+          .then((res) => {
+            console.warn('Rent', res);
             if (res.data.products && res.data.products.length) {
               this.setState(
                 {productList: res.data.products, isLoading: false},
@@ -143,11 +158,42 @@ class ShoppingListScreen extends Component {
                 //     );
                 //   },
               );
+            } else {
+              this.setState({isLoading: false, productList: []});
             }
           })
           .catch((err) => {
             this.setState({isLoading: false});
-            console.log('Err in get Product list in Dashboard', err);
+          });
+      } else {
+        await axios
+          .get(BaseUrl + '/admin/api/2020-07/products.json', {
+            headers: {
+              Authorization: base64Auth,
+            },
+          })
+          .then((res) => {
+            console.warn('All', res);
+            if (res.data.products && res.data.products.length) {
+              this.setState(
+                {
+                  productList: res.data.products,
+                  isLoading: false,
+                  whichCategory: 'All',
+                },
+                //   () => {
+                //     console.log(
+                //       'Res get Product list in Dashboard ',
+                //       this.state.productList,
+                //     );
+                //   },
+              );
+            } else {
+              this.setState({isLoading: false, productList: []});
+            }
+          })
+          .catch((err) => {
+            this.setState({isLoading: false});
           });
       }
     });
@@ -167,12 +213,58 @@ class ShoppingListScreen extends Component {
     }
   };
 
+  getCategoryList = async () => {
+    const categories = [
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyNDkxODk2MjM0MQ==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyNDkyMzYxNTM5Nw==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyMDYwNDY2MTkyNQ==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyNDkyNDUwMDEzMw==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyNDkyNzIxOTg3Nw==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIxODkzMDY3NTg3Nw==',
+      'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIxNjcyNDMwODEzMw==',
+    ];
+    for (let index = 0; index < categories.length; index++) {
+      const query = `
+    {
+      node(id:"${categories[index]}") {
+        ...on Collection {
+            title
+          image{
+            originalSrc
+          }
+            }
+        }
+    }
+`;
+      graphqlFetchHandler(
+        {query},
+        (onSuccess) => {
+          this.setState({image: onSuccess.data.node.image.originalSrc});
+          console.warn(onSuccess);
+          this.setState({
+            categoriesList: [...this.state.categoriesList, onSuccess.data.node],
+          });
+        },
+        (error) => {
+          this.setState({isCustomToaster: 'Something wrong', isLoader: false});
+          console.log(error);
+        },
+      );
+    }
+  };
   render() {
     const {TTComDB28, tabNavContainer} = CommonStyles;
 
-    const {isFilter, categoriesList, productList, isLoading} = this.state;
+    const {
+      isFilter,
+      categoriesList,
+      productList,
+      isLoading,
+      whichCategory,
+    } = this.state;
 
     const {cartList} = this.props;
+    // console.warn('categlist', categoriesList);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -193,7 +285,7 @@ class ShoppingListScreen extends Component {
           ) : (
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={{flex: 1, marginTop: 100}}>
-                <Text style={TTComDB28}>Shop by Category.</Text>
+                <Text style={TTComDB28}>Shop by Category</Text>
                 <FlatList
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
@@ -203,7 +295,7 @@ class ShoppingListScreen extends Component {
                       : []
                   }
                   renderItem={(item, index) => {
-                    console.log('1122', item.item);
+                    // console.warn('1122', item.item);
                     return (
                       <CategoryList
                         label={
@@ -215,9 +307,9 @@ class ShoppingListScreen extends Component {
                           item.item &&
                           item.item.image !== null &&
                           item.item.image !== undefined &&
-                          item.item.image.src !== null &&
-                          item.item.image.src !== ''
-                            ? {uri: item.item.image.src}
+                          item.item.image.originalSrc !== null &&
+                          item.item.image.originalSrc !== ''
+                            ? {uri: item.item.image.originalSrc}
                             : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
                         }
                         selectCategory={() =>
@@ -233,17 +325,45 @@ class ShoppingListScreen extends Component {
 
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={TTComDB28}>Products for you.</Text>
+                <Text style={TTComDB28}>Products for you</Text>
                 <TouchableOpacity onPress={() => this.handleFilter()}>
                   <Image source={filterIcon} />
                 </TouchableOpacity>
               </View>
 
               <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <CustomSelectList label="All" isActive />
-                <CustomSelectList label="Buy" />
-                <CustomSelectList label="Rent" />
-                <CustomSelectList label="Print" />
+                <CustomSelectList
+                  label="All"
+                  isActive={whichCategory == 'All' ? true : false}
+                  onPress={() => {
+                    this.setState({whichCategory: 'All'});
+                    this.getProductList('All');
+                  }}
+                />
+                <CustomSelectList
+                  label="Buy"
+                  isActive={whichCategory == 'Buy' ? true : false}
+                  onPress={() => {
+                    this.setState({whichCategory: 'Buy'});
+                    this.getProductList('Buy');
+                  }}
+                />
+                <CustomSelectList
+                  label="Rent"
+                  isActive={whichCategory == 'Rent' ? true : false}
+                  onPress={() => {
+                    this.setState({whichCategory: 'Rent'});
+                    this.getProductList('Rent');
+                  }}
+                />
+                <CustomSelectList
+                  label="Print"
+                  isActive={whichCategory == 'Print' ? true : false}
+                  onPress={() => {
+                    this.setState({whichCategory: 'Print'});
+                    this.getProductList('Print');
+                  }}
+                />
               </View>
 
               <View
@@ -253,32 +373,57 @@ class ShoppingListScreen extends Component {
                   justifyContent: 'space-between',
                   marginBottom: 90,
                 }}>
-                {productList && productList.length
-                  ? productList.map((item, index) => {
-                      return (
-                        <ItemList
-                          key={index}
-                          onAction={() =>
-                            this.props.navigation.navigate(
-                              'ItemDetailsScreen',
-                              {productId: item.id},
-                            )
-                          }
-                          image={
-                            item.image &&
-                            item.image.src !== '' &&
-                            item.image.src !== null && {uri: item.image.src}
-                          }
-                          itemName={item.title}
-                          price={
-                            item.variants &&
-                            item.variants[0] &&
-                            item.variants[0].price
-                          }
-                        />
-                      );
-                    })
-                  : null}
+                {productList && productList.length ? (
+                  productList.map((item, index) => {
+                    return (
+                      <ItemList
+                        discount={
+                          item.variants &&
+                          item.variants[0] &&
+                          item.variants[0].price &&
+                          item.variants[0].compare_at_price
+                            ? '-' +
+                              Math.floor(
+                                100 -
+                                  (item.variants[0].price /
+                                    item.variants[0].compare_at_price) *
+                                    100,
+                              )
+                            : '0'
+                        }
+                        key={index}
+                        onAction={() =>
+                          this.props.navigation.navigate('ItemDetailsScreen', {
+                            productId: item.id,
+                          })
+                        }
+                        image={
+                          item.image &&
+                          item.image.src !== '' &&
+                          item.image.src !== null && {uri: item.image.src}
+                        }
+                        itemName={item.title}
+                        price={
+                          item.variants &&
+                          item.variants[0] &&
+                          item.variants[0].price
+                        }
+                      />
+                    );
+                  })
+                ) : (
+                  <View
+                    style={{
+                      height: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                    }}>
+                    <Text style={{fontFamily: 'TTCommons-Medium'}}>
+                      No Products Available
+                    </Text>
+                  </View>
+                )}
               </View>
             </ScrollView>
           )}

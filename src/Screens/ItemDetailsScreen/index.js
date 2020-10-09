@@ -38,6 +38,7 @@ import {BaseUrl, base64Auth} from '../../utils/constants';
 import Styles from './Styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import {FlatList} from 'react-native-gesture-handler';
+import graphQlhandler from '../../utils/graphqlFetchHandler';
 
 class ItemDetailsScreen extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class ItemDetailsScreen extends Component {
       isCustomToaster: false,
       colorVariants: [],
       colorSelector: '',
+      relatedProducts: [],
     };
   }
 
@@ -70,6 +72,7 @@ class ItemDetailsScreen extends Component {
         this.getProductDetails(this.state.productId);
         // this.getReleatedProducts(this.state.productId);
         this.fetchColorVariants();
+        // this.getReleatedProducts();
       }
     });
 
@@ -116,6 +119,8 @@ class ItemDetailsScreen extends Component {
   };
 
   getProductDetails = (id) => {
+    console.warn(id);
+
     this.setState({isLoading: true}, () => {
       axios
         .get(BaseUrl + '/admin/api/2020-07/products/' + id + '.json', {
@@ -124,11 +129,15 @@ class ItemDetailsScreen extends Component {
           },
         })
         .then((res) => {
-          //   console.log('res data product details =>', res.data);
+          console.warn(
+            'res data product details =>',
+            res.data.product.images[0].id,
+          );
           if (res.data.product) {
             this.setState(
               {productDetails: res.data.product, isLoading: false},
               () => {
+                this.getReleatedProducts(this.state.productDetails.id);
                 console.log(
                   'Res get Product Details in State',
                   this.state.productDetails,
@@ -144,37 +153,94 @@ class ItemDetailsScreen extends Component {
     });
   };
 
-  getReleatedProducts = (collection_id) => {
-    console.warn('kk');
+  getReleatedProducts = (id) => {
+    const query = `{
+    node(id:"Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1NjExODEzNzI1ODE=") {
+      ...on Product {
+      collections(first:10){
+        edges{
+          node{
+            products(first:10){
+              edges{
+                node{
+                  title
+                  images(first:1) {
+                    edges {
+                      node {
+                        originalSrc
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      }
+    }}
+`;
+    // console.warn('id', id);
+    graphQlhandler(
+      {query},
+      (onSuccess) => {
+        if (onSuccess !== null && onSuccess !== '') {
+          // const array = [];
+          // const collections = onSuccess.data.node.collections.edges;
+          // for (let j = 0; j < collections.length; j++) {
+          //   // for (let k = 0; k < collections[j].length; k++) {
+          //   const image =
+          //     collections[j].node.products.edges[k].node.images.edges[0].node
+          //       .originalSrc;
+          //   const title = collections[j].node.products.edges[k].node.title;
+          //   array.push(title);
+          //   // }
+          // }
+          const data = onSuccess.data.node.collections;
 
-    axios
-      .get(
-        BaseUrl +
-          '/admin/api/2020-07/collections/' +
-          collection_id +
-          '/products.json',
-        {
-          headers: {
-            Authorization: base64Auth,
-          },
-        },
-      )
-      .then((res) => {
-        console.warn('related products', res);
+          // .map((item) => item.node)
+          // .map((item) => item.products);
+          console.warn(
+            'qwery',
+            data,
+            // data[3].edges[0].node.images.edges[0].node.originalSrc,
+          );
+          this.setState({relatedProducts: data});
+        }
+      },
+      (error) => {
+        this.setState({isCustomToaster: 'Something wrong', isLoader: false});
+        console.log(error);
+      },
+    );
+    // axios
+    //   .get(
+    //     BaseUrl +
+    //       '/admin/api/2020-07/collections/' +
+    //       collection_id +
+    //       '/products.json',
+    //     {
+    //       headers: {
+    //         Authorization: base64Auth,
+    //       },
+    //     },
+    //   )
+    //   .then((res) => {
+    //     console.warn('related products', res);
 
-        // console.log('res data product details =>', res.data);
-        // if (res.data.product) {
-        //   this.setState({productDetails: res.data.product}, () => {
-        //     console.log(
-        //       'Res get Product Details in State',
-        //       this.state.productDetails,
-        //     );
-        //   });
-        // }
-      })
-      .catch((err) => {
-        console.log('Err in get Product Details ', err);
-      });
+    // console.log('res data product details =>', res.data);
+    // if (res.data.product) {
+    //   this.setState({productDetails: res.data.product}, () => {
+    //     console.log(
+    //       'Res get Product Details in State',
+    //       this.state.productDetails,
+    //     );
+    //   });
+    // }
+    // })
+    // .catch((err) => {
+    //   console.log('Err in get Product Details ', err);
+    // });
   };
 
   handleQuantity = () => {
@@ -267,6 +333,7 @@ class ItemDetailsScreen extends Component {
       isCustomToaster,
       colorVariants,
       colorSelector,
+      relatedProducts,
     } = this.state;
 
     const {cartList} = this.props;
@@ -282,7 +349,7 @@ class ItemDetailsScreen extends Component {
       productDetails.variants !== null &&
       productDetails.variants.map((item) => item.compare_at_price);
 
-    console.warn(productDetails);
+    // console.warn(productDetails !== null && productDetails.id);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -596,10 +663,66 @@ class ItemDetailsScreen extends Component {
                   <Text style={[TTComDB28, {marginBottom: 25}]}>
                     Related Products
                   </Text>
+                  {this.state.relatedProducts.length > 1 && (
+                    <Image
+                      source={{uri: this.state.relatedProducts}}
+                      style={{height: 150, width: 150}}
+                    />
+                  )}
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}>
-                    <CategoryList
+                    {relatedProducts !== '' &&
+                      relatedProducts.edges &&
+                      relatedProducts.edges[1].node.products.edges[4].node
+                        .images.edges[0].node.originalSrc &&
+                      relatedProducts.edges[2].node.products.edges[4].node
+                        .images.edges[0].node.originalSrc &&
+                      relatedProducts.edges[3].node.products.edges[4].node
+                        .images.edges[0].node.originalSrc &&
+                      relatedProducts.edges[2].node.products.edges[5].node
+                        .images.edges[0].node.originalSrc && (
+                        <>
+                          <CategoryList
+                            image={{
+                              uri:
+                                relatedProducts.edges[1].node.products.edges[4]
+                                  .node.images.edges[0].node.originalSrc,
+                            }}
+                            label="Coffee Mug"
+                            price="16.75 AED"
+                          />
+                          <CategoryList
+                            image={{
+                              uri:
+                                relatedProducts.edges[2].node.products.edges[4]
+                                  .node.images.edges[0].node.originalSrc,
+                            }}
+                            label="Coffee Mug"
+                            price="16.75 AED"
+                          />
+                          <CategoryList
+                            image={{
+                              uri:
+                                relatedProducts.edges[3].node.products.edges[4]
+                                  .node.images.edges[0].node.originalSrc,
+                            }}
+                            label="Coffee Mug"
+                            price="16.75 AED"
+                          />
+                          <CategoryList
+                            image={{
+                              uri:
+                                relatedProducts.edges[2].node.products.edges[5]
+                                  .node.images.edges[0].node.originalSrc,
+                            }}
+                            label="Coffee Mug"
+                            price="16.75 AED"
+                          />
+                        </>
+                      )}
+
+                    {/* <CategoryList
                       image={require('../../../assests/Test/b1a0e3f5f5cf5ca762b3d99e20a6fbb6.png')}
                       label="Coffee Mug"
                       price="16.75 AED"
@@ -608,12 +731,7 @@ class ItemDetailsScreen extends Component {
                       image={require('../../../assests/Test/b1a0e3f5f5cf5ca762b3d99e20a6fbb6.png')}
                       label="Coffee Mug"
                       price="16.75 AED"
-                    />
-                    <CategoryList
-                      image={require('../../../assests/Test/b1a0e3f5f5cf5ca762b3d99e20a6fbb6.png')}
-                      label="Coffee Mug"
-                      price="16.75 AED"
-                    />
+                    /> */}
                   </ScrollView>
                 </View>
               </View>

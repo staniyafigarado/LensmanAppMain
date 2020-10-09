@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import {RFPercentage} from 'react-native-responsive-fontsize';
 
 export const ItemList = (props) => {
-  const {image, itemName, price, onAction} = props;
+  const {image, itemName, price, onAction, discount} = props;
   const {TTComDB18, TTComM16} = CommonStyles;
 
   return (
@@ -35,6 +36,29 @@ export const ItemList = (props) => {
         <Text style={TTComDB18}>{itemName}</Text>
         {price && <Text style={TTComM16}>{price}</Text>}
       </View>
+      {discount !== '0' && (
+        <View
+          style={{
+            backgroundColor: 'red',
+            position: 'absolute',
+            right: 15,
+            top: 15,
+            padding: 5,
+            borderRadius: 20,
+            width: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'TTCommons-Bold',
+              fontSize: RFPercentage(16) / 7,
+            }}>
+            {discount + '%'}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

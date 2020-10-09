@@ -57,7 +57,7 @@ class ProfileScreen extends Component {
     const {TTComDB28, tabNavContainer} = CommonStyles;
 
     const {loginData} = this.state;
-    if (loginData !== null) console.log('In Profile ', loginData.first_name);
+    if (loginData !== null) console.log('In Profile ', loginData);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -83,9 +83,11 @@ class ProfileScreen extends Component {
                 paddingRight: 10,
               }}>
               <View style={{paddingLeft: 15}}>
-                <Text style={TTComDB28}>Hello,</Text>
+                <Text style={[TTComDB28, {fontSize: 19, marginBottom: 8}]}>
+                  Hello,
+                </Text>
                 <Text style={TTComDB28}>
-                  {loginData && loginData !== null && loginData.first_name}
+                  {loginData && loginData !== null && loginData.firstName}
                 </Text>
               </View>
 

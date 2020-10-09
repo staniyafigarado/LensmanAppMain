@@ -23,6 +23,7 @@ import {
   logoSmall,
   radioButton,
   radioButtonFill,
+  CustomToaster,
 } from '../../SharedComponents';
 
 import {Container} from '../RegisterScreen/components';
@@ -39,37 +40,36 @@ class ContactUsScreen extends Component {
     },
     passwordConfirm: '',
     isSelected: false,
+    isCustomToaster: '',
   };
 
-  submitRegister = () => {
-    const {fullName, email, phone, Description} = this.state.form;
-
+  submitRegister = async () => {
+    const {fullName, email, mobileNumber, Description} = this.state.form;
     let payload = {
-      customer: {
-        first_name: fullName,
-        // last_name: 'fullName 2',
-        email: email,
-        phone: phone,
-        verified_email: false,
-        description: Description,
-      },
+      name: fullName,
+      email: email,
+      mobileNumber: mobileNumber,
+      description: Description,
     };
+    // console.warn(BaseUrl);
 
-    fetch(BaseUrl + '/admin/api/2020-07/customers.json', {
+    await fetch(`http://15.185.152.100/api/email`, {
       method: 'post',
-      headers: new Headers({
+      headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: base64Auth,
-      }),
-      body: payload,
+      },
+      body: JSON.stringify(payload),
     })
-      // .then((res) => res.json())
+      .then((res) => res.json())
       .then((res) => {
-        console.warn('Res 110', res);
+        this.setState({isCustomToaster: res.result});
+        // console.warn('Res 110', res);
       })
       .catch((err) => {
-        console.log('Err in res', err);
+        this.setState({isCustomToaster: err});
+        // console.log('Err in res', err);
       });
   };
 
@@ -120,14 +120,14 @@ class ContactUsScreen extends Component {
   };
 
   render() {
-    const {passwordConfirm, isSelected} = this.state;
+    const {passwordConfirm, isSelected, isCustomToaster} = this.state;
     const {TTComM16} = CommonStyles;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
         <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
         {/* Header section  */}
-        <View style={{flex: 0.5}}>
+        <View style={{flex: 0.5, zIndex: 4}}>
           <CustomHeader
             leftIcon={closeIcon}
             rightIcon={logoSmall}
@@ -189,6 +189,14 @@ class ContactUsScreen extends Component {
             </Container>
           </ScrollView>
         </View>
+        {isCustomToaster !== '' && (
+          <CustomToaster
+            position="flex-end"
+            onend={() => this.setState({isCustomToaster: ''})}
+            isCustomToaster={true}
+            message={isCustomToaster}
+          />
+        )}
       </SafeAreaView>
     );
   }

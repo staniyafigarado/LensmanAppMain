@@ -61,10 +61,12 @@ class DashboardScreen extends Component {
     productList: [],
     index: 0,
     isLoading: false,
+    screen: '',
   };
 
   componentDidMount() {
     this.getDataFromStore('loginDetails');
+    this.TakePictureCurrentScreen();
     if (
       this.props.route.params &&
       this.props.route.params.fromScreen &&
@@ -129,9 +131,9 @@ class DashboardScreen extends Component {
   };
 
   getProductList = (id) => {
-    this.setState({isLoading: true}, () => {
+    this.setState({isLoading: true}, async () => {
       if (id) {
-        axios
+        await axios
           // .get(BaseUrl + '/admin/api/2020-07/products/' + id + '.json', {
           .get(
             BaseUrl +
@@ -143,14 +145,13 @@ class DashboardScreen extends Component {
             },
           )
           .then((res) => {
+            console.warn(res);
+
             // if (res.data.product && res.data.products.length) {
             this.setState(
               {productList: [res.data.product], isLoading: false},
               () => {
-                console.warn(
-                  'Res get Product list in Dashboard with Id ',
-                  res.data,
-                );
+                console.warn('Res get Product list in Dashboard with Id ', res);
               },
             );
           })
@@ -171,6 +172,8 @@ class DashboardScreen extends Component {
             },
           )
           .then((res) => {
+            // console.warn(res);
+
             if (res.data.products && res.data.products.length) {
               this.setState(
                 {productList: res.data.products, isLoading: false},
@@ -227,6 +230,19 @@ class DashboardScreen extends Component {
     this.setState({isSection: !this.state.isSection});
   };
 
+  TakePictureCurrentScreen = async () => {
+    const data = await AsyncStorage.getItem('AlreadyTakePhoto');
+    if (data !== null) {
+      const parsedData = JSON.parse(data);
+      this.setState({screen: parsedData});
+    } else {
+      const data = {
+        data: '',
+        screen: 'SchoolSubmitPhotoScreen',
+      };
+      this.setState({screen: data});
+    }
+  };
   render() {
     const {tabNavContainer} = Styles;
     const {
@@ -236,10 +252,13 @@ class DashboardScreen extends Component {
       productList,
       isLoading,
     } = this.state;
+    if (isLoading) {
+      this.TakePictureCurrentScreen();
+    }
     const {TTComDB28, TTComDB16} = CommonStyles;
 
     const {cartList} = this.props;
-    // console.warn(productList);
+    console.warn(productList);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -289,10 +308,10 @@ class DashboardScreen extends Component {
                         <Image source={signature} />
                       </View>
                       <View>
-                        <Text style={[TTComDB28, {color: '#fff'}]}>
+                        <Text style={CommonStyles.txtPrimary}>
                           Take your at-home
                         </Text>
-                        <Text style={[TTComDB28, {color: '#fff'}]}>
+                        <Text style={CommonStyles.txtPrimary}>
                           School Photo!
                         </Text>
                       </View>
@@ -309,7 +328,11 @@ class DashboardScreen extends Component {
                           width="49%"
                           onAction={() =>
                             this.props.navigation.navigate(
-                              'SchoolSubmitPhotoScreen',
+                              this.state.screen.screen,
+                              {
+                                fromScreen: 'GroupPortraitPoseGuide',
+                                formData: this.state.screen.data,
+                              },
                             )
                           }
                           // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
@@ -337,7 +360,9 @@ class DashboardScreen extends Component {
               </View>
 
               <View style={{marginTop: 30, paddingBottom: 100}}>
-                <Text style={TTComDB28}>Featured Products</Text>
+                <Text style={[CommonStyles.txtPrimary, {color: 'black'}]}>
+                  Featured Products
+                </Text>
                 <View
                   style={{
                     flexWrap: 'wrap',
@@ -347,8 +372,25 @@ class DashboardScreen extends Component {
                   }}>
                   {productList && productList.length
                     ? productList.map((item, index) => {
+                        // console.warn(item.variants[0].compare_at_price);
+
                         return (
                           <ItemList
+                            discount={
+                              item.variants &&
+                              item.variants[0] &&
+                              item.variants[0].price &&
+                              item.variants[0].compare_at_price
+                                ? '-' +
+                                  Math.floor(
+                                    100 -
+                                      (item.variants[0].price /
+                                        item.variants[0].compare_at_price) *
+                                        100,
+                                  ) +
+                                  '%'
+                                : '0'
+                            }
                             key={index}
                             label={item.title}
                             price={

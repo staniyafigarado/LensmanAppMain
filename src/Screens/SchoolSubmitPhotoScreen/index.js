@@ -10,6 +10,8 @@ import {
   Modal,
   ToastAndroid,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
 import {
@@ -34,7 +36,7 @@ import {setLoginData} from '../../store/actions';
 import {connect} from 'react-redux';
 
 import {BaseUrlSchool} from '../../utils/constants';
-
+const {height} = Dimensions.get('screen');
 class SchoolSubmitPhotoScreen extends Component {
   constructor(props) {
     super(props);
@@ -107,17 +109,29 @@ class SchoolSubmitPhotoScreen extends Component {
       axios
         .post(BaseUrlSchool + '/api/student', payload)
         .then((res) => {
-          console.log('Res add Student 1 ', res.data.result);
+          console.log('Res add Student 1 ', res.data.result.id);
 
-          this.setState({
-            isLoading: false,
-            isCustomToaster: 'Successfully Added',
-          });
           let form = {...this.state.form};
           form.schoolId = res.data.result.id;
           this.props.navigation.navigate('SchoolIntructionScreen', {
             formData: form,
           });
+          this.setState(
+            {
+              isLoading: false,
+              isCustomToaster: 'Successfully Added',
+            },
+            async () => {
+              const data = {
+                data: form,
+                screen: 'SchoolIntructionScreen',
+              };
+              await AsyncStorage.setItem(
+                'AlreadyTakePhoto',
+                JSON.stringify(data),
+              );
+            },
+          );
         })
         .catch((err) => {
           this.setState({isLoading: false});
@@ -335,8 +349,12 @@ class SchoolSubmitPhotoScreen extends Component {
         ) : (
           <View style={{flex: 9, paddingHorizontal: 20}}>
             <ScrollView
+              keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              style={{paddingTop: 100}}>
+              contentContainerStyle={{
+                paddingTop: 100,
+                paddingBottom: Platform.OS == 'ios' ? 100 : 0,
+              }}>
               <CustomWrapper>
                 <CustomInput
                   placeholder="Student’s Name"

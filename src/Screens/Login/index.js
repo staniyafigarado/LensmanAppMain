@@ -166,6 +166,8 @@ class LoginScreen extends Component {
 
   saveDataLocal = async (data) => {
     if (data) {
+      console.warn('jhgfvhbj', data);
+
       try {
         await AsyncStorage.setItem('loginDetails', JSON.stringify(data));
         this.props.setLoginData(data);

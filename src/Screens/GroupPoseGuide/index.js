@@ -173,6 +173,16 @@ class GroupPoseGuide extends React.Component {
                     if (res) {
                       pose3 = true;
                       console.log('All APIS Are Done');
+                      this.setState({isLoading: false}, async () => {
+                        const data = {
+                          data: formData,
+                          screen: 'GroupPortraitPoseGuide',
+                        };
+                        await AsyncStorage.setItem(
+                          'AlreadyTakePhoto',
+                          JSON.stringify(data),
+                        );
+                      });
 
                       this.props.navigation.navigate('GroupPortraitPoseGuide', {
                         fromScreen: 'GroupPortraitPoseGuide',

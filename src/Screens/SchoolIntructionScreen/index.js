@@ -21,6 +21,7 @@ import {
   newSignatureIcon,
 } from '../../SharedComponents/CommonIcons';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class SchoolIntructionScreen extends Component {
   state = {
@@ -123,7 +124,17 @@ class SchoolIntructionScreen extends Component {
                 buttonStyles="btn-secondary-black"
                 textStyles="txt-secondary"
                 text="Next"
-                onAction={() =>
+                onAction={() => {
+                  this.setState({isLoading: false}, async () => {
+                    const data = {
+                      data: this.state.formData,
+                      screen: 'GroupPoseGuide',
+                    };
+                    await AsyncStorage.setItem(
+                      'AlreadyTakePhoto',
+                      JSON.stringify(data),
+                    );
+                  });
                   this.props.navigation.navigate('GroupPoseGuide', {
                     formData: this.state.formData,
                     // formData: {
@@ -136,8 +147,8 @@ class SchoolIntructionScreen extends Component {
                     //   gender: 'male',
                     //   schoolId: 1,
                     // },
-                  })
-                }
+                  });
+                }}
                 width="100%"
               />
             </View>
