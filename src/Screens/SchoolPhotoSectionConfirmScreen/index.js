@@ -1,5 +1,13 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Dimensions,
+  BackHandler,
+} from 'react-native';
 import {
   LeftArrowIcon,
   verifedWithBlueFillIcon,
@@ -11,6 +19,8 @@ import {
 } from '../../SharedComponents';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import AsyncStorage from '@react-native-community/async-storage';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 class SchoolPhotoSectionConfirmScreen extends React.Component {
   constructor(props) {
     super();
@@ -19,6 +29,10 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
     };
   }
   componentDidMount() {
+    this.BackHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.navigate('DashboardScreen');
+      return true;
+    });
     console.log(
       'this.props.route.params in Did Mount',
       this.props.route.params,
@@ -34,155 +48,183 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
     await AsyncStorage.removeItem('AlreadyTakePhoto');
   };
 
+  componentWillUnmount() {
+    this.BackHandler.remove();
+  }
   render() {
     const {TTComDB28, TTComM14, TTComDB18, TTComDB16} = CommonStyles;
     const {lastImage} = this.state;
     return (
-      <View style={{flex: 1}}>
-        <CustomHeaderPrim
-          leftIcon={LeftArrowIcon}
-          centerLabel="Confirmation"
-          leftIconAction={() => this.props.navigation.goBack()}
-        />
-        <ScrollView style={{paddingHorizontal: 20, paddingBottom: 40}}>
-          <View style={{marginVertical: 15}}>
-            <CustomTracker stage={3} label="schoolSection" />
-          </View>
-
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginVertical: 20,
-            }}>
-            <View
+      <>
+        <CustomStatusBar />
+        <SafeAreaView
+          style={{
+            height: Dimensions.get('screen').height,
+          }}>
+          <View style={{flex: 1, backfaceVisibility: 'hidden'}}>
+            <ScrollView
               style={{
-                backgroundColor: '#FFC000',
-                // width: 310,
-                height: 90,
-                borderRadius: 12,
-                flexDirection: 'row',
+                flex: 1,
+                paddingHorizontal: 20,
+                marginTop: 120,
               }}>
-              <View
-                style={{
-                  width: 100,
-                  paddingLeft: 10,
-                  position: 'relative',
-                  top: -35,
-                }}>
-                <Image
-                  source={
-                    lastImage !== ''
-                      ? {uri: lastImage}
-                      : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
-                  }
-                  style={{width: 90, height: 90, borderRadius: 45}}
-                />
-                <Image
-                  source={verifedWithBlueFillIcon}
-                  style={{position: 'absolute', right: 0}}
-                />
+              <View style={{marginVertical: 15}}>
+                <CustomTracker stage={3} label="schoolSection" />
               </View>
+
               <View
                 style={{
-                  alignSelf: 'center',
                   justifyContent: 'center',
-                  marginLeft: 10,
-                }}>
-                <Text style={[TTComDB28, {color: '#fff'}]}>
-                  Your photos have{' '}
-                </Text>
-                <Text style={[TTComDB28, {color: '#fff'}]}>been uploaded!</Text>
-              </View>
-            </View>
-          </View>
-
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <View
-              style={{
-                width: 310,
-                height: 90,
-                paddingHorizontal: 10,
-              }}>
-              <Text style={[TTComM14, {lineHeight: 20}]}>Order Ref.</Text>
-              <Text style={[TTComDB18, {lineHeight: 27}]}>#230AE3700</Text>
-              <Text style={[TTComDB16, {lineHeight: 17}]}>
-                Please check your email for confirmation.
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingBottom: 20,
-            }}>
-            <View
-              style={{
-                borderWidth: 1.5,
-                borderColor: '#E9E9E9',
-                borderRadius: 12,
-                width: 310,
-              }}>
-              <Text style={[TTComDB16, {textAlign: 'center', marginTop: 25}]}>
-                Add your photo to these products?
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
+                  alignItems: 'center',
                   marginVertical: 20,
                 }}>
-                <ItemList
-                  img={require('../../../assests/Test/photo_mug_large-5.jpg')}
-                  label="Coffee Mug"
-                  price="16.75"
-                />
-                <View style={{marginHorizontal: 15}} />
-                <ItemList
-                  img={require('../../../assests/Test/photo_mug_large-5.jpg')}
-                  label="Picture Frame"
-                  price="235.75"
-                />
-                <Image />
+                <View
+                  style={{
+                    backgroundColor: '#FFC000',
+                    // width: 310,
+                    height: 90,
+                    borderRadius: 12,
+                    flexDirection: 'row',
+                  }}>
+                  <View
+                    style={{
+                      width: 100,
+                      paddingLeft: 10,
+                      position: 'relative',
+                      top: -35,
+                    }}>
+                    <Image
+                      source={
+                        lastImage !== ''
+                          ? {uri: lastImage}
+                          : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
+                      }
+                      style={{width: 90, height: 90, borderRadius: 45}}
+                    />
+                    <Image
+                      source={verifedWithBlueFillIcon}
+                      style={{position: 'absolute', right: 0}}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      alignSelf: 'center',
+                      justifyContent: 'center',
+                      marginLeft: 10,
+                    }}>
+                    <Text style={[TTComDB28, {color: '#fff'}]}>
+                      Your photos have{' '}
+                    </Text>
+                    <Text style={[TTComDB28, {color: '#fff'}]}>
+                      been uploaded!
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <CustomButton
-                buttonStyles="btn-secondary-black"
-                textStyles="txt-secondary"
-                text="View more"
-                onAction={() =>
-                  this.props.navigation.navigate('DashboardScreen')
-                }
-                width="80%"
-                alignCenter
-              />
-            </View>
+
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    width: 310,
+                    height: 90,
+                    paddingHorizontal: 10,
+                  }}>
+                  <Text style={[TTComM14, {lineHeight: 20}]}>Order Ref.</Text>
+                  <Text style={[TTComDB18, {lineHeight: 27}]}>#230AE3700</Text>
+                  <Text style={[TTComDB16, {lineHeight: 17}]}>
+                    Please check your email for confirmation.
+                  </Text>
+                </View>
+              </View>
+
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingBottom: 20,
+                }}>
+                <View
+                  style={{
+                    borderWidth: 1.5,
+                    borderColor: '#E9E9E9',
+                    borderRadius: 12,
+                    width: 310,
+                  }}>
+                  <Text
+                    style={[TTComDB16, {textAlign: 'center', marginTop: 25}]}>
+                    Add your photo to these products?
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      marginVertical: 20,
+                    }}>
+                    <ItemList
+                      img={require('../../../assests/Test/photo_mug_large-5.jpg')}
+                      label="Coffee Mug"
+                      price="16.75"
+                    />
+                    <View style={{marginHorizontal: 15}} />
+                    <ItemList
+                      img={require('../../../assests/Test/photo_mug_large-5.jpg')}
+                      label="Picture Frame"
+                      price="235.75"
+                    />
+                    <Image />
+                  </View>
+                  <CustomButton
+                    buttonStyles="btn-secondary-black"
+                    textStyles="txt-secondary"
+                    text="View more"
+                    onAction={() =>
+                      this.props.navigation.navigate('DashboardScreen')
+                    }
+                    width="80%"
+                    alignCenter
+                  />
+                </View>
+              </View>
+              <View>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 40,
+                  }}>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Done"
+                    onAction={() =>
+                      this.props.navigation.navigate('DashboardScreen')
+                    }
+                    width={310}
+                  />
+                </View>
+              </View>
+            </ScrollView>
           </View>
-          <View>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 40,
-              }}>
-              <CustomButton
-                buttonStyles="btn-primary"
-                textStyles="txt-primary"
-                text="Done"
-                onAction={() =>
-                  this.props.navigation.navigate('DashboardScreen')
-                }
-                width={310}
-              />
-            </View>
+          <View
+            style={{
+              position: 'absolute',
+              flex: 1,
+              backfaceVisibility: 'hidden',
+            }}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              centerLabel="Confirmation"
+              leftIconAction={() =>
+                this.props.navigation.navigate('DashboardScreen')
+              }
+            />
           </View>
-        </ScrollView>
-      </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

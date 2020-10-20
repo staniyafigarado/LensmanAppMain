@@ -99,7 +99,7 @@
 		0B2B012C252AFE4700B939E8 /* TTCommons-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "TTCommons-Medium.ttf"; path = "Fonts/TTCommons-Medium.ttf"; sourceTree = "<group>"; };
 		0B2B012D252AFE4700B939E8 /* TTCommons-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "TTCommons-Regular.ttf"; path = "Fonts/TTCommons-Regular.ttf"; sourceTree = "<group>"; };
 		0B2B012E252AFE4700B939E8 /* TTCommons-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "TTCommons-Thin.ttf"; path = "Fonts/TTCommons-Thin.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* expressApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = expressApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Lensman  Express.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lensman  Express.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = expressApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = expressApp/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = expressApp/Images.xcassets; sourceTree = "<group>"; };
@@ -275,7 +275,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* expressApp.app */,
+				13B07F961A680F5B00A75B9A /* Lensman  Express.app */,
 				00E356EE1AD99517003FC87E /* expressAppTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* expressApp-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* expressApp-tvOSTests.xctest */,
@@ -365,7 +365,7 @@
 			);
 			name = expressApp;
 			productName = expressApp;
-			productReference = 13B07F961A680F5B00A75B9A /* expressApp.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Lensman  Express.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* expressApp-tvOS */ = {
@@ -827,14 +827,14 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = expressApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LensmanExpress.h2bonza;
-				PRODUCT_NAME = expressApp;
+				PRODUCT_NAME = "Lensman  Express";
 				PROVISIONING_PROFILE_SPECIFIER = LensmanProvisionProfile2;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -854,14 +854,14 @@
 				DEVELOPMENT_TEAM = 5HP2TJF543;
 				INFOPLIST_FILE = expressApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.LensmanExpress.h2bonza;
-				PRODUCT_NAME = expressApp;
+				PRODUCT_NAME = "Lensman  Express";
 				PROVISIONING_PROFILE_SPECIFIER = LensmanProvisionProfile2;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

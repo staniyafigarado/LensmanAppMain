@@ -57,7 +57,7 @@ const Button = (props) => {
             ? CommonStyles.txtPrimary
             : textStyles === 'txt-secondary'
             ? CommonStyles.txtSecondary
-            : textStyles
+            : [CommonStyles.TTComDB18, {color: '#fff'}]
         }>
         {text && text}
       </Text>

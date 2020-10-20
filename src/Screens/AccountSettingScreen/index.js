@@ -27,6 +27,7 @@ import {
 
 import {Container} from '../RegisterScreen/components';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class AccountSettingScreen extends Component {
   state = {
@@ -132,34 +133,37 @@ class AccountSettingScreen extends Component {
     const {passwordConfirm, isSelected} = this.state;
     const {TTComM16} = CommonStyles;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar barStyle="dark-content" backgroundColor="#fff" /> */}
 
-        {/* Header section  */}
-        <View style={{flex: 0.5}}>
-          <CustomHeader
-            leftIcon={closeIcon}
-            rightIcon={logoSmall}
-            leftIconAction={() => this.props.navigation.goBack()}
-          />
-        </View>
-        {/* Header section End */}
-
-        {/* Form Section */}
-        <View style={{flex: 10, paddingHorizontal: 20}}>
-          <View
-            style={{
-              flex: 1,
-
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={CommonStyles.TTComDB14}>
-              No Setting Currently Available
-            </Text>
+          {/* Header section  */}
+          <View style={{flex: 0.5}}>
+            <CustomHeader
+              leftIcon={closeIcon}
+              rightIcon={logoSmall}
+              leftIconAction={() => this.props.navigation.goBack()}
+            />
           </View>
-        </View>
-      </SafeAreaView>
+          {/* Header section End */}
+
+          {/* Form Section */}
+          <View style={{flex: 10, paddingHorizontal: 20}}>
+            <View
+              style={{
+                flex: 1,
+
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={CommonStyles.TTComDB14}>
+                No Setting Currently Available
+              </Text>
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

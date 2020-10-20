@@ -5,6 +5,7 @@ import {update} from 'lodash';
 // import UI from './uiReducer';
 import Layout from './itemAddCartReducer';
 import Login from './loginReducer';
+import statusbar from './statusbarReducer';
 // import School from './schoolReducer';
 // import People from './peopleReducer';
 // import Photo from './photoReducer';
@@ -14,6 +15,7 @@ import {COMMON} from '../types';
 const allReducers = combineReducers({
   Layout,
   Login,
+  statusbar,
 });
 
 const rootReducer = (state, action) => {

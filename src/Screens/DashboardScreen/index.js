@@ -10,6 +10,9 @@ import {
   ScrollView,
   StatusBar,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import axios from 'axios';
@@ -46,6 +49,7 @@ import Swiper from 'react-native-swiper';
 import AuthScreen from '../AuthScreen';
 
 import {setCartItem} from '../../store/actions';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class DashboardScreen extends Component {
   constructor(props) {
@@ -62,11 +66,14 @@ class DashboardScreen extends Component {
     index: 0,
     isLoading: false,
     screen: '',
+    asyncData: '',
+    isSearchData: false,
   };
 
   componentDidMount() {
-    this.getDataFromStore('loginDetails');
+    this.getDataFromStore('loginDetails', 'componentdidMount');
     this.TakePictureCurrentScreen();
+    // this.getSearchData();
     if (
       this.props.route.params &&
       this.props.route.params.fromScreen &&
@@ -115,11 +122,29 @@ class DashboardScreen extends Component {
       }
     }
     if (prevProps.isFocused !== this.props.isFocused) {
-      // this.getDataFromStore('loginDetails');
+      this.TakePictureCurrentScreen();
+      // this.getData('loginDetails');
+      this.getDataFromStore('loginDetails', 'update');
       if (!this.state.isDemoShow) this.getProductList();
     }
   }
 
+  saveDataLocal = async () => {
+    const guestLogin = {
+      email: 'guestlogin@gmail.com',
+      firstName: 'Guest User',
+      id: '1wf23gv3erty3jt1234he',
+      lastName: null,
+      orders: {edges: []},
+      phone: null,
+    };
+    try {
+      await AsyncStorage.setItem('loginDetails', JSON.stringify(guestLogin));
+    } catch (err) {
+      alert('some error occurs');
+      console.log('Err in set Login Dat to Local', err);
+    }
+  };
   componentWillUnmount() {
     console.log('Will unmounted on Dashboard');
   }
@@ -133,35 +158,11 @@ class DashboardScreen extends Component {
   getProductList = (id) => {
     this.setState({isLoading: true}, async () => {
       if (id) {
-        await axios
-          // .get(BaseUrl + '/admin/api/2020-07/products/' + id + '.json', {
-          .get(
-            BaseUrl +
-              '/admin/api/2020-07/products.json?collection_id=224252428453',
-            {
-              headers: {
-                Authorization: base64Auth,
-              },
-            },
-          )
-          .then((res) => {
-            console.warn(res);
-
-            // if (res.data.product && res.data.products.length) {
-            this.setState(
-              {productList: [res.data.product], isLoading: false},
-              () => {
-                console.warn('Res get Product list in Dashboard with Id ', res);
-              },
-            );
-          })
-          .catch((err) => {
-            this.setState({isLoading: false});
-            console.log('Err in get Product list in Dashboard', err);
-          });
+        this.props.navigation.navigate('ItemDetailsScreen', {
+          productId: id,
+        });
       } else {
         axios
-          // .get(BaseUrl + '/admin/api/2020-07/products.json', {
           .get(
             BaseUrl +
               '/admin/api/2020-07/products.json?collection_id=224252428453',
@@ -172,7 +173,7 @@ class DashboardScreen extends Component {
             },
           )
           .then((res) => {
-            // console.warn(res);
+            console.warn('res2');
 
             if (res.data.products && res.data.products.length) {
               this.setState(
@@ -202,21 +203,41 @@ class DashboardScreen extends Component {
     if (status) this.setState({isDemoShow: false});
   };
 
-  getDataFromStore = async (value) => {
+  getDataFromStore = async (value, fromdata) => {
     try {
       let loggedData = await AsyncStorage.getItem(value);
-      console.log('Is Logged', loggedData);
+      console.warn('Is Logged', loggedData);
 
       if (loggedData !== null) {
-        this.setState({isDemoShow: false});
+        this.setState({isDemoShow: false, asyncData: JSON.parse(loggedData)});
       } else {
-        this.setState({isDemoShow: true});
+        this.setState(
+          {
+            isDemoShow: fromdata === 'componentdidMount' ? true : false,
+          },
+          () => {
+            this.saveDataLocal();
+          },
+        );
       }
     } catch (err) {
       console.log('Is Logged', err);
     }
   };
+  getData = async (value) => {
+    try {
+      let loggedData = await AsyncStorage.getItem(value);
+      console.warn('Is Logged', loggedData);
 
+      if (loggedData !== null) {
+        this.setState({asyncData: JSON.parse(loggedData)});
+      } else {
+        this.setState({asyncData: ''});
+      }
+    } catch (err) {
+      console.log('Is Logged', err);
+    }
+  };
   storeData = async (data, value) => {
     try {
       await AsyncStorage.setItem(data, value);
@@ -243,6 +264,22 @@ class DashboardScreen extends Component {
       this.setState({screen: data});
     }
   };
+
+  getSearchData = async () => {
+    await axios
+      .get(BaseUrl + `/admin/api/2020-07/products.json`, {
+        headers: {
+          Authorization: base64Auth,
+        },
+      })
+      .then((res) => {
+        console.warn(
+          'search data',
+          res.data.products.map((item) => item.id),
+        );
+        this.setState({productList: res.data.products});
+      });
+  };
   render() {
     const {tabNavContainer} = Styles;
     const {
@@ -251,251 +288,288 @@ class DashboardScreen extends Component {
       SchoolImage,
       productList,
       isLoading,
+      asyncData,
+      isSearchData,
     } = this.state;
-    if (isLoading) {
-      this.TakePictureCurrentScreen();
-    }
+    const count = 0;
+
     const {TTComDB28, TTComDB16} = CommonStyles;
 
     const {cartList} = this.props;
-    console.warn(productList);
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <>
+        <CustomStatusBar />
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={logoSmall}
-            placeholder="What are you looking for?"
-            searchBox
-            handleSearchBox={() => console.log('search box')}
-            data={productList}
-            filterData={this.filterData}
-          />
-        </View>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            backgroundColor: '#fff',
+          }}>
+          {/* <KeyboardAvoidingView
+          // style={{flex: 1}}
+          // behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+          > */}
 
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <View style={{flex: 11, paddingHorizontal: 20}}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{flex: 1, marginTop: 100}}>
-                <ImageBackground
-                  source={SchoolBg}
-                  style={{width: '100%', height: 450}}
-                  // imageStyle={{borderRadius: 25, borderWidth: 1.5}}
-                >
-                  <LinearGradient
-                    colors={['#ffffff00', '#00000091']}
-                    locations={[0.1, 0.9]}
-                    style={{flex: 1, zIndex: 10, borderRadius: 25}}>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'flex-end',
-                        padding: 10,
-                      }}>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <View style={{flex: 11, paddingHorizontal: 20}}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{flex: 1, marginTop: 170}}>
+                  <ImageBackground
+                    source={SchoolBg}
+                    style={{width: '100%', height: 450}}
+                    // imageStyle={{borderRadius: 25, borderWidth: 1.5}}
+                  >
+                    <LinearGradient
+                      colors={['#ffffff00', '#00000091']}
+                      locations={[0.1, 0.9]}
+                      style={{flex: 1, zIndex: 10, borderRadius: 25}}>
                       <View
                         style={{
-                          flexDirection: 'row',
-                          alignItems: 'flex-end',
-                          marginBottom: 5,
+                          flex: 1,
+                          justifyContent: 'flex-end',
+                          padding: 10,
                         }}>
-                        <Text style={[TTComDB16, {color: '#fff'}]}>
-                          Powered by
-                        </Text>
-                        <Image source={signature} />
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'flex-end',
+                            marginBottom: 5,
+                          }}>
+                          <Text style={[TTComDB16, {color: '#fff'}]}>
+                            Powered by
+                          </Text>
+                          <Image source={signature} />
+                        </View>
+                        <View>
+                          <Text
+                            style={[CommonStyles.TTComDB28, {color: '#fff'}]}>
+                            Take your at-home
+                          </Text>
+                          <Text
+                            style={[CommonStyles.TTComDB28, {color: '#fff'}]}>
+                            School Photo!
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            paddingVertical: 5,
+                          }}>
+                          <CustomButton
+                            buttonStyles="btn-primary"
+                            // textStyles="txt-primary"
+                            text="Take Picture"
+                            width="49%"
+                            onAction={() => {
+                              this.props.navigation.navigate(
+                                this.state.screen.screen,
+                                {
+                                  fromScreen: 'GroupPortraitPoseGuide',
+                                  formData: this.state.screen.data,
+                                },
+                              );
+                            }}
+                            // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
+                          />
+                          <CustomButton
+                            buttonStyles="btn-secondary"
+                            // textStyles="txt-primary"
+                            text="Upload"
+                            width="50%"
+                            onAction={() => {
+                              if (
+                                asyncData &&
+                                asyncData.id !== '1wf23gv3erty3jt1234he'
+                              ) {
+                                this.props.navigation.navigate(
+                                  'CustomGalleryScreen',
+                                );
+                              } else {
+                                this.props.navigation.navigate('LoginScreen');
+                              }
+                            }}
+                          />
+                        </View>
                       </View>
-                      <View>
-                        <Text style={CommonStyles.txtPrimary}>
-                          Take your at-home
-                        </Text>
-                        <Text style={CommonStyles.txtPrimary}>
-                          School Photo!
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          paddingVertical: 5,
-                        }}>
-                        <CustomButton
-                          buttonStyles="btn-primary"
-                          textStyles="txt-primary"
-                          text="Take Picture"
-                          width="49%"
-                          onAction={() =>
-                            this.props.navigation.navigate(
-                              this.state.screen.screen,
-                              {
-                                fromScreen: 'GroupPortraitPoseGuide',
-                                formData: this.state.screen.data,
-                              },
-                            )
-                          }
-                          // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
-                        />
-                        <CustomButton
-                          buttonStyles="btn-secondary"
-                          textStyles="txt-primary"
-                          text="Upload"
-                          width="50%"
-                          onAction={() =>
-                            this.props.navigation.navigate(
-                              'CustomGalleryScreen',
-                            )
-                          }
-                        />
-                      </View>
-                    </View>
-                  </LinearGradient>
-                </ImageBackground>
-              </View>
-              <View style={{marginVertical: 5}}>
-                <Image
-                  source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
+                    </LinearGradient>
+                  </ImageBackground>
+                </View>
+                <View style={{marginVertical: 5}}>
+                  <Image
+                    source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
+                  />
+                </View>
+                <View style={{marginTop: 30, paddingBottom: 100}}>
+                  <Text style={[CommonStyles.TTComDB28, {color: 'black'}]}>
+                    Featured Products
+                  </Text>
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingVertical: 10,
+                    }}>
+                    {productList && productList.length
+                      ? productList.map((item, index) => {
+                          // console.warn(item.variants[0].compare_at_price);
+
+                          return (
+                            <ItemList
+                              discount={
+                                item.variants &&
+                                item.variants[0] &&
+                                item.variants[0].price &&
+                                item.variants[0].compare_at_price
+                                  ? '-' +
+                                    Math.floor(
+                                      100 -
+                                        (item.variants[0].price /
+                                          item.variants[0].compare_at_price) *
+                                          100,
+                                    ) +
+                                    '%'
+                                  : '0'
+                              }
+                              key={index}
+                              label={item.title}
+                              price={
+                                item.variants &&
+                                item.variants[0] &&
+                                item.variants[0].price
+                                  ? item.variants[0].price + ' AED'
+                                  : '12 AED'
+                              }
+                              itemImage={
+                                item.image &&
+                                item.image.src !== '' &&
+                                item.image.src !== null &&
+                                item.image.src
+                              }
+                              onAction={() =>
+                                this.props.navigation.navigate(
+                                  'ItemDetailsScreen',
+                                  {productId: productList[index].id},
+                                )
+                              }
+                            />
+                          );
+                        })
+                      : null}
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          )}
+
+          {!isSearchData && (
+            <SafeAreaView>
+              <View style={tabNavContainer}>
+                <TabNavButton
+                  nav={this.props}
+                  active="1"
+                  cartNotification={cartList}
                 />
               </View>
+            </SafeAreaView>
+          )}
 
-              <View style={{marginTop: 30, paddingBottom: 100}}>
-                <Text style={[CommonStyles.txtPrimary, {color: 'black'}]}>
-                  Featured Products
-                </Text>
-                <View
-                  style={{
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingVertical: 10,
-                  }}>
-                  {productList && productList.length
-                    ? productList.map((item, index) => {
-                        // console.warn(item.variants[0].compare_at_price);
-
-                        return (
-                          <ItemList
-                            discount={
-                              item.variants &&
-                              item.variants[0] &&
-                              item.variants[0].price &&
-                              item.variants[0].compare_at_price
-                                ? '-' +
-                                  Math.floor(
-                                    100 -
-                                      (item.variants[0].price /
-                                        item.variants[0].compare_at_price) *
-                                        100,
-                                  ) +
-                                  '%'
-                                : '0'
-                            }
-                            key={index}
-                            label={item.title}
-                            price={
-                              item.variants &&
-                              item.variants[0] &&
-                              item.variants[0].price
-                                ? item.variants[0].price + ' AED'
-                                : '12 AED'
-                            }
-                            itemImage={
-                              item.image &&
-                              item.image.src !== '' &&
-                              item.image.src !== null &&
-                              item.image.src
-                            }
-                            onAction={() =>
-                              this.props.navigation.navigate(
-                                'ItemDetailsScreen',
-                                {productId: productList[index].id},
-                              )
-                            }
-                          />
+          {(isSection || isDemoShow) && (
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isSection || isDemoShow}>
+              {isSection && (
+                <ForStudentSection
+                  schoolImage={SchoolImage}
+                  handleSection={this.handleSection}
+                />
+              )}
+              {isDemoShow && (
+                <Swiper
+                  style={{}}
+                  showsButtons={false}
+                  showsPagination={false}
+                  loop={false}
+                  index={this.state.index}
+                  onIndexChanged={(i) =>
+                    this.setState({index: i}, () => {
+                      if (this.state.index < 0) {
+                        this.setState({index: 0}, () =>
+                          this.swiper.scrollBy(this.state.index + 1, true),
                         );
-                      })
-                    : null}
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        )}
-        <SafeAreaView>
-          <View style={tabNavContainer}>
-            <TabNavButton
-              nav={this.props}
-              active="1"
-              cartNotification={cartList}
+                      }
+                      console.log('index', this.state.index);
+                    })
+                  }
+                  ref={(ref) => {
+                    this.swiper = ref;
+                  }}>
+                  <Demo1
+                    {...this.props}
+                    changeScreen={() =>
+                      this.swiper.scrollBy(this.state.index + 1, true)
+                    }
+                    closeModal={() => this.setState({isDemoShow: false})}
+                  />
+
+                  <Demo2
+                    {...this.props}
+                    changeScreen={() =>
+                      this.swiper.scrollBy(this.state.index, true)
+                    }
+                    closeModal={() => this.setState({isDemoShow: false})}
+                  />
+
+                  <Demo3
+                    {...this.props}
+                    changeScreen={() =>
+                      this.swiper.scrollBy(this.state.index, true)
+                    }
+                    closeModal={(cb) => this.setState({isDemoShow: false})}
+                  />
+                  <AuthScreen
+                    {...this.props}
+                    changeScreen={() =>
+                      this.swiper.scrollBy(this.state.index + 1, true)
+                    }
+                    handleCloseModal={(cb) =>
+                      this.setState({isDemoShow: false})
+                    }
+                  />
+                </Swiper>
+              )}
+            </Modal>
+          )}
+          <View
+            style={[
+              {
+                zIndex: 1,
+                position: 'absolute',
+                backgroundColor: 'transparent',
+                width: '100%',
+              },
+              isSearchData && {height: '100%'},
+            ]}>
+            <CustomHeaderPrim
+              leftIcon={logoSmall}
+              placeholder="What are you looking for?"
+              searchBox
+              handleSearchBox={() => console.log('search box')}
+              data={productList}
+              filterData={this.filterData}
+              onSearchEvent={(isShow) => {
+                this.setState({isSearchData: isShow});
+              }}
             />
           </View>
+          {/* </KeyboardAvoidingView> */}
         </SafeAreaView>
-        {(isSection || isDemoShow) && (
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isSection || isDemoShow}>
-            {isSection && (
-              <ForStudentSection
-                schoolImage={SchoolImage}
-                handleSection={this.handleSection}
-              />
-            )}
-            {isDemoShow && (
-              <Swiper
-                style={{}}
-                showsButtons={false}
-                showsPagination={false}
-                loop={false}
-                index={this.state.index}
-                onIndexChanged={(i) =>
-                  this.setState({index: i}, () => {
-                    if (this.state.index < 0) {
-                      this.setState({index: 0}, () =>
-                        this.swiper.scrollBy(this.state.index + 1, true),
-                      );
-                    }
-                    console.log('index', this.state.index);
-                  })
-                }
-                ref={(ref) => {
-                  this.swiper = ref;
-                }}>
-                <Demo1
-                  {...this.props}
-                  changeScreen={() =>
-                    this.swiper.scrollBy(this.state.index + 1, true)
-                  }
-                  closeModal={() => this.setState({isDemoShow: false})}
-                />
-
-                <Demo2
-                  {...this.props}
-                  changeScreen={() =>
-                    this.swiper.scrollBy(this.state.index + 1, true)
-                  }
-                  closeModal={() => this.setState({isDemoShow: false})}
-                />
-
-                <Demo3
-                  {...this.props}
-                  changeScreen={() =>
-                    this.swiper.scrollBy(this.state.index + 1, true)
-                  }
-                  closeModal={(cb) => this.setState({isDemoShow: false})}
-                />
-                <AuthScreen
-                  {...this.props}
-                  changeScreen={() =>
-                    this.swiper.scrollBy(this.state.index + 1, true)
-                  }
-                  handleCloseModal={(cb) => this.setState({isDemoShow: false})}
-                />
-              </Swiper>
-            )}
-          </Modal>
-        )}
-      </SafeAreaView>
+      </>
     );
   }
 }

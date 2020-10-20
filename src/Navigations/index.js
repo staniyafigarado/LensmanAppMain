@@ -69,37 +69,37 @@ const WrapperNavigations = (props) => {
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="Demo1"
           component={Demo1}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="Demo2"
           component={Demo2}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="Demo3"
           component={Demo3}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="AuthScreen"
           component={AuthScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="RegisterScreen"
           component={RegisterScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="DashboardScreen"
@@ -114,27 +114,27 @@ const WrapperNavigations = (props) => {
         <Stack.Screen
           name="ItemDetailsScreen"
           component={ItemDetailsScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="PhotoSectionScreen"
           component={PhotoSectionScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="PhotoTakenSectioinScreen"
           component={PhotoTakenSectioinScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="PhotoTakenSectioinScreen2"
           component={PhotoTakenSectioinScreen2}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="PhotoTakenSectioinScreen3"
           component={PhotoTakenSectioinScreen3}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CartScreen"
@@ -149,133 +149,133 @@ const WrapperNavigations = (props) => {
         <Stack.Screen
           name="DemoOverlay1"
           component={DemoOverlay1}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="DemoOverlay2"
           component={DemoOverlay2}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="DemoOverlay3"
           component={DemoOverlay3}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolSubmitPhotoScreen"
           component={SchoolSubmitPhotoScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CameraSectionScreen"
           component={CameraSectionScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CustomGalleryScreen"
           component={CustomGalleryScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CheckoutNewUserScreen"
           component={CheckoutNewUserScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CheckoutDetailsForm"
           component={CheckoutDetailsForm}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CheckoutPaymentScreen"
           component={CheckoutPaymentScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="CheckoutHistoryScreen"
           component={CheckoutHistoryScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="OrderHistoryScreen"
           component={OrderHistory}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
 
         <Stack.Screen
           name="SchoolIntructionScreen"
           component={SchoolIntructionScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolGuideScreen"
           component={SchoolGuideScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolPhotoInitialScreen"
           component={SchoolPhotoInitialScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen1"
           component={SchoolAfterTakePhotScreen1}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen2"
           component={SchoolAfterTakePhotScreen2}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen3"
           component={SchoolAfterTakePhotScreen3}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen4"
           component={SchoolAfterTakePhotScreen4}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen5"
           component={SchoolAfterTakePhotScreen5}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolAfterTakePhotScreen6"
           component={SchoolAfterTakePhotScreen6}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="ForgotPasswordScreen"
           component={ForgotPasswordScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="GroupPoseGuide"
           component={GroupPoseGuide}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="GroupPortraitPoseGuide"
           component={GroupPortraitPoseGuide}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="SchoolPhotoSectionConfirmScreen"
           component={SchoolPhotoSectionConfirmScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="Contact Us"
           component={ContactUsScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen
           name="AccountSettingScreen"
           component={AccountSettingScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, animationEnabled: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

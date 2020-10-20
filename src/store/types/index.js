@@ -50,3 +50,6 @@ export const LAYOUT = {
 export const LOGIN = {
   LOGIN_DATA: 'LOGIN_DATA',
 };
+export const STATUSBAR = {
+  STATUSBAR_HIDE: 'HIDE_STATUSBAR',
+};

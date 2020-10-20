@@ -79,7 +79,9 @@ export const ItemList = (props) => {
       <View style={[Styles.itemListImage, {alignItems: 'center'}]}>
         {discount !== '0' && (
           <View style={Styles.discountBadge}>
-            <Text style={Styles.discountBadgeText}>{discount && discount}</Text>
+            <Text allowFontScaling={false} style={Styles.discountBadgeText}>
+              {discount && discount}
+            </Text>
           </View>
         )}
         <Image

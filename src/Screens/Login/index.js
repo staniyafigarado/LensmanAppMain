@@ -28,6 +28,7 @@ import {connect} from 'react-redux';
 import {InputContainer} from './components';
 import AsyncStorage from '@react-native-community/async-storage';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class LoginScreen extends Component {
   state = {
@@ -232,66 +233,69 @@ class LoginScreen extends Component {
     const {isLoader, isCustomToaster} = this.state;
     const {TTComDB16} = CommonStyles;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <CustomHeader
-          leftIcon={closeIcon}
-          rightIcon={logoSmall}
-          leftIconAction={() =>
-            this.props.navigation.navigate('AuthScreen', {
-              fromLogin: true,
-            })
-          }
-        />
-
-        <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
-          <InputContainer>
-            <CustomInput
-              placeholder="Email"
-              label="Email"
-              keyboardType="email-address"
-              onchange={(data) => this.handleLogin(data, 'userName')}
-            />
-          </InputContainer>
-          {isLoader && <Loader />}
-          <InputContainer>
-            <CustomInput
-              placeholder="Password"
-              label="Enter Password"
-              secure
-              onchange={(data) => this.handleLogin(data, 'password')}
-            />
-          </InputContainer>
-
-          <InputContainer alignCenter>
-            <CustomButton
-              buttonStyles="btn-primary"
-              textStyles="txt-primary"
-              text="Login"
-              onAction={() => this.submitLogin()}
-              width="100%"
-            />
-          </InputContainer>
-
-          <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.navigate('ForgotPasswordScreen')
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff', width: '100%'}}>
+          <CustomHeader
+            leftIcon={closeIcon}
+            rightIcon={logoSmall}
+            leftIconAction={() =>
+              this.props.navigation.navigate('AuthScreen', {
+                fromLogin: true,
+              })
             }
-            style={{
-              marginVertical: 15,
-              alignItems: 'center',
-            }}>
-            <Text style={TTComDB16}>Forget Password?</Text>
-          </TouchableOpacity>
-          {isCustomToaster !== '' && (
-            <CustomToaster
-              position="flex-end"
-              onend={() => this.setState({isCustomToaster: ''})}
-              isCustomToaster={true}
-              message={isCustomToaster}
-            />
-          )}
-        </View>
-      </SafeAreaView>
+          />
+
+          <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
+            <InputContainer>
+              <CustomInput
+                placeholder="Email"
+                label="Email"
+                keyboardType="email-address"
+                onchange={(data) => this.handleLogin(data, 'userName')}
+              />
+            </InputContainer>
+            {isLoader && <Loader />}
+            <InputContainer>
+              <CustomInput
+                placeholder="Password"
+                label="Enter Password"
+                secure
+                onchange={(data) => this.handleLogin(data, 'password')}
+              />
+            </InputContainer>
+
+            <InputContainer alignCenter>
+              <CustomButton
+                buttonStyles="btn-primary"
+                textStyles="txt-primary"
+                text="Login"
+                onAction={() => this.submitLogin()}
+                width="100%"
+              />
+            </InputContainer>
+
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('ForgotPasswordScreen')
+              }
+              style={{
+                marginVertical: 15,
+                alignItems: 'center',
+              }}>
+              <Text style={TTComDB16}>Forget Password?</Text>
+            </TouchableOpacity>
+            {isCustomToaster !== '' && (
+              <CustomToaster
+                position="flex-end"
+                onend={() => this.setState({isCustomToaster: ''})}
+                isCustomToaster={true}
+                message={isCustomToaster}
+              />
+            )}
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

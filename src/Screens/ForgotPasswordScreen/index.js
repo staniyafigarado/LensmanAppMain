@@ -24,6 +24,7 @@ import {connect} from 'react-redux';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import {InputContainer} from '../Login/components';
 import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class ForgotPasswordScreen extends Component {
   state = {
@@ -105,60 +106,63 @@ class ForgotPasswordScreen extends Component {
     const {isLoading, isCustomToaster} = this.state;
     const {TTComDB16} = CommonStyles;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <CustomHeader
-          leftIcon={closeIcon}
-          rightIcon={logoSmall}
-          leftIconAction={() =>
-            this.props.navigation.navigate('AuthScreen', {
-              fromLogin: true,
-            })
-          }
-        />
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <>
-            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
-              <InputContainer>
-                <CustomInput
-                  placeholder="Email"
-                  label="Email"
-                  keyboardType="email-address"
-                  onchange={(data) => this.setState({email: data})}
-                />
-              </InputContainer>
-
-              <InputContainer alignCenter>
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="Recover"
-                  onAction={() => this.submitLogin()}
-                  width="100%"
-                />
-              </InputContainer>
-
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('LoginScreen')}
-                style={{
-                  marginVertical: 15,
-                  alignItems: 'center',
-                }}>
-                <Text style={TTComDB16}>Back to login</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-        {isCustomToaster !== '' && (
-          <CustomToaster
-            position="flex-end"
-            onend={() => this.setState({isCustomToaster: ''})}
-            isCustomToaster={true}
-            message={isCustomToaster}
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          <CustomHeader
+            leftIcon={closeIcon}
+            rightIcon={logoSmall}
+            leftIconAction={() =>
+              this.props.navigation.navigate('AuthScreen', {
+                fromLogin: true,
+              })
+            }
           />
-        )}
-      </SafeAreaView>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
+                <InputContainer>
+                  <CustomInput
+                    placeholder="Email"
+                    label="Email"
+                    keyboardType="email-address"
+                    onchange={(data) => this.setState({email: data})}
+                  />
+                </InputContainer>
+
+                <InputContainer alignCenter>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Recover"
+                    onAction={() => this.submitLogin()}
+                    width="100%"
+                  />
+                </InputContainer>
+
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('LoginScreen')}
+                  style={{
+                    marginVertical: 15,
+                    alignItems: 'center',
+                  }}>
+                  <Text style={TTComDB16}>Back to login</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+          {isCustomToaster !== '' && (
+            <CustomToaster
+              position="flex-end"
+              onend={() => this.setState({isCustomToaster: ''})}
+              isCustomToaster={true}
+              message={isCustomToaster}
+            />
+          )}
+        </SafeAreaView>
+      </>
     );
   }
 }

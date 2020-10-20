@@ -28,6 +28,7 @@ import {
 } from '../../SharedComponents/CommonIcons';
 
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class CheckoutNewUserScreen extends Component {
   constructor(props) {
@@ -73,90 +74,96 @@ class CheckoutNewUserScreen extends Component {
     const {isLoading, isCustomToaster} = this.state;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={LeftArrowIcon}
-            leftIconAction={() => this.props.navigation.goBack()}
-            centerLabel="Checkout"
-          />
-        </View>
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <View style={{flex: 9, paddingHorizontal: 20}}>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={{paddingTop: 100}}>
-              <View>
-                <Text style={TTComDB28}>New here?</Text>
-                <Text style={TTComL16}>
-                  We need your email so we can help track your order and notify
-                  you on updates along the way.
-                </Text>
-              </View>
-
-              <View style={{marginVertical: 20}}>
-                <CustomInput
-                  placeholder="Email"
-                  label="Email"
-                  keyboardType="email-address"
-                  onchange={(data) => this.handleEmail(data)}
-                />
-              </View>
-
-              <View>
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="Create an account"
-                  width="100%"
-                  onAction={() =>
-                    this.props.navigation.navigate('RegisterScreen')
-                  }
-                />
-                <View style={{marginVertical: 5}} />
-                <CustomButton
-                  buttonStyles="btn-secondary-black"
-                  textStyles="txt-secondary"
-                  text="Checkout as guest"
-                  width="100%"
-                  onAction={() =>
-                    this.props.navigation.navigate('CheckoutDetailsForm')
-                  }
-                />
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginVertical: 10,
-                }}>
-                <Text style={TTComDB16}>Already have an account?</Text>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('LoginScreen')}>
-                  <Text allowFontScaling={false} style={TTComL16}>
-                    {' '}
-                    Login
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+          <View
+            style={{width: '100%', zIndex: 4, backgroundColor: 'transparent'}}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              leftIconAction={() => this.props.navigation.goBack()}
+              centerLabel="Checkout"
+            />
           </View>
-        )}
-        {isCustomToaster !== '' && (
-          <CustomToaster
-            position="flex-end"
-            onend={() => this.setState({isCustomToaster: ''})}
-            isCustomToaster={true}
-            message={isCustomToaster}
-          />
-        )}
-      </SafeAreaView>
+
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <View style={{flex: 9, paddingHorizontal: 20}}>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{paddingTop: 100}}>
+                <View>
+                  <Text style={TTComDB28}>New here?</Text>
+                  <Text style={TTComL16}>
+                    We need your email so we can help track your order and
+                    notify you on updates along the way.
+                  </Text>
+                </View>
+
+                <View style={{marginVertical: 20}}>
+                  <CustomInput
+                    placeholder="Email"
+                    label="Email"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleEmail(data)}
+                  />
+                </View>
+
+                <View>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Create an account"
+                    width="100%"
+                    onAction={() =>
+                      this.props.navigation.navigate('RegisterScreen')
+                    }
+                  />
+                  <View style={{marginVertical: 5}} />
+                  <CustomButton
+                    buttonStyles="btn-secondary-black"
+                    textStyles="txt-secondary"
+                    text="Checkout as guest"
+                    width="100%"
+                    onAction={() =>
+                      this.props.navigation.navigate('CheckoutDetailsForm')
+                    }
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginVertical: 10,
+                  }}>
+                  <Text style={TTComDB16}>Already have an account?</Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('LoginScreen')
+                    }>
+                    <Text allowFontScaling={false} style={TTComL16}>
+                      {' '}
+                      Login
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </View>
+          )}
+          {isCustomToaster !== '' && (
+            <CustomToaster
+              position="flex-end"
+              onend={() => this.setState({isCustomToaster: ''})}
+              isCustomToaster={true}
+              message={isCustomToaster}
+            />
+          )}
+        </SafeAreaView>
+      </>
     );
   }
 }

@@ -8,13 +8,16 @@ const logoXlIcon = require('../../../assests/Common/logo-xl/icon[2464].png');
 const logo = require('../../../assests/Logo/lensman.png');
 const SplashScreen = () => {
   return (
-    <LinearGradient colors={['#353ee5', '#6d74fc']} style={{flex: 1}}>
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <View style={{flex: 11, justifyContent: 'center', alignItems: 'center'}}>
-        <Image source={logo} style={{width: 242, height: 217}} />
-        {/* <View style={{ paddingVertical: 5 }} />
-        <Image source={logoXlIcon} /> */}
-      </View>
+    <LinearGradient
+      colors={['#353ee5', '#6d74fc']}
+      style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <StatusBar hidden={true} />
+
+      <Image
+        source={logo}
+        style={{width: '62%', height: '62%'}}
+        resizeMode="contain"
+      />
     </LinearGradient>
   );
   // return (

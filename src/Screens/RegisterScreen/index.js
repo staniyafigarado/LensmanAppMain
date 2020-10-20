@@ -27,6 +27,7 @@ import {
 
 import {Container} from './components';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class RegisterScreen extends Component {
   state = {
@@ -265,117 +266,125 @@ class RegisterScreen extends Component {
     } = this.state;
     const {TTComM16} = CommonStyles;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* Header section  */}
 
-        {/* Header section  */}
-        <View style={{flex: 0.5}}>
-          <CustomHeader
-            leftIcon={closeIcon}
-            rightIcon={logoSmall}
-            leftIconAction={() => this.props.navigation.navigate('AuthScreen')}
-          />
-        </View>
-        {/* Header section End */}
+          {/* Header section End */}
 
-        {/* Form Section */}
-        <View style={{flex: 10, paddingHorizontal: 20}}>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{marginTop: 130}}>
+          {/* Form Section */}
+          <View style={{flex: 10, paddingHorizontal: 20}}>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{paddingTop: 10}}>
+                <View style={{marginTop: 130}}>
+                  <Container>
+                    <CustomInput
+                      placeholder="Full Name"
+                      label="Full Name"
+                      onchange={(data) =>
+                        this.handleFormDatas(data, 'fullName')
+                      }
+                    />
+                  </Container>
+                </View>
+
                 <Container>
                   <CustomInput
-                    placeholder="Full Name"
-                    label="Full Name"
-                    onchange={(data) => this.handleFormDatas(data, 'fullName')}
+                    placeholder="Email"
+                    label="Email"
+                    onchange={(data) => this.handleFormDatas(data, 'email')}
+                    keyboardType="email-address"
                   />
                 </Container>
-              </View>
 
-              <Container>
-                <CustomInput
-                  placeholder="Email"
-                  label="Email"
-                  onchange={(data) => this.handleFormDatas(data, 'email')}
-                  keyboardType="email-address"
-                />
-              </Container>
+                <Container>
+                  <CustomInput
+                    placeholder="Mobile Number"
+                    label="Mobile Number"
+                    onchange={(data) =>
+                      this.handleFormDatas(data, 'mobileNumber')
+                    }
+                    type="phone"
+                    keyboardType="phone-pad"
+                  />
+                </Container>
 
-              <Container>
-                <CustomInput
-                  placeholder="Mobile Number"
-                  label="Mobile Number"
-                  onchange={(data) =>
-                    this.handleFormDatas(data, 'mobileNumber')
-                  }
-                  type="phone"
-                  keyboardType="phone-pad"
-                />
-              </Container>
+                <Container>
+                  <CustomInput
+                    placeholder="Password"
+                    label="Password"
+                    onchange={(data) => this.handleFormDatas(data, 'password')}
+                    secure
+                  />
+                </Container>
+                <Container>
+                  <CustomInput
+                    placeholder="Confirm Password"
+                    label="Confirm Password"
+                    onchange={(data) =>
+                      this.handleFormDatas(data, 'confirmPassword')
+                    }
+                    secure
+                    validationErr={passwordConfirm}
+                    validatePassword={() => this.validatePasswordConfirm()}
+                  />
+                </Container>
 
-              <Container>
-                <CustomInput
-                  placeholder="Password"
-                  label="Password"
-                  onchange={(data) => this.handleFormDatas(data, 'password')}
-                  secure
-                />
-              </Container>
-              <Container>
-                <CustomInput
-                  placeholder="Confirm Password"
-                  label="Confirm Password"
-                  onchange={(data) =>
-                    this.handleFormDatas(data, 'confirmPassword')
-                  }
-                  secure
-                  validationErr={passwordConfirm}
-                  validatePassword={() => this.validatePasswordConfirm()}
-                />
-              </Container>
+                <TouchableOpacity
+                  onPress={() => this.toggleSelect()}
+                  style={{flexDirection: 'row'}}>
+                  <Image source={isSelected ? radioButtonFill : radioButton} />
+                  <Text
+                    style={[
+                      TTComM16,
+                      {marginLeft: 10, fontSize: RFPercentage(16) / 7},
+                    ]}>
+                    I wish to receive promotions from Lensman Express on my
+                    email and SMS.
+                  </Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => this.toggleSelect()}
-                style={{flexDirection: 'row'}}>
-                <Image source={isSelected ? radioButtonFill : radioButton} />
-                <Text
-                  style={[
-                    TTComM16,
-                    {marginLeft: 10, fontSize: RFPercentage(16) / 7},
-                  ]}>
-                  I wish to receive promotions from Lensman Express on my email
-                  and SMS.
-                </Text>
-              </TouchableOpacity>
-
-              <Container>
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="Sign Up"
-                  alignCenter
-                  onAction={() => this.submitRegister()} //this.props.navigation.navigate('LoginScreen')} //
-                  width="100%"
-                />
-              </Container>
-            </ScrollView>
-          )}
-          {isCustomToaster && apiStatus.message !== '' && (
-            <CustomToaster
-              onend={() => this.setState({isCustomToaster: false})}
-              position="flex-end"
-              isCustomToaster={isCustomToaster}
-              message={apiStatus.message}
-              redirect={() =>
-                apiStatus.status &&
-                this.props.navigation.navigate('LoginScreen')
+                <Container>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Sign Up"
+                    alignCenter
+                    onAction={() => this.submitRegister()} //this.props.navigation.navigate('LoginScreen')} //
+                    width="100%"
+                  />
+                </Container>
+              </ScrollView>
+            )}
+            {isCustomToaster && apiStatus.message !== '' && (
+              <CustomToaster
+                onend={() => this.setState({isCustomToaster: false})}
+                position="flex-end"
+                isCustomToaster={isCustomToaster}
+                message={apiStatus.message}
+                redirect={() =>
+                  apiStatus.status &&
+                  this.props.navigation.navigate('LoginScreen')
+                }
+              />
+            )}
+          </View>
+          <View style={{flex: 0.5, position: 'absolute', width: '100%'}}>
+            <CustomHeader
+              leftIcon={closeIcon}
+              rightIcon={logoSmall}
+              leftIconAction={() =>
+                this.props.navigation.navigate('AuthScreen')
               }
             />
-          )}
-        </View>
-      </SafeAreaView>
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

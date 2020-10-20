@@ -10,6 +10,7 @@ import {
   StatusBar,
   Modal,
   ToastAndroid,
+  KeyboardAvoidingView,
 } from 'react-native';
 import axios from 'axios';
 import {setCartItem} from '../../store/actions';
@@ -39,6 +40,7 @@ import Styles from './Styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import {FlatList} from 'react-native-gesture-handler';
 import graphQlhandler from '../../utils/graphqlFetchHandler';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class ItemDetailsScreen extends Component {
   constructor(props) {
@@ -62,16 +64,19 @@ class ItemDetailsScreen extends Component {
       colorVariants: [],
       colorSelector: '',
       relatedProducts: [],
+      isSearchData: false,
     };
   }
 
   componentDidMount() {
+    console.warn('getdata from prodcut page');
+
     const {productId} = this.props.route.params;
-    this.setState({productId}, () => {
+    this.setState({productId}, async () => {
       if (this.state.productId) {
         this.getProductDetails(this.state.productId);
         // this.getReleatedProducts(this.state.productId);
-        this.fetchColorVariants();
+
         // this.getReleatedProducts();
       }
     });
@@ -80,6 +85,11 @@ class ItemDetailsScreen extends Component {
       this.setState({isUploadedImages: true});
     }
     this.getLocalData();
+    this.props.navigation.addListener('focus', () => {
+      this.componentDidMount();
+      // The screen is focused
+      // Call any action
+    });
   }
 
   componentWillUnmount() {
@@ -91,11 +101,17 @@ class ItemDetailsScreen extends Component {
       if (this.props.route.params.data === 'fromPhotTakensection')
         this.setState({isUploadedImages: true});
       if (prevProps.route.params.productId) {
-        this.getProductDetails(prevProps.route.paramsproductId);
+        this.getProductDetails(prevProps.route.params.productId);
       } else if (this.props.route.params.productId) {
         this.getProductDetails(this.props.route.params.productId);
       }
       this.getLocalData();
+
+      const {productId} = this.props.route.params;
+      // if (productId) {
+      //   this.getProductDetails(productId);
+      // }
+      console.warn('updated daata', productId);
     }
   }
 
@@ -119,7 +135,7 @@ class ItemDetailsScreen extends Component {
   };
 
   getProductDetails = (id) => {
-    console.warn(id);
+    // console.warn(id);
 
     this.setState({isLoading: true}, () => {
       axios
@@ -131,13 +147,15 @@ class ItemDetailsScreen extends Component {
         .then((res) => {
           console.warn(
             'res data product details =>',
-            res.data.product.images[0].id,
+            res.data.product.tags.split(',')[0],
+            res.data.product.product_type,
           );
           if (res.data.product) {
+            this.fetchColorVariants();
             this.setState(
               {productDetails: res.data.product, isLoading: false},
               () => {
-                this.getReleatedProducts(this.state.productDetails.id);
+                this.getReleatedProducts(res.data.product.product_type);
                 console.log(
                   'Res get Product Details in State',
                   this.state.productDetails,
@@ -153,7 +171,9 @@ class ItemDetailsScreen extends Component {
     });
   };
 
-  getReleatedProducts = (id) => {
+  getReleatedProducts = async (type) => {
+    console.warn(type);
+
     const query = `{
     node(id:"Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzU1NjExODEzNzI1ODE=") {
       ...on Product {
@@ -181,66 +201,63 @@ class ItemDetailsScreen extends Component {
     }}
 `;
     // console.warn('id', id);
-    graphQlhandler(
-      {query},
-      (onSuccess) => {
-        if (onSuccess !== null && onSuccess !== '') {
-          // const array = [];
-          // const collections = onSuccess.data.node.collections.edges;
-          // for (let j = 0; j < collections.length; j++) {
-          //   // for (let k = 0; k < collections[j].length; k++) {
-          //   const image =
-          //     collections[j].node.products.edges[k].node.images.edges[0].node
-          //       .originalSrc;
-          //   const title = collections[j].node.products.edges[k].node.title;
-          //   array.push(title);
-          //   // }
-          // }
-          const data = onSuccess.data.node.collections;
+    // graphQlhandler(
+    //   {query},
+    //   (onSuccess) => {
+    //     if (onSuccess !== null && onSuccess !== '') {
+    //       // const array = [];
+    //       // const collections = onSuccess.data.node.collections.edges;
+    //       // for (let j = 0; j < collections.length; j++) {
+    //       //   // for (let k = 0; k < collections[j].length; k++) {
+    //       //   const image =
+    //       //     collections[j].node.products.edges[k].node.images.edges[0].node
+    //       //       .originalSrc;
+    //       //   const title = collections[j].node.products.edges[k].node.title;
+    //       //   array.push(title);
+    //       //   // }
+    //       // }
+    //       const data = onSuccess.data.node.collections;
 
-          // .map((item) => item.node)
-          // .map((item) => item.products);
-          console.warn(
-            'qwery',
-            data,
-            // data[3].edges[0].node.images.edges[0].node.originalSrc,
-          );
-          this.setState({relatedProducts: data});
+    //       // .map((item) => item.node)
+    //       // .map((item) => item.products);
+    //       console.warn(
+    //         'qwery',
+    //         data,
+    //         // data[3].edges[0].node.images.edges[0].node.originalSrc,
+    //       );
+    //       this.setState({relatedProducts: data});
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState({isCustomToaster: 'Something wrong', isLoader: false});
+    //     console.log(error);
+    //   },
+    // );
+    await axios
+      .get(BaseUrl + `/admin/api/2020-10/products.json?product_type=${type}`, {
+        headers: {
+          Authorization: base64Auth,
+        },
+      })
+      .then((res) => {
+        console.warn('related products', res.data.products);
+        if (res && res.data !== '' && res.data.products !== null) {
+          this.setState({relatedProducts: res.data.products});
         }
-      },
-      (error) => {
-        this.setState({isCustomToaster: 'Something wrong', isLoader: false});
-        console.log(error);
-      },
-    );
-    // axios
-    //   .get(
-    //     BaseUrl +
-    //       '/admin/api/2020-07/collections/' +
-    //       collection_id +
-    //       '/products.json',
-    //     {
-    //       headers: {
-    //         Authorization: base64Auth,
-    //       },
-    //     },
-    //   )
-    //   .then((res) => {
-    //     console.warn('related products', res);
 
-    // console.log('res data product details =>', res.data);
-    // if (res.data.product) {
-    //   this.setState({productDetails: res.data.product}, () => {
-    //     console.log(
-    //       'Res get Product Details in State',
-    //       this.state.productDetails,
-    //     );
-    //   });
-    // }
-    // })
-    // .catch((err) => {
-    //   console.log('Err in get Product Details ', err);
-    // });
+        // console.log('res data product details =>', res.data);
+        // if (res.data.product) {
+        //   this.setState({productDetails: res.data.product}, () => {
+        //     console.log(
+        //       'Res get Product Details in State',
+        //       this.state.productDetails,
+        //     );
+        //   });
+        // }
+      })
+      .catch((err) => {
+        console.log('Err in get Product Details ', err);
+      });
   };
 
   handleQuantity = () => {
@@ -334,6 +351,7 @@ class ItemDetailsScreen extends Component {
       colorVariants,
       colorSelector,
       relatedProducts,
+      isSearchData,
     } = this.state;
 
     const {cartList} = this.props;
@@ -352,215 +370,210 @@ class ItemDetailsScreen extends Component {
     // console.warn(productDetails !== null && productDetails.id);
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={logoSmall}
-            placeholder="What are you looking for?"
-            searchBox
-            handleSearchBox={() => console.log('search box')}
-          />
-          {/* <Text style={{color: 'silver'}}>helow</Text> */}
-        </View>
-
-        <View style={{flex: 9}}>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {productDetails !== null && (
-                <Image
-                  source={{
-                    uri:
-                      productDetails !== null &&
-                      productDetails.images[imageSelectIndex].src,
-                  }}
-                  style={{
-                    width: '100%',
-                    height: 400,
-                    borderRadius: 27,
-                    position: 'relative',
-                    top: 50,
-                    zIndex: 3,
-                    resizeMode: 'contain',
-                  }}
-                />
-              )}
-
-              <View style={[imageListWrapper, {marginTop: 60}]}>
-                {productDetails !== null && productDetails.images.length > 3 ? (
-                  <>
-                    {!isExpandImages &&
-                      productDetails.images.slice(0, 3).map((item, index) => {
-                        return (
-                          <TouchableOpacity
-                            key={index}
-                            onPress={() =>
-                              this.setState({imageSelectIndex: index})
-                            }>
-                            <Image
-                              key={index}
-                              source={{uri: item.src}}
-                              style={imageStyleinList}
-                            />
-                          </TouchableOpacity>
-                        );
-                      })}
-                    {!isExpandImages && (
-                      <TouchableOpacity
-                        onPress={() => this.setState({isExpandImages: true})}
-                        style={[imageListAdd]}>
-                        <View style={imageListAddButton}>
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontFamily: 'TTCommons-Medium',
-                            }}>
-                            {'+'}
-                            {productDetails.images.length - 3}
-                          </Text>
-                        </View>
-                        <Image
-                          source={{
-                            uri: productDetails.images[imageSelectIndex].src,
-                          }}
-                          style={[imageStyleinList, {marginHorizontal: 0}]}
-                        />
-                      </TouchableOpacity>
-                    )}
-
-                    {isExpandImages && (
-                      <View
-                        style={{
-                          flexWrap: 'wrap',
-                          width: '100%',
-                          height: 'auto',
-                          alignItems: 'center',
-                        }}>
-                        <ScrollView
-                          horizontal={true}
-                          showsHorizontalScrollIndicator={false}>
-                          {productDetails.images
-                            .slice(0, productDetails.images.length)
-                            .map((item, index) => {
-                              return (
-                                <TouchableOpacity
-                                  key={index}
-                                  onPress={() =>
-                                    this.setState({imageSelectIndex: index})
-                                  }>
-                                  <Image
-                                    key={index}
-                                    source={{uri: item.src}}
-                                    style={imageStyleinList}
-                                  />
-                                </TouchableOpacity>
-                              );
-                            })}
-                        </ScrollView>
-                      </View>
-                    )}
-                  </>
-                ) : (
-                  productDetails !== null &&
-                  productDetails &&
-                  productDetails.images.length < 4 &&
-                  productDetails.images.map((item, index) => {
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        onPress={() =>
-                          this.setState({imageSelectIndex: index})
-                        }>
-                        <Image
-                          key={index}
-                          source={{uri: item.src}}
-                          style={imageStyleinList}
-                        />
-                      </TouchableOpacity>
-                    );
-                  })
+          <View style={{flex: 9, paddingTop: 100}}>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {productDetails !== null && (
+                  <Image
+                    source={{
+                      uri:
+                        productDetails !== null &&
+                        productDetails.images[imageSelectIndex].src,
+                    }}
+                    style={{
+                      width: '100%',
+                      height: 400,
+                      borderRadius: 27,
+                      position: 'relative',
+                      top: 50,
+                      zIndex: 3,
+                      resizeMode: 'contain',
+                    }}
+                  />
                 )}
-              </View>
 
-              <View style={{flex: 1, paddingHorizontal: 20, paddingBottom: 70}}>
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{width: '80%'}}>
-                    <Text style={TTComDB18}>
-                      {productDetails !== null && productDetails.title}
-                    </Text>
-
-                    {!colorVariants.includes('default title') && (
-                      <FlatList
-                        data={colorVariants}
-                        horizontal={true}
-                        keyExtractor={(index) => index.toString()}
-                        renderItem={({item}) => {
+                <View style={[imageListWrapper, {marginTop: 60}]}>
+                  {productDetails !== null &&
+                  productDetails.images.length > 3 ? (
+                    <>
+                      {!isExpandImages &&
+                        productDetails.images.slice(0, 3).map((item, index) => {
                           return (
                             <TouchableOpacity
+                              key={index}
                               onPress={() =>
-                                this.setState({colorSelector: item})
-                              }
-                              style={{
-                                height: 20,
-                                width: 20,
-                                borderRadius: 15,
-                                backgroundColor: item,
-                                marginTop: 15,
-                                marginBottom: 15,
-                                borderColor: 'black',
-                                borderWidth: colorSelector == item ? 2 : 0,
-                                marginHorizontal: 15,
-                              }}
-                            />
+                                this.setState({imageSelectIndex: index})
+                              }>
+                              <Image
+                                key={index}
+                                source={{uri: item.src}}
+                                style={imageStyleinList}
+                              />
+                            </TouchableOpacity>
                           );
-                        }}
-                      />
-                    )}
-                    <Text style={[TTComDB28, {color: '#FA3838'}]}>
-                      {productDetails !== null &&
-                        productDetails.variants[0].price + ' AED'}
-                    </Text>
+                        })}
+                      {!isExpandImages && (
+                        <TouchableOpacity
+                          onPress={() => this.setState({isExpandImages: true})}
+                          style={[imageListAdd]}>
+                          <View style={imageListAddButton}>
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontFamily: 'TTCommons-Medium',
+                              }}>
+                              {'+'}
+                              {productDetails.images.length - 3}
+                            </Text>
+                          </View>
+                          <Image
+                            source={{
+                              uri: productDetails.images[imageSelectIndex].src,
+                            }}
+                            style={[imageStyleinList, {marginHorizontal: 0}]}
+                          />
+                        </TouchableOpacity>
+                      )}
 
-                    <Text
-                      style={[
-                        TTComM16,
-                        {
-                          textDecorationLine: 'line-through',
-                          color: '#D1D1D1',
-                        },
-                      ]}>
-                      {compare_value !== null ? compare_value[0] : ''}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => this.handleQuantity()}
-                    style={{justifyContent: 'center'}}>
-                    <View
-                      style={{
-                        backgroundColor: '#E9E9E9',
-                        width: 70,
-                        height: 50,
-                        borderRadius: 15,
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center',
-                        padding: 10,
-                        alignSelf: 'flex-end',
-                        // position: 'absolute',
-                        // bottom: 20,
-                      }}>
-                      <Text style={[TTComM18, {paddingRight: 10}]}>
-                        {productQty}
-                      </Text>
-                      <Image source={upDownArrowIcon} />
-                    </View>
-                  </TouchableOpacity>
+                      {isExpandImages && (
+                        <View
+                          style={{
+                            flexWrap: 'wrap',
+                            width: '100%',
+                            height: 'auto',
+                            alignItems: 'center',
+                          }}>
+                          <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}>
+                            {productDetails.images
+                              .slice(0, productDetails.images.length)
+                              .map((item, index) => {
+                                return (
+                                  <TouchableOpacity
+                                    key={index}
+                                    onPress={() =>
+                                      this.setState({imageSelectIndex: index})
+                                    }>
+                                    <Image
+                                      key={index}
+                                      source={{uri: item.src}}
+                                      style={imageStyleinList}
+                                    />
+                                  </TouchableOpacity>
+                                );
+                              })}
+                          </ScrollView>
+                        </View>
+                      )}
+                    </>
+                  ) : (
+                    productDetails !== null &&
+                    productDetails &&
+                    productDetails.images.length < 4 &&
+                    productDetails.images.map((item, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() =>
+                            this.setState({imageSelectIndex: index})
+                          }>
+                          <Image
+                            key={index}
+                            source={{uri: item.src}}
+                            style={imageStyleinList}
+                          />
+                        </TouchableOpacity>
+                      );
+                    })
+                  )}
                 </View>
 
-                {/* <TouchableOpacity
+                <View
+                  style={{flex: 1, paddingHorizontal: 20, paddingBottom: 70}}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View style={{width: '80%'}}>
+                      <Text style={TTComDB18}>
+                        {productDetails !== null && productDetails.title}
+                      </Text>
+
+                      {!colorVariants.includes('default title') && (
+                        <FlatList
+                          data={colorVariants}
+                          horizontal={true}
+                          keyExtractor={(index) => index.toString()}
+                          renderItem={({item, index}) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() =>
+                                  this.setState({colorSelector: item})
+                                }
+                                style={{
+                                  height: 20,
+                                  width: 20,
+                                  borderRadius: 15,
+                                  backgroundColor: item,
+                                  marginTop: 15,
+                                  marginBottom: 15,
+                                  borderColor: 'black',
+                                  borderWidth: colorSelector == item ? 2 : 0,
+                                  marginHorizontal: 15,
+                                }}
+                              />
+                            );
+                          }}
+                        />
+                      )}
+                      <Text style={[TTComDB28, {color: '#FA3838'}]}>
+                        {productDetails !== null &&
+                          productDetails.variants[0].price + ' AED'}
+                      </Text>
+
+                      <Text
+                        style={[
+                          TTComM16,
+                          {
+                            textDecorationLine: 'line-through',
+                            color: '#D1D1D1',
+                          },
+                        ]}>
+                        {compare_value !== null ? compare_value[0] : ''}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => this.handleQuantity()}
+                      style={{justifyContent: 'center'}}>
+                      <View
+                        style={{
+                          backgroundColor: '#E9E9E9',
+                          width: 70,
+                          height: 50,
+                          borderRadius: 15,
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                          alignItems: 'center',
+                          padding: 10,
+                          alignSelf: 'flex-end',
+                          // position: 'absolute',
+                          // bottom: 20,
+                        }}>
+                        <Text style={[TTComM18, {paddingRight: 10}]}>
+                          {productQty}
+                        </Text>
+                        <Image source={upDownArrowIcon} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate('PhotoSectionScreen')
                   }
@@ -613,215 +626,218 @@ class ItemDetailsScreen extends Component {
                   )}
                 </TouchableOpacity> */}
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 10,
-                  }}>
-                  <CustomButton
-                    buttonStyles="btn-primary"
-                    textStyles="txt-primary"
-                    text="Buy Now"
-                    width="49%"
-                    onAction={() =>
-                      this.props.navigation.navigate('CheckoutNewUserScreen', {
-                        data: productDetails,
-                        productQty: productQty,
-                      })
-                    }
-                  />
-                  <CustomButton
-                    buttonStyles="btn-secondary-black"
-                    textStyles="txt-secondary"
-                    text="Add to Cart"
-                    width="49%"
-                    onAction={() => this.handleAddToCart()}
-                  />
-                </View>
-
-                <View style={{paddingVertical: 10}}>
-                  <TouchableOpacity
-                    onPress={() => this.toggleProductDesc()}
-                    style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image source={plusBlackIcon} />
-                    <Text style={[TTComDB28, {marginLeft: 10}]}>
-                      Product specification
-                    </Text>
-                  </TouchableOpacity>
-                  {isProductDesc &&
-                    productDetails !== null &&
-                    productDetails.body_html !== null &&
-                    productDetails.body_html !== '' && (
-                      <Text style={TTComL16}>
-                        {this.handleRemoveTags(productDetails.body_html)}
-                      </Text>
-                    )}
-                </View>
-
-                <View style={{paddingVertical: 10}}>
-                  <Text style={[TTComDB28, {marginBottom: 25}]}>
-                    Related Products
-                  </Text>
-                  {this.state.relatedProducts.length > 1 && (
-                    <Image
-                      source={{uri: this.state.relatedProducts}}
-                      style={{height: 150, width: 150}}
-                    />
-                  )}
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}>
-                    {relatedProducts !== '' &&
-                      relatedProducts.edges &&
-                      relatedProducts.edges[1].node.products.edges[4].node
-                        .images.edges[0].node.originalSrc &&
-                      relatedProducts.edges[2].node.products.edges[4].node
-                        .images.edges[0].node.originalSrc &&
-                      relatedProducts.edges[3].node.products.edges[4].node
-                        .images.edges[0].node.originalSrc &&
-                      relatedProducts.edges[2].node.products.edges[5].node
-                        .images.edges[0].node.originalSrc && (
-                        <>
-                          <CategoryList
-                            image={{
-                              uri:
-                                relatedProducts.edges[1].node.products.edges[4]
-                                  .node.images.edges[0].node.originalSrc,
-                            }}
-                            label="Coffee Mug"
-                            price="16.75 AED"
-                          />
-                          <CategoryList
-                            image={{
-                              uri:
-                                relatedProducts.edges[2].node.products.edges[4]
-                                  .node.images.edges[0].node.originalSrc,
-                            }}
-                            label="Coffee Mug"
-                            price="16.75 AED"
-                          />
-                          <CategoryList
-                            image={{
-                              uri:
-                                relatedProducts.edges[3].node.products.edges[4]
-                                  .node.images.edges[0].node.originalSrc,
-                            }}
-                            label="Coffee Mug"
-                            price="16.75 AED"
-                          />
-                          <CategoryList
-                            image={{
-                              uri:
-                                relatedProducts.edges[2].node.products.edges[5]
-                                  .node.images.edges[0].node.originalSrc,
-                            }}
-                            label="Coffee Mug"
-                            price="16.75 AED"
-                          />
-                        </>
-                      )}
-
-                    {/* <CategoryList
-                      image={require('../../../assests/Test/b1a0e3f5f5cf5ca762b3d99e20a6fbb6.png')}
-                      label="Coffee Mug"
-                      price="16.75 AED"
-                    />
-                    <CategoryList
-                      image={require('../../../assests/Test/b1a0e3f5f5cf5ca762b3d99e20a6fbb6.png')}
-                      label="Coffee Mug"
-                      price="16.75 AED"
-                    /> */}
-                  </ScrollView>
-                </View>
-              </View>
-            </ScrollView>
-          )}
-          <View style={[tabNavContainer, {width: '90%'}]}>
-            <TabNavButton
-              nav={this.props}
-              active="2"
-              cartNotification={cartList}
-              {...this.props}
-            />
-          </View>
-          {isCustomToaster && (
-            <CustomToaster
-              onend={() => this.setState({isCustomToaster: false})}
-              position="center"
-              isCustomToaster={isCustomToaster}
-              message="Added to Cart!"
-            />
-          )}
-
-          {isQuantityModal && (
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isQuantityModal}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#292f332e',
-                }}>
-                <View
-                  style={{
-                    width: '50%',
-                    backgroundColor: '#fff',
-                    borderRadius: 15,
-                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      padding: 10,
+                      marginVertical: 10,
                     }}>
-                    <Text style={[TTComDB18, {paddingVertical: 5}]}>
-                      Select Quantity
-                    </Text>
-                    <TouchableOpacity
-                      style={{paddingLeft: 10, padding: 10}}
-                      onPress={() => this.setState({isQuantityModal: false})}>
-                      <Image source={closeIcon} style={{tintColor: '#000'}} />
-                    </TouchableOpacity>
+                    <CustomButton
+                      buttonStyles="btn-primary"
+                      textStyles="txt-primary"
+                      text="Buy Now"
+                      width="49%"
+                      onAction={() =>
+                        this.props.navigation.navigate(
+                          'CheckoutNewUserScreen',
+                          {
+                            data: productDetails,
+                            productQty: productQty,
+                          },
+                        )
+                      }
+                    />
+                    <CustomButton
+                      buttonStyles="btn-secondary-black"
+                      textStyles="txt-secondary"
+                      text="Add to Cart"
+                      width="49%"
+                      onAction={() => this.handleAddToCart()}
+                    />
                   </View>
 
-                  <QuantityList
-                    count={1}
-                    isSelect={productQty === 1}
-                    handleProductCount={(count) =>
-                      this.setState({productQty: count, isQuantityModal: false})
-                    }
-                  />
-                  <QuantityList
-                    count={2}
-                    isSelect={productQty === 2}
-                    handleProductCount={(count) =>
-                      this.setState({productQty: count, isQuantityModal: false})
-                    }
-                  />
-                  <QuantityList
-                    count={3}
-                    isSelect={productQty === 3}
-                    handleProductCount={(count) =>
-                      this.setState({productQty: count, isQuantityModal: false})
-                    }
-                  />
-                  <QuantityList
-                    count={4}
-                    isSelect={productQty === 4}
-                    handleProductCount={(count) =>
-                      this.setState({productQty: count, isQuantityModal: false})
-                    }
-                  />
+                  <View style={{paddingVertical: 10}}>
+                    <TouchableOpacity
+                      onPress={() => this.toggleProductDesc()}
+                      style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image source={plusBlackIcon} />
+                      <Text style={[TTComDB28, {marginLeft: 10}]}>
+                        Product specification
+                      </Text>
+                    </TouchableOpacity>
+                    {isProductDesc &&
+                      productDetails !== null &&
+                      productDetails.body_html !== null &&
+                      productDetails.body_html !== '' && (
+                        <Text style={TTComL16}>
+                          {this.handleRemoveTags(productDetails.body_html)}
+                        </Text>
+                      )}
+                  </View>
+
+                  <View style={{paddingVertical: 10}}>
+                    <Text style={[TTComDB28, {marginBottom: 25}]}>
+                      Related Products
+                    </Text>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}>
+                      {relatedProducts.length > 0 &&
+                      relatedProducts.tags !== '' ? (
+                        relatedProducts.map((item) => {
+                          return (
+                            <CategoryList
+                              onPress={() => {
+                                this.getProductDetails(item.id);
+                              }}
+                              image={{uri: item && item.images[0].src}}
+                              label={item && item.title}
+                              price={
+                                item &&
+                                item.variants[0] &&
+                                item.variants[0].price + ' ' + 'AED'
+                              }
+                            />
+                          );
+                        })
+                      ) : (
+                        <View
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'blue',
+                          }}>
+                          <Text>No Related Products</Text>
+                        </View>
+                      )}
+                    </ScrollView>
+                  </View>
                 </View>
+              </ScrollView>
+            )}
+            {!isSearchData && (
+              <View style={[tabNavContainer, {width: '90%'}]}>
+                <TabNavButton
+                  nav={this.props}
+                  active="2"
+                  cartNotification={cartList}
+                  {...this.props}
+                />
               </View>
-            </Modal>
-          )}
-        </View>
-      </SafeAreaView>
+            )}
+            {isCustomToaster && (
+              <CustomToaster
+                onend={() => this.setState({isCustomToaster: false})}
+                position="center"
+                isCustomToaster={isCustomToaster}
+                message="Added to Cart!"
+              />
+            )}
+
+            {isQuantityModal && (
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isQuantityModal}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#292f332e',
+                  }}>
+                  <View
+                    style={{
+                      width: '50%',
+                      backgroundColor: '#fff',
+                      borderRadius: 15,
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        padding: 10,
+                      }}>
+                      <Text style={[TTComDB18, {paddingVertical: 5}]}>
+                        Select Quantity
+                      </Text>
+                      <TouchableOpacity
+                        style={{paddingLeft: 10, padding: 10}}
+                        onPress={() => this.setState({isQuantityModal: false})}>
+                        <Image source={closeIcon} style={{tintColor: '#000'}} />
+                      </TouchableOpacity>
+                    </View>
+
+                    <QuantityList
+                      count={1}
+                      isSelect={productQty === 1}
+                      handleProductCount={(count) =>
+                        this.setState({
+                          productQty: count,
+                          isQuantityModal: false,
+                        })
+                      }
+                    />
+                    <QuantityList
+                      count={2}
+                      isSelect={productQty === 2}
+                      handleProductCount={(count) =>
+                        this.setState({
+                          productQty: count,
+                          isQuantityModal: false,
+                        })
+                      }
+                    />
+                    <QuantityList
+                      count={3}
+                      isSelect={productQty === 3}
+                      handleProductCount={(count) =>
+                        this.setState({
+                          productQty: count,
+                          isQuantityModal: false,
+                        })
+                      }
+                    />
+                    <QuantityList
+                      count={4}
+                      isSelect={productQty === 4}
+                      handleProductCount={(count) =>
+                        this.setState({
+                          productQty: count,
+                          isQuantityModal: false,
+                        })
+                      }
+                    />
+                  </View>
+                </View>
+              </Modal>
+            )}
+          </View>
+          <View
+            style={[
+              {
+                zIndex: 1,
+                position: 'absolute',
+                backgroundColor: 'transparent',
+                width: '100%',
+              },
+              isSearchData && {height: '100%'},
+            ]}>
+            <CustomHeaderPrim
+              leftIcon={logoSmall}
+              placeholder="What are you looking for?"
+              searchBox
+              handleSearchBox={() => console.log('search box')}
+              filterData={(data) => this.getProductDetails(data.id)}
+              onSearchEvent={(isShow) => {
+                this.setState({isSearchData: isShow});
+              }}
+            />
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

@@ -9,6 +9,8 @@ import {
   ScrollView,
   StatusBar,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 
@@ -28,6 +30,7 @@ import {
 import {CommonStyles} from '../../SharedComponents';
 import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
 import {CategoryList, CustomSelectList, FilterItem} from './components';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class ShoppingListScreen extends Component {
   constructor(props) {
@@ -39,6 +42,7 @@ class ShoppingListScreen extends Component {
       isLoading: false,
       image: '',
       whichCategory: '',
+      isSearchData: false,
     };
   }
 
@@ -208,8 +212,11 @@ class ShoppingListScreen extends Component {
   };
 
   filterData = (data) => {
+    // console.warn(data.id);
+
     if (data) {
-      this.getProductList(data.id);
+      let id = data.id;
+      this.props.navigation.navigate('ItemDetailsScreen', {productId: id});
     }
   };
 
@@ -261,223 +268,247 @@ class ShoppingListScreen extends Component {
       productList,
       isLoading,
       whichCategory,
+      isSearchData,
     } = this.state;
 
     const {cartList} = this.props;
     // console.warn('categlist', categoriesList);
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={logoSmall}
-            placeholder="What are you looking for?"
-            searchBox
-            handleSearchBox={() => console.log('search box')}
-            data={productList}
-            filterData={this.filterData}
-          />
-        </View>
-        <View style={{flex: 9, paddingHorizontal: 20}}>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{flex: 1, marginTop: 100}}>
-                <Text style={TTComDB28}>Shop by Category</Text>
-                <FlatList
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  data={
-                    categoriesList && categoriesList.length > 0
-                      ? categoriesList
-                      : []
-                  }
-                  renderItem={(item, index) => {
-                    // console.warn('1122', item.item);
-                    return (
-                      <CategoryList
-                        label={
-                          item.item.title && item.item.title.length > 15
-                            ? item.item.title.slice(0, 15) + '...'
-                            : item.item.title
-                        }
-                        image={
-                          item.item &&
-                          item.item.image !== null &&
-                          item.item.image !== undefined &&
-                          item.item.image.originalSrc !== null &&
-                          item.item.image.originalSrc !== ''
-                            ? {uri: item.item.image.originalSrc}
-                            : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
-                        }
-                        selectCategory={() =>
-                          this.getCategoryProductlList(item.item)
-                        }
-                      />
-                    );
-                  }}
-                  style={{flexDirection: 'row'}}
-                  keyExtractor={(item, index) => index.toString()}
-                />
-              </View>
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          <View style={{flex: 9, paddingHorizontal: 20}}>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{flex: 1, marginTop: 170}}>
+                  <Text style={TTComDB28}>Shop by Category</Text>
+                  <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={
+                      categoriesList && categoriesList.length > 0
+                        ? categoriesList
+                        : []
+                    }
+                    renderItem={(item, index) => {
+                      // console.warn('1122', item.item);
+                      return (
+                        <CategoryList
+                          label={
+                            item.item.title && item.item.title.length > 15
+                              ? item.item.title.slice(0, 15) + '...'
+                              : item.item.title
+                          }
+                          image={
+                            item.item &&
+                            item.item.image !== null &&
+                            item.item.image !== undefined &&
+                            item.item.image.originalSrc !== null &&
+                            item.item.image.originalSrc !== ''
+                              ? {uri: item.item.image.originalSrc}
+                              : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
+                          }
+                          selectCategory={() =>
+                            this.getCategoryProductlList(item.item)
+                          }
+                        />
+                      );
+                    }}
+                    style={{flexDirection: 'row'}}
+                    keyExtractor={(item, index) => index.toString()}
+                  />
+                </View>
 
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={TTComDB28}>Products for you</Text>
-                <TouchableOpacity onPress={() => this.handleFilter()}>
-                  <Image source={filterIcon} />
-                </TouchableOpacity>
-              </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={TTComDB28}>Products for you</Text>
+                  {/* <TouchableOpacity onPress={() => this.handleFilter()}>
+                    <Image source={filterIcon} />
+                  </TouchableOpacity> */}
+                </View>
 
-              <View style={{flexDirection: 'row', marginVertical: 10}}>
-                <CustomSelectList
-                  label="All"
-                  isActive={whichCategory == 'All' ? true : false}
-                  onPress={() => {
-                    this.setState({whichCategory: 'All'});
-                    this.getProductList('All');
-                  }}
-                />
-                <CustomSelectList
-                  label="Buy"
-                  isActive={whichCategory == 'Buy' ? true : false}
-                  onPress={() => {
-                    this.setState({whichCategory: 'Buy'});
-                    this.getProductList('Buy');
-                  }}
-                />
-                <CustomSelectList
-                  label="Rent"
-                  isActive={whichCategory == 'Rent' ? true : false}
-                  onPress={() => {
-                    this.setState({whichCategory: 'Rent'});
-                    this.getProductList('Rent');
-                  }}
-                />
-                <CustomSelectList
-                  label="Print"
-                  isActive={whichCategory == 'Print' ? true : false}
-                  onPress={() => {
-                    this.setState({whichCategory: 'Print'});
-                    this.getProductList('Print');
-                  }}
-                />
-              </View>
+                <View style={{flexDirection: 'row', marginVertical: 10}}>
+                  <CustomSelectList
+                    label="All"
+                    isActive={whichCategory == 'All' ? true : false}
+                    onPress={() => {
+                      this.setState({whichCategory: 'All'});
+                      this.getProductList('All');
+                    }}
+                  />
+                  <CustomSelectList
+                    label="Buy"
+                    isActive={whichCategory == 'Buy' ? true : false}
+                    onPress={() => {
+                      this.setState({whichCategory: 'Buy'});
+                      this.getProductList('Buy');
+                    }}
+                  />
+                  <CustomSelectList
+                    label="Rent"
+                    isActive={whichCategory == 'Rent' ? true : false}
+                    onPress={() => {
+                      this.setState({whichCategory: 'Rent'});
+                      this.getProductList('Rent');
+                    }}
+                  />
+                  <CustomSelectList
+                    label="Print"
+                    isActive={whichCategory == 'Print' ? true : false}
+                    onPress={() => {
+                      this.setState({whichCategory: 'Print'});
+                      this.getProductList('Print');
+                    }}
+                  />
+                </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                  marginBottom: 90,
-                }}>
-                {productList && productList.length ? (
-                  productList.map((item, index) => {
-                    return (
-                      <ItemList
-                        discount={
-                          item.variants &&
-                          item.variants[0] &&
-                          item.variants[0].price &&
-                          item.variants[0].compare_at_price
-                            ? '-' +
-                              Math.floor(
-                                100 -
-                                  (item.variants[0].price /
-                                    item.variants[0].compare_at_price) *
-                                    100,
-                              )
-                            : '0'
-                        }
-                        key={index}
-                        onAction={() =>
-                          this.props.navigation.navigate('ItemDetailsScreen', {
-                            productId: item.id,
-                          })
-                        }
-                        image={
-                          item.image &&
-                          item.image.src !== '' &&
-                          item.image.src !== null && {uri: item.image.src}
-                        }
-                        itemName={item.title}
-                        price={
-                          item.variants &&
-                          item.variants[0] &&
-                          item.variants[0].price
-                        }
-                      />
-                    );
-                  })
-                ) : (
-                  <View
-                    style={{
-                      height: '100%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '100%',
-                    }}>
-                    <Text style={{fontFamily: 'TTCommons-Medium'}}>
-                      No Products Available
-                    </Text>
-                  </View>
-                )}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    marginBottom: 90,
+                  }}>
+                  {productList && productList.length ? (
+                    productList.map((item, index) => {
+                      return (
+                        <ItemList
+                          discount={
+                            item.variants &&
+                            item.variants[0] &&
+                            item.variants[0].price &&
+                            item.variants[0].compare_at_price
+                              ? '-' +
+                                Math.floor(
+                                  100 -
+                                    (item.variants[0].price /
+                                      item.variants[0].compare_at_price) *
+                                      100,
+                                )
+                              : '0'
+                          }
+                          key={index}
+                          onAction={() =>
+                            this.props.navigation.navigate(
+                              'ItemDetailsScreen',
+                              {
+                                productId: item.id,
+                              },
+                            )
+                          }
+                          image={
+                            item.image &&
+                            item.image.src !== '' &&
+                            item.image.src !== null && {uri: item.image.src}
+                          }
+                          itemName={item.title}
+                          price={
+                            item.variants &&
+                            item.variants[0] &&
+                            item.variants[0].price
+                          }
+                        />
+                      );
+                    })
+                  ) : (
+                    <View
+                      style={{
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                      }}>
+                      <Text style={{fontFamily: 'TTCommons-Medium'}}>
+                        No Products Available
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+            )}
+          </View>
+          {!isSearchData && (
+            <SafeAreaView>
+              <View style={[tabNavContainer, {width: '90%'}]}>
+                <TabNavButton
+                  nav={this.props}
+                  active="2"
+                  cartNotification={cartList}
+                />
               </View>
-            </ScrollView>
+            </SafeAreaView>
           )}
-        </View>
-        <SafeAreaView>
-          <View style={[tabNavContainer, {width: '90%'}]}>
-            <TabNavButton
-              nav={this.props}
-              active="2"
-              cartNotification={cartList}
+
+          {isFilter && (
+            <Modal animationType="slide" transparent={false} visible={isFilter}>
+              <View style={{flex: 1}}>
+                <CustomHeaderPrim
+                  placeholder="What are you looking for?"
+                  searchBox
+                  handleSearchBox={() => console.log('search box')}
+                  searchBoxClearButton
+                  searchBoxClear={() => console.log('search box clear')}
+                />
+
+                <View style={{flex: 9}}>
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                  <FilterItem
+                    name="Sony Aplha X 1 32.mm"
+                    onAction={() => this.handleFilter()}
+                  />
+                </View>
+              </View>
+            </Modal>
+          )}
+          <View
+            style={[
+              {
+                zIndex: 1,
+                position: 'absolute',
+                backgroundColor: 'transparent',
+                width: '100%',
+              },
+              isSearchData && {height: '100%'},
+            ]}>
+            <CustomHeaderPrim
+              leftIcon={logoSmall}
+              placeholder="What are you looking for?"
+              searchBox
+              handleSearchBox={() => console.log('search box')}
+              data={productList}
+              filterData={this.filterData}
+              onSearchEvent={(isShow) => {
+                this.setState({isSearchData: isShow});
+              }}
             />
           </View>
         </SafeAreaView>
-        {isFilter && (
-          <Modal animationType="slide" transparent={false} visible={isFilter}>
-            <View style={{flex: 1}}>
-              <CustomHeaderPrim
-                placeholder="What are you looking for?"
-                searchBox
-                handleSearchBox={() => console.log('search box')}
-                searchBoxClearButton
-                searchBoxClear={() => console.log('search box clear')}
-              />
-
-              <View style={{flex: 9}}>
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-                <FilterItem
-                  name="Sony Aplha X 1 32.mm"
-                  onAction={() => this.handleFilter()}
-                />
-              </View>
-            </View>
-          </Modal>
-        )}
-      </SafeAreaView>
+      </>
     );
   }
 }

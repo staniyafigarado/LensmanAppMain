@@ -8,6 +8,8 @@ import {
   ScrollView,
   Modal,
   Platform,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -31,6 +33,7 @@ import {
   groupPoseBgDashedIcon,
 } from '../../SharedComponents/CommonIcons';
 import {BaseUrlSchool} from '../../utils/constants';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class GroupPoseGuide extends React.Component {
   constructor() {
@@ -147,6 +150,7 @@ class GroupPoseGuide extends React.Component {
     let pose1 = false;
     let pose2 = false;
     let pose3 = false;
+    console.warn(photoTaken);
 
     this.handleUpload(
       formData.schoolId,
@@ -200,7 +204,7 @@ class GroupPoseGuide extends React.Component {
   };
 
   handleUpload = (id, imageData, type, callback) => {
-    console.warn('id', id);
+    console.warn('id', imageData);
 
     let payload = {
       photo: '',
@@ -239,185 +243,200 @@ class GroupPoseGuide extends React.Component {
 
   render() {
     const {formData, photoTaken, removeItem, isLoading} = this.state;
+    console.warn(photoTaken);
     const {TTComDB18} = CommonStyles;
     return (
-      <View style={{flex: 1, backgroundColor: '#fff'}}>
-        <CustomHeaderPrim
-          leftIcon={LeftArrowIcon}
-          centerLabel="Group Poses Guide"
-          leftIconAction={() => this.props.navigation.goBack()}
-        />
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <ScrollView style={{paddingHorizontal: 20, paddingBottom: 40}}>
-            <View style={{marginVertical: 15}}>
-              <CustomTracker stage={1} label="schoolSection" />
-            </View>
-
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <SchoolPhotoInitialTexts
-                width={140}
-                label1="Please take your"
-                label2="3 full size photos"
-                label3="following the different"
-                label4="poses shown here."
-              />
-              <View style={{marginHorizontal: 20}} />
-              <SchoolPhotoInitial
-                width={140}
-                isPoseImg={photoTaken.pose1 !== '' ? false : true}
-                img={
-                  photoTaken.pose1 !== ''
-                    ? {uri: photoTaken.pose1}
-                    : formData.gender === 'male'
-                    ? boyGroupPose1Icon
-                    : girlGroupPose1Icon
-                }
-                actionLabel1="Click Here to "
-                actionLabel2="Take Photo"
-                actionLabel={photoTaken.pose1 !== '' ? 'Remove' : ''}
-                onAction={() =>
-                  this.props.navigation.navigate('CameraSectionScreen', {
-                    fromScreen: 'GroupPoseGuide',
-                    item: 'pose1',
-                    showDemoTip:
-                      photoTaken.pose1 === '' &&
-                      photoTaken.pose2 === '' &&
-                      photoTaken.pose3 === ''
-                        ? true
-                        : false,
-                  })
-                }
-                onActionRemove={() => this.handleRemoveTakenPhoto('pose1')}
-              />
-            </View>
-
-            <View
+      <>
+        <CustomStatusBar />
+        {/* <StatusBar /> */}
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          <View style={{zIndex: 4, width: '100%'}}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              centerLabel="Group Poses Guide"
+              leftIconAction={() => this.props.navigation.goBack()}
+            />
+          </View>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <ScrollView
               style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                marginTop: 50,
-              }}>
-              <SchoolPhotoInitial
-                width={140}
-                isPoseImg={photoTaken.pose2 !== '' ? false : true}
-                img={
-                  photoTaken.pose2 !== ''
-                    ? {uri: photoTaken.pose2}
-                    : formData.gender === 'male'
-                    ? boyGroupPose2Icon
-                    : girlGroupPose2Icon
-                }
-                actionLabel1="Click Here to "
-                actionLabel2="Take Photo"
-                actionLabel={photoTaken.pose2 !== '' ? 'Remove' : ''}
-                onAction={() =>
-                  this.props.navigation.navigate('CameraSectionScreen', {
-                    fromScreen: 'GroupPoseGuide',
-                    item: 'pose2',
-                    showDemoTip:
-                      photoTaken.pose1 === '' &&
-                      photoTaken.pose2 === '' &&
-                      photoTaken.pose3 === ''
-                        ? true
-                        : false,
-                  })
-                }
-                onActionRemove={() => this.handleRemoveTakenPhoto('pose2')}
-              />
-              <View style={{marginHorizontal: 20}} />
-              <SchoolPhotoInitial
-                width={140}
-                isPoseImg={photoTaken.pose3 !== '' ? false : true}
-                img={
-                  photoTaken.pose3 !== ''
-                    ? {uri: photoTaken.pose3}
-                    : formData.gender === 'male'
-                    ? boyGroupPose3Icon
-                    : girlGroupPose3Icon
-                }
-                actionLabel1="Click Here to "
-                actionLabel2="Take Photo"
-                actionLabel={photoTaken.pose3 !== '' ? 'Remove' : ''}
-                onAction={() =>
-                  this.props.navigation.navigate('CameraSectionScreen', {
-                    fromScreen: 'GroupPoseGuide',
-                    item: 'pose3',
-                    showDemoTip:
-                      photoTaken.pose1 === '' &&
-                      photoTaken.pose2 === '' &&
-                      photoTaken.pose3 === ''
-                        ? true
-                        : false,
-                  })
-                }
-                onActionRemove={() => this.handleRemoveTakenPhoto('pose3')}
-              />
-            </View>
+                paddingHorizontal: 20,
 
-            <View style={{marginVertical: 30}}>
-              <CustomButton
-                buttonStyles={
-                  photoTaken.pose1 !== '' &&
-                  photoTaken.pose2 !== '' &&
-                  photoTaken.pose3 !== ''
-                    ? 'btn-primary'
-                    : 'btn-primary-color'
-                }
-                textStyles="txt-primary"
-                text="Submit"
-                width="100%"
-                onAction={() => this.handleSubmit()}
-              />
-            </View>
-          </ScrollView>
-        )}
-        {removeItem.status && (
-          <Modal
-            visible={removeItem.status}
-            transparent={true}
-            animationType="slide">
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: '#000000d9',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+                paddingTop: 30,
+              }}
+              contentContainerStyle={{paddingBottom: 30}}>
+              <View style={{marginVertical: 15}}>
+                <CustomTracker stage={1} label="schoolSection" />
+              </View>
+
+              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <SchoolPhotoInitialTexts
+                  width={140}
+                  label1="Please take your"
+                  label2="3 full size photos"
+                  label3="following the different"
+                  label4="poses shown here."
+                />
+                <View style={{marginHorizontal: 20}} />
+                <SchoolPhotoInitial
+                  width={140}
+                  isPoseImg={photoTaken.pose1 !== '' ? false : true}
+                  img={
+                    photoTaken.pose1 !== ''
+                      ? {uri: photoTaken.pose1}
+                      : formData.gender === 'male'
+                      ? boyGroupPose1Icon
+                      : girlGroupPose1Icon
+                  }
+                  actionLabel1="Click Here to "
+                  actionLabel2="Take Photo"
+                  actionLabel={photoTaken.pose1 !== '' ? 'Remove' : ''}
+                  onAction={() =>
+                    this.props.navigation.navigate('CameraSectionScreen', {
+                      fromScreen: 'GroupPoseGuide',
+                      item: 'pose1',
+                      showDemoTip:
+                        photoTaken.pose1 === '' &&
+                        photoTaken.pose2 === '' &&
+                        photoTaken.pose3 === ''
+                          ? true
+                          : false,
+                    })
+                  }
+                  onActionRemove={() => this.handleRemoveTakenPhoto('pose1')}
+                />
+              </View>
+
               <View
                 style={{
-                  width: 260,
-                  height: 200,
-                  backgroundColor: '#fff',
-                  borderRadius: 15,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginTop: 50,
+                }}>
+                <SchoolPhotoInitial
+                  width={140}
+                  isPoseImg={photoTaken.pose2 !== '' ? false : true}
+                  img={
+                    photoTaken.pose2 !== ''
+                      ? {uri: photoTaken.pose2}
+                      : formData.gender === 'male'
+                      ? boyGroupPose2Icon
+                      : girlGroupPose2Icon
+                  }
+                  actionLabel1="Click Here to "
+                  actionLabel2="Take Photo"
+                  actionLabel={photoTaken.pose2 !== '' ? 'Remove' : ''}
+                  onAction={() =>
+                    this.props.navigation.navigate('CameraSectionScreen', {
+                      fromScreen: 'GroupPoseGuide',
+                      item: 'pose2',
+                      showDemoTip:
+                        photoTaken.pose1 === '' &&
+                        photoTaken.pose2 === '' &&
+                        photoTaken.pose3 === ''
+                          ? true
+                          : false,
+                    })
+                  }
+                  onActionRemove={() => this.handleRemoveTakenPhoto('pose2')}
+                />
+                <View style={{marginHorizontal: 20}} />
+                <SchoolPhotoInitial
+                  width={140}
+                  isPoseImg={photoTaken.pose3 !== '' ? false : true}
+                  img={
+                    photoTaken.pose3 !== ''
+                      ? {uri: photoTaken.pose3}
+                      : formData.gender === 'male'
+                      ? boyGroupPose3Icon
+                      : girlGroupPose3Icon
+                  }
+                  actionLabel1="Click Here to "
+                  actionLabel2="Take Photo"
+                  actionLabel={photoTaken.pose3 !== '' ? 'Remove' : ''}
+                  onAction={() =>
+                    this.props.navigation.navigate('CameraSectionScreen', {
+                      fromScreen: 'GroupPoseGuide',
+                      item: 'pose3',
+                      showDemoTip:
+                        photoTaken.pose1 === '' &&
+                        photoTaken.pose2 === '' &&
+                        photoTaken.pose3 === ''
+                          ? true
+                          : false,
+                    })
+                  }
+                  onActionRemove={() => this.handleRemoveTakenPhoto('pose3')}
+                />
+              </View>
+
+              <View style={{marginVertical: 30}}>
+                <CustomButton
+                  buttonStyles={
+                    photoTaken.pose1 !== '' &&
+                    photoTaken.pose2 !== '' &&
+                    photoTaken.pose3 !== ''
+                      ? 'btn-primary'
+                      : 'btn-primary-color'
+                  }
+                  textStyles="txt-primary"
+                  text="Submit"
+                  width="100%"
+                  onAction={() => this.handleSubmit()}
+                />
+              </View>
+            </ScrollView>
+          )}
+          {removeItem.status && (
+            <Modal
+              visible={removeItem.status}
+              transparent={true}
+              animationType="slide">
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: '#000000d9',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={TTComDB18}>Remove Photo?</Text>
-                <View style={{marginVertical: 10}} />
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="Yes"
-                  width="50%"
-                  onAction={() => this.handleRemovePhoto(removeItem.item, true)}
-                />
-                <View style={{marginVertical: 10}} />
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="No"
-                  width="50%"
-                  onAction={() =>
-                    this.handleRemovePhoto(removeItem.item, false)
-                  }
-                />
+                <View
+                  style={{
+                    width: 260,
+                    height: 200,
+                    backgroundColor: '#fff',
+                    borderRadius: 15,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={TTComDB18}>Remove Photo?</Text>
+                  <View style={{marginVertical: 10}} />
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Yes"
+                    width="50%"
+                    onAction={() =>
+                      this.handleRemovePhoto(removeItem.item, true)
+                    }
+                  />
+                  <View style={{marginVertical: 10}} />
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="No"
+                    width="50%"
+                    onAction={() =>
+                      this.handleRemovePhoto(removeItem.item, false)
+                    }
+                  />
+                </View>
               </View>
-            </View>
-          </Modal>
-        )}
-      </View>
+            </Modal>
+          )}
+        </SafeAreaView>
+      </>
     );
   }
 }

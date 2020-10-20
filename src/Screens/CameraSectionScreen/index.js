@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import {RNCamera} from 'react-native-camera';
-import {View, Text, Image, TouchableOpacity, Modal} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Modal,
+  StatusBar,
+} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 // import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
@@ -24,7 +31,7 @@ class CameraSectionScreen extends Component {
     this.state = {
       takingPic: false,
       cameraType: 'back',
-      flashMode: 'on',
+      flashMode: 'off',
       isDemoShow: true,
       overlayNum: 0,
       sectionType: '',
@@ -292,6 +299,7 @@ class CameraSectionScreen extends Component {
     } = this.state;
     return (
       <View style={{flex: 1}}>
+        <StatusBar hidden={true} />
         <View style={{flex: 10}}>
           <RNCamera
             ref={(ref) => {

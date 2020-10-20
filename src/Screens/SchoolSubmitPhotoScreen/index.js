@@ -36,6 +36,7 @@ import {setLoginData} from '../../store/actions';
 import {connect} from 'react-redux';
 
 import {BaseUrlSchool} from '../../utils/constants';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 const {height} = Dimensions.get('screen');
 class SchoolSubmitPhotoScreen extends Component {
   constructor(props) {
@@ -46,6 +47,9 @@ class SchoolSubmitPhotoScreen extends Component {
       schoolList: [],
       form: {
         name: '',
+        address: '',
+        state: '',
+        city: '',
         school: '',
         class: '',
         division: '',
@@ -61,6 +65,8 @@ class SchoolSubmitPhotoScreen extends Component {
         class: false,
         division: false,
         phone: false,
+        address: false,
+        city: false,
       },
       selectedSchoolDetails: '',
       loginData: '',
@@ -200,6 +206,10 @@ class SchoolSubmitPhotoScreen extends Component {
       form.email = data;
     } else if (type === 'phone') {
       form.phone = data;
+    } else if (type === 'city') {
+      form.city = data;
+    } else if (type === 'address') {
+      form.address = data;
     }
     this.setState({form});
   };
@@ -227,7 +237,7 @@ class SchoolSubmitPhotoScreen extends Component {
 
   handleSubmit = () => {
     const {form, validationError} = this.state;
-    const {name, email, division, phone} = form;
+    const {name, email, division, phone, address, city} = form;
 
     if (name === '') {
       validationError.name = true;
@@ -259,6 +269,17 @@ class SchoolSubmitPhotoScreen extends Component {
       validationError.phone = false;
     }
 
+    if (city === '') {
+      validationError.city = true;
+    } else {
+      validationError.city = false;
+    }
+    if (address === '') {
+      validationError.address = true;
+    } else {
+      validationError.address = false;
+    }
+
     this.setState({validationError}, () => {
       console.log('1001', validationError);
       if (
@@ -266,7 +287,9 @@ class SchoolSubmitPhotoScreen extends Component {
         validationError.class &&
         validationError.division &&
         validationError.email &&
-        validationError.phone
+        validationError.phone &&
+        validationError.address &&
+        validationError.city
       ) {
         // if (this.validateEmail(email)) {
         console.log('5000', validationError);
@@ -285,13 +308,17 @@ class SchoolSubmitPhotoScreen extends Component {
           phone: form.phone,
           gender: form.gender,
           schoolId: this.state.selectedSchoolDetails.id,
+          city: form.city,
+          address: form.address,
         };
 
         if (
           !validationError.name &&
           !validationError.class &&
           !validationError.division &&
-          !validationError.phone
+          !validationError.phone &&
+          !validationError.address &&
+          !validationError.city
         ) {
           console.log('PAYload', payload);
           this.addStudent(payload);
@@ -331,220 +358,226 @@ class SchoolSubmitPhotoScreen extends Component {
       validationError,
       isCustomToaster,
     } = this.state;
-
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={LeftArrowIcon}
-            leftIconAction={() => this.props.navigation.goBack()}
-            centerLabel="Add photo"
-          />
-        </View>
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <View style={{flex: 9, paddingHorizontal: 20}}>
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingTop: 100,
-                paddingBottom: Platform.OS == 'ios' ? 100 : 0,
-              }}>
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Student’s Name"
-                  label="Student’s Name"
-                  onchange={(data) => this.handleForm(data, 'name')}
-                  isValidationErr={validationError.name}
-                />
-              </CustomWrapper>
-              <CustomInputRadio
-                label="Student’s Gender"
-                onAction={this.handleRadioButton}
-                value={form.gender}
-              />
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Address"
-                  label="Address"
-                  // onchange={(data) => this.handleForm(data, 'state')}
-                  // isValidationErr={validationError.name}
-                />
-              </CustomWrapper>
-              <CustomWrapper>
-                <CustomWrapper>
-                  <CustomInput
-                    placeholder="State"
-                    label="State"
-                    // onchange={(data) => this.handleForm(data, 'state')}
-                    // isValidationErr={validationError.name}
-                  />
-                </CustomWrapper>
-                <CustomWrapper>
-                  <CustomInput
-                    placeholder="Country"
-                    label="Country"
-                    // onchange={(data) => this.handleForm(data, 'state')}
-                    // isValidationErr={validationError.name}
-                  />
-                </CustomWrapper>
-                <CustomInputDropdown
-                  label="School"
-                  onAction={() => this.handleSchoolList()}
-                  value={form.school}
-                  isValidationErr={validationError.name}
-                />
-
-                {isSchoolList && (
-                  <View
-                    style={{
-                      maxHeight: 200,
-                      borderColor: '#E9E9E9',
-                      borderWidth: 1.5,
-                      borderRadius: 12,
-                    }}>
-                    <ScrollView nestedScrollEnabled={true}>
-                      {schoolList &&
-                        schoolList.length &&
-                        schoolList.map((list, index) => {
-                          return (
-                            <TouchableOpacity
-                              key={index}
-                              onPress={() => this.handleSelectSchool(index)}
-                              style={{
-                                paddingVertical: 15,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <View
-                                style={
-                                  list.isSelected
-                                    ? {
-                                        paddingVertical: 15,
-                                        width: 5,
-                                        backgroundColor: '#FFC000',
-                                      }
-                                    : {}
-                                }
-                              />
-                              <Text
-                                style={[
-                                  list.isSelected ? TTComM16 : TTComL16,
-                                  {paddingLeft: 15},
-                                ]}>
-                                {list.name}
-                              </Text>
-                            </TouchableOpacity>
-                          );
-                        })}
-                    </ScrollView>
-                  </View>
-                )}
-              </CustomWrapper>
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Class"
-                  label="Grade"
-                  onchange={(data) => this.handleForm(data, 'class')}
-                  isValidationErr={validationError.class}
-                />
-              </CustomWrapper>
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Divison"
-                  label="Section"
-                  onchange={(data) => this.handleForm(data, 'division')}
-                  isValidationErr={validationError.division}
-                />
-              </CustomWrapper>
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Email"
-                  label="Email"
-                  keyboardType="email-address"
-                  onchange={(data) => this.handleForm(data, 'email')}
-                  isValidationErr={validationError.email}
-                />
-              </CustomWrapper>
-              <CustomWrapper>
-                <CustomInput
-                  placeholder="Phone Number"
-                  label="Phone Number"
-                  type="phone"
-                  keyboardType="phone-pad"
-                  onchange={(data) => this.handleForm(data, 'phone')}
-                  isValidationErr={validationError.phone}
-                />
-              </CustomWrapper>
-
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 20,
-                  marginBottom: 150,
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 80}}>
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingTop: 100,
+                  paddingBottom: Platform.OS == 'ios' ? 100 : 0,
                 }}>
-                <CustomButton
-                  buttonStyles="btn-secondary-black"
-                  textStyles="txt-secondary"
-                  text="Next"
-                  onAction={() => this.handleSubmit()}
-                  width="100%"
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Student’s Name"
+                    label="Student’s Name"
+                    onchange={(data) => this.handleForm(data, 'name')}
+                    isValidationErr={validationError.name}
+                  />
+                </CustomWrapper>
+                <CustomInputRadio
+                  label="Student’s Gender"
+                  onAction={this.handleRadioButton}
+                  value={form.gender}
                 />
-              </View>
-            </ScrollView>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Address"
+                    label="Address"
+                    onchange={(data) => this.handleForm(data, 'address')}
+                    isValidationErr={validationError.name}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomWrapper>
+                    <CustomInput
+                      placeholder="State"
+                      label="State"
+                      onchange={(data) => this.handleForm(data, 'city')}
+                      isValidationErr={validationError.name}
+                    />
+                  </CustomWrapper>
+                  <CustomWrapper>
+                    <CustomInput
+                      placeholder="Country"
+                      label="Country"
+                      onchange={(data) => this.handleForm(data, 'Country')}
+                      isValidationErr={validationError.name}
+                    />
+                  </CustomWrapper>
+                  <CustomInputDropdown
+                    label="School"
+                    onAction={() => this.handleSchoolList()}
+                    value={form.school}
+                    isValidationErr={validationError.name}
+                  />
+
+                  {isSchoolList && (
+                    <View
+                      style={{
+                        maxHeight: 200,
+                        borderColor: '#E9E9E9',
+                        borderWidth: 1.5,
+                        borderRadius: 12,
+                      }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {schoolList &&
+                          schoolList.length &&
+                          schoolList.map((list, index) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => this.handleSelectSchool(index)}
+                                style={{
+                                  paddingVertical: 15,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <View
+                                  style={
+                                    list.isSelected
+                                      ? {
+                                          paddingVertical: 15,
+                                          width: 5,
+                                          backgroundColor: '#FFC000',
+                                        }
+                                      : {}
+                                  }
+                                />
+                                <Text
+                                  style={[
+                                    list.isSelected ? TTComM16 : TTComL16,
+                                    {paddingLeft: 15},
+                                  ]}>
+                                  {list.name}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                      </ScrollView>
+                    </View>
+                  )}
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Class"
+                    label="Grade"
+                    onchange={(data) => this.handleForm(data, 'class')}
+                    isValidationErr={validationError.class}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Divison"
+                    label="Section"
+                    onchange={(data) => this.handleForm(data, 'division')}
+                    isValidationErr={validationError.division}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Email"
+                    label="Email"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleForm(data, 'email')}
+                    isValidationErr={validationError.email}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Phone Number"
+                    label="Phone Number"
+                    type="phone"
+                    keyboardType="phone-pad"
+                    onchange={(data) => this.handleForm(data, 'phone')}
+                    isValidationErr={validationError.phone}
+                  />
+                </CustomWrapper>
+
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 20,
+                    marginBottom: 150,
+                  }}>
+                  <CustomButton
+                    buttonStyles="btn-secondary-black"
+                    textStyles="txt-secondary"
+                    text="Next"
+                    onAction={() => this.handleSubmit()}
+                    width="100%"
+                  />
+                </View>
+              </ScrollView>
+            </View>
+          )}
+          {
+            // isSchoolList &&
+            // <Modal
+            //     animationType   = "slide"
+            //     transparent     = {true}
+            //     visible         = {isSchoolList} >
+            //         <View style={{flex : 1, justifyContent : 'center', alignItems : 'center', backgroundColor : '#00000038'}}>
+            //             <View style={{backgroundColor : '#fff', borderRadius : 10, maxHeight : Dimensions.get('screen').height*0.8, width : '80%', paddingVertical : 15 }}>
+            //                 {
+            //                     schoolList&&schoolList.length&&schoolList.map((item, index)=>{
+            //                         return(
+            //                             <View
+            //                                 key = {index}
+            //                                 style={{
+            //                                     width : '70%',
+            //                                     paddingVertical : 10,
+            //                                     flexDirection : 'row',
+            //                                 }}>
+            //                                     {
+            //                                         item.isSelected&&item.isSelected?
+            //                                             <View style={{width : 5, height : '100%', backgroundColor : '#FFC000', marginRight : 5}} key={index} />
+            //                                             : <View style={{width : 5, height : '100%', marginRight : 5}} key={index} />
+            //                                     }
+            //                                     <TouchableOpacity
+            //                                         onPress = {()=>this.handleSelectSchool(index)}
+            //                                         style = {{paddingVertical : 5,paddingHorizontal : 10}}>
+            //                                         <Text style={TTComM16}>{item.name}</Text>
+            //                                     </TouchableOpacity>
+            //                                 </View>
+            //                             )
+            //                         })
+            //                 }
+            //             </View>
+            //         </View>
+            // </Modal>
+          }
+          {isCustomToaster !== '' && (
+            <CustomToaster
+              position="flex-end"
+              onend={() => this.setState({isCustomToaster: ''})}
+              isCustomToaster={true}
+              message={isCustomToaster}
+            />
+          )}
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              position: 'absolute',
+            }}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              leftIconAction={() => this.props.navigation.goBack()}
+              centerLabel="Add photo"
+            />
           </View>
-        )}
-        {
-          // isSchoolList &&
-          // <Modal
-          //     animationType   = "slide"
-          //     transparent     = {true}
-          //     visible         = {isSchoolList} >
-          //         <View style={{flex : 1, justifyContent : 'center', alignItems : 'center', backgroundColor : '#00000038'}}>
-          //             <View style={{backgroundColor : '#fff', borderRadius : 10, maxHeight : Dimensions.get('screen').height*0.8, width : '80%', paddingVertical : 15 }}>
-          //                 {
-          //                     schoolList&&schoolList.length&&schoolList.map((item, index)=>{
-          //                         return(
-          //                             <View
-          //                                 key = {index}
-          //                                 style={{
-          //                                     width : '70%',
-          //                                     paddingVertical : 10,
-          //                                     flexDirection : 'row',
-          //                                 }}>
-          //                                     {
-          //                                         item.isSelected&&item.isSelected?
-          //                                             <View style={{width : 5, height : '100%', backgroundColor : '#FFC000', marginRight : 5}} key={index} />
-          //                                             : <View style={{width : 5, height : '100%', marginRight : 5}} key={index} />
-          //                                     }
-          //                                     <TouchableOpacity
-          //                                         onPress = {()=>this.handleSelectSchool(index)}
-          //                                         style = {{paddingVertical : 5,paddingHorizontal : 10}}>
-          //                                         <Text style={TTComM16}>{item.name}</Text>
-          //                                     </TouchableOpacity>
-          //                                 </View>
-          //                             )
-          //                         })
-          //                 }
-          //             </View>
-          //         </View>
-          // </Modal>
-        }
-        {isCustomToaster !== '' && (
-          <CustomToaster
-            position="flex-end"
-            onend={() => this.setState({isCustomToaster: ''})}
-            isCustomToaster={true}
-            message={isCustomToaster}
-          />
-        )}
-      </SafeAreaView>
+        </SafeAreaView>
+      </>
     );
   }
 }

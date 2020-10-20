@@ -51,7 +51,12 @@ class TabNavButton extends React.Component {
           {active === '1' && <View style={activeStyle} />}
           <TouchableOpacity
             onPress={() => nav.navigation.navigate('DashboardScreen')}
-            style={{justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 8,
+              // backgroundColor: 'red',
+            }}>
             <Image source={homeIcon} style={{marginTop: 5}} />
             <Text style={[TTComDB12, {color: '#fff'}]}>Home</Text>
           </TouchableOpacity>
@@ -61,7 +66,12 @@ class TabNavButton extends React.Component {
           {active === '2' && <View style={activeStyle} />}
           <TouchableOpacity
             onPress={() => nav.navigation.navigate('ShoppingListScreen')}
-            style={{justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 8,
+              // backgroundColor: 'red',
+            }}>
             <Image source={shopingIcon} style={{marginTop: 5}} />
             <Text style={[TTComDB12, {color: '#fff'}]}>Shop</Text>
           </TouchableOpacity>
@@ -71,7 +81,12 @@ class TabNavButton extends React.Component {
           {active === '3' && <View style={activeStyle} />}
           <TouchableOpacity
             onPress={() => nav.navigation.navigate('CartScreen')}
-            style={{justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 8,
+              // backgroundColor: 'red',
+            }}>
             {cartCount > 0 && (
               <View
                 style={[
@@ -91,7 +106,12 @@ class TabNavButton extends React.Component {
           {active === '4' && <View style={activeStyle} />}
           <TouchableOpacity
             onPress={() => nav.navigation.navigate('ProfileScreen')}
-            style={{justifyContent: 'center', alignItems: 'center'}}>
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              // backgroundColor: 'red',
+              paddingHorizontal: 8,
+            }}>
             <Image source={profileIcon} style={{marginTop: 5}} />
             <Text style={[TTComDB12, {color: '#fff'}]}>Profile</Text>
           </TouchableOpacity>

@@ -65,8 +65,8 @@ const CommonStyles = StyleSheet.create({
   },
   // commont font family with size
   TTComDB28: {
-    fontFamily: 'TTCommons-Medium',
-    // Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
+    fontFamily:
+      Platform.OS === 'android' ? 'TTCommonsDemiBold' : 'TTCommons-DemiBold',
     fontSize: RFPercentage(28) / 7,
     color: '#000',
   },

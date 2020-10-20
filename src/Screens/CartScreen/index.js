@@ -8,6 +8,7 @@ import {
   ScrollView,
   StatusBar,
   Modal,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
@@ -29,6 +30,7 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage';
 import {QuantityList} from '../ItemDetailsScreen/components';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class CartScreen extends Component {
   state = {
@@ -39,7 +41,8 @@ class CartScreen extends Component {
     productQty: 0,
     productQtyIndex: 0,
     cartListTotal: [],
-    Id: '',
+    Id: '1wf23gv3erty3jt1234he',
+    isSearchData: false,
   };
 
   componentDidMount() {
@@ -107,6 +110,17 @@ class CartScreen extends Component {
       let userId = JSON.parse(loginDetails);
       this.setState({Id: userId.id});
       console.warn(userId.id);
+    } else {
+      this.setState({Id: ''});
+    }
+  };
+
+  filterData = (data) => {
+    // console.warn(data.id);
+
+    if (data) {
+      let id = data.id;
+      this.props.navigation.navigate('ItemDetailsScreen', {productId: id});
     }
   };
   render() {
@@ -120,244 +134,272 @@ class CartScreen extends Component {
       productQty,
       productQtyIndex,
       Id,
+      isSearchData,
     } = this.state;
     const {cartList, isFocused} = this.props;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-          <CustomHeaderPrim
-            leftIcon={logoSmall}
-            placeholder="What are you looking for?"
-            searchBox
-            handleSearchBox={() => console.log('search box')}
-          />
-        </View>
+          <View
+            style={{
+              flex: 9.5,
+              paddingHorizontal: 20,
+              backgroundColor: '#fff',
+              paddingTop: 100,
+            }}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={[TTComDB28, {marginTop: 100}]}>Your Cart</Text>
 
-        <View
-          style={{flex: 9.5, paddingHorizontal: 20, backgroundColor: '#fff'}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={[TTComDB28, {marginTop: 100}]}>Your Cart.</Text>
-
-            {cartList && cartList.length ? (
-              cartList.map((item, index) => {
-                return (
-                  <CatItems
-                    key={index}
-                    index={index}
-                    data={item.data}
-                    count={item.count ? item.count : 1}
-                    handleCancelModal={this.handleCancelModal}
-                    handleQuantity={this.handleQuantity}
-                    // changeCount={() => this.handleChangeCount()}
-                  />
-                );
-              })
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 150,
-                }}>
-                <Text style={CommonStyles.TTComDB14}>Your Cart is Empty</Text>
-              </View>
-            )}
-
-            {cartList && cartList.length > 0 && (
-              <View
-                style={{
-                  marginVertical: 15,
-                  flexDirection: 'row',
-                  alignItems: 'flex-end',
-                }}>
-                <View style={{width: '50%', paddingBottom: 5}}>
-                  <TouchableOpacity
-                    style={{
-                      minHeight: 10,
-                      borderRadius: 26,
-                      borderWidth: 1.5,
-                      borderColor: '#000',
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      width: '80%',
-                    }}>
-                    <Text style={[TTComDB18, {textAlign: 'center'}]}>
-                      Apply voucher
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
+              {cartList && cartList.length ? (
+                cartList.map((item, index) => {
+                  return (
+                    <CatItems
+                      key={index}
+                      index={index}
+                      data={item.data}
+                      count={item.count ? item.count : 1}
+                      handleCancelModal={this.handleCancelModal}
+                      handleQuantity={this.handleQuantity}
+                      // changeCount={() => this.handleChangeCount()}
+                    />
+                  );
+                })
+              ) : (
                 <View
                   style={{
-                    width: '50%',
-                    // paddingLeft: 20,
-                  }}>
-                  <Text style={TTComM18}>Total</Text>
-                  <Text style={TTComDB28}>{totalAmount} AED</Text>
-                </View>
-              </View>
-            )}
-
-            {cartList && cartList.length > 0 && (
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginVertical: 15,
-                  marginBottom: 80,
-                }}>
-                <CustomButton
-                  buttonStyles="btn-primary"
-                  textStyles="txt-primary"
-                  text="Checkout"
-                  width="100%"
-                  onAction={() =>
-                    this.props.navigation.navigate(
-                      Id !== ''
-                        ? 'CheckoutDetailsForm'
-                        : 'CheckoutNewUserScreen',
-                    )
-                  }
-                />
-              </View>
-            )}
-          </ScrollView>
-          <View style={[tabNavContainer, {width: '100%'}]}>
-            <TabNavButton
-              nav={this.props}
-              active="3"
-              cartNotification={cartList}
-            />
-          </View>
-          {isCancelItemModal && (
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isCancelItemModal}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#00000038',
-                }}>
-                <View
-                  style={{
-                    width: 260,
-                    height: 250,
-                    backgroundColor: '#fff',
-                    borderRadius: 15,
+                    flex: 1,
+                    justifyContent: 'center',
                     alignItems: 'center',
+                    marginTop: 150,
                   }}>
-                  <Text
-                    style={[TTComDB18, {textAlign: 'center', paddingTop: 10}]}>
-                    Remove
-                  </Text>
-                  <Text
-                    style={[
-                      TTComDB18,
-                      {
-                        textAlign: 'center',
-                        paddingVertical: 2,
-                        paddingBottom: 10,
-                      },
-                    ]}>
-                    {cartList &&
-                      cartList.length &&
-                      cartList[selectedIndexForDelete].data.title}
-                  </Text>
-
-                  <View
-                    style={{
-                      width: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '65%',
-                    }}>
-                    <CustomButton
-                      buttonStyles="btn-primary"
-                      textStyles="txt-primary"
-                      text="Yes"
-                      width="80%"
-                      onAction={() => this.handleRemoveItemFromCart()}
-                    />
-                    <View style={{marginVertical: 5}} />
-                    <CustomButton
-                      buttonStyles="btn-secondary-black"
-                      textStyles="txt-secondary"
-                      text="No"
-                      width="80%"
-                      onAction={() => this.setState({isCancelItemModal: false})}
-                    />
-                  </View>
+                  <Text style={CommonStyles.TTComDB14}>Your Cart is Empty</Text>
                 </View>
-              </View>
-            </Modal>
-          )}
-          {isQuantityModal && (
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isQuantityModal}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#292f332e',
-                }}>
+              )}
+
+              {cartList && cartList.length > 0 && (
                 <View
                   style={{
-                    width: '50%',
-                    backgroundColor: '#fff',
-                    borderRadius: 15,
+                    marginVertical: 15,
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
                   }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      padding: 10,
-                    }}>
-                    <Text style={[TTComDB18, {paddingVertical: 5}]}>
-                      Select Quantity
-                    </Text>
+                  <View style={{width: '50%', paddingBottom: 5}}>
                     <TouchableOpacity
-                      style={{paddingLeft: 10, padding: 10}}
-                      onPress={() => this.setState({isQuantityModal: false})}>
-                      <Image source={closeIcon} style={{tintColor: '#000'}} />
+                      style={{
+                        minHeight: 10,
+                        borderRadius: 26,
+                        borderWidth: 1.5,
+                        borderColor: '#000',
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        width: '80%',
+                      }}>
+                      <Text style={[TTComDB18, {textAlign: 'center'}]}>
+                        Apply voucher
+                      </Text>
                     </TouchableOpacity>
                   </View>
 
-                  <QuantityList
-                    count={1}
-                    isSelect={cartList[productQtyIndex].count === 1}
-                    handleProductCount={() => this.handleProductCount(1)}
-                  />
-                  <QuantityList
-                    count={2}
-                    isSelect={cartList[productQtyIndex].count === 2}
-                    handleProductCount={() => this.handleProductCount(2)}
-                  />
-                  <QuantityList
-                    count={3}
-                    isSelect={cartList[productQtyIndex].count === 3}
-                    handleProductCount={() => this.handleProductCount(3)}
-                  />
-                  <QuantityList
-                    count={4}
-                    isSelect={cartList[productQtyIndex].count === 4}
-                    handleProductCount={() => this.handleProductCount(4)}
+                  <View
+                    style={{
+                      width: '50%',
+                      // paddingLeft: 20,
+                    }}>
+                    <Text style={TTComM18}>Total</Text>
+                    <Text style={TTComDB28}>{totalAmount} AED</Text>
+                  </View>
+                </View>
+              )}
+
+              {cartList && cartList.length > 0 && (
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginVertical: 15,
+                    marginBottom: 80,
+                  }}>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Checkout"
+                    width="100%"
+                    onAction={() =>
+                      this.props.navigation.navigate(
+                        Id !== '' && Id !== '1wf23gv3erty3jt1234he'
+                          ? 'CheckoutDetailsForm'
+                          : 'CheckoutNewUserScreen',
+                      )
+                    }
                   />
                 </View>
+              )}
+            </ScrollView>
+            {!isSearchData && (
+              <View style={[tabNavContainer, {width: '100%'}]}>
+                <TabNavButton
+                  nav={this.props}
+                  active="3"
+                  cartNotification={cartList}
+                />
               </View>
-            </Modal>
-          )}
-        </View>
-      </SafeAreaView>
+            )}
+            {isCancelItemModal && (
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isCancelItemModal}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#00000038',
+                  }}>
+                  <View
+                    style={{
+                      width: 260,
+                      height: 250,
+                      backgroundColor: '#fff',
+                      borderRadius: 15,
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={[
+                        TTComDB18,
+                        {textAlign: 'center', paddingTop: 10},
+                      ]}>
+                      Remove
+                    </Text>
+                    <Text
+                      style={[
+                        TTComDB18,
+                        {
+                          textAlign: 'center',
+                          paddingVertical: 2,
+                          paddingBottom: 10,
+                        },
+                      ]}>
+                      {cartList &&
+                        cartList.length &&
+                        cartList[selectedIndexForDelete].data.title}
+                    </Text>
+
+                    <View
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '65%',
+                      }}>
+                      <CustomButton
+                        buttonStyles="btn-primary"
+                        textStyles="txt-primary"
+                        text="Yes"
+                        width="80%"
+                        onAction={() => this.handleRemoveItemFromCart()}
+                      />
+                      <View style={{marginVertical: 5}} />
+                      <CustomButton
+                        buttonStyles="btn-secondary-black"
+                        textStyles="txt-secondary"
+                        text="No"
+                        width="80%"
+                        onAction={() =>
+                          this.setState({isCancelItemModal: false})
+                        }
+                      />
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+            )}
+            {isQuantityModal && (
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isQuantityModal}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#292f332e',
+                  }}>
+                  <View
+                    style={{
+                      width: '50%',
+                      backgroundColor: '#fff',
+                      borderRadius: 15,
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        padding: 10,
+                      }}>
+                      <Text style={[TTComDB18, {paddingVertical: 5}]}>
+                        Select Quantity
+                      </Text>
+                      <TouchableOpacity
+                        style={{paddingLeft: 10, padding: 10}}
+                        onPress={() => this.setState({isQuantityModal: false})}>
+                        <Image source={closeIcon} style={{tintColor: '#000'}} />
+                      </TouchableOpacity>
+                    </View>
+
+                    <QuantityList
+                      count={1}
+                      isSelect={cartList[productQtyIndex].count === 1}
+                      handleProductCount={() => this.handleProductCount(1)}
+                    />
+                    <QuantityList
+                      count={2}
+                      isSelect={cartList[productQtyIndex].count === 2}
+                      handleProductCount={() => this.handleProductCount(2)}
+                    />
+                    <QuantityList
+                      count={3}
+                      isSelect={cartList[productQtyIndex].count === 3}
+                      handleProductCount={() => this.handleProductCount(3)}
+                    />
+                    <QuantityList
+                      count={4}
+                      isSelect={cartList[productQtyIndex].count === 4}
+                      handleProductCount={() => this.handleProductCount(4)}
+                    />
+                  </View>
+                </View>
+              </Modal>
+            )}
+          </View>
+          <View
+            style={[
+              {
+                zIndex: 1,
+                position: 'absolute',
+                backgroundColor: 'transparent',
+                width: '100%',
+              },
+              isSearchData && {height: '100%'},
+            ]}>
+            <CustomHeaderPrim
+              leftIcon={logoSmall}
+              placeholder="What are you looking for?"
+              searchBox
+              handleSearchBox={() => console.log('search box')}
+              filterData={this.filterData}
+              onSearchEvent={(isShow) => {
+                this.setState({isSearchData: isShow});
+              }}
+            />
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

@@ -28,6 +28,7 @@ import {
 
 import {Container} from '../RegisterScreen/components';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class ContactUsScreen extends Component {
   state = {
@@ -123,81 +124,93 @@ class ContactUsScreen extends Component {
     const {passwordConfirm, isSelected, isCustomToaster} = this.state;
     const {TTComM16} = CommonStyles;
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar barStyle="dark-content" backgroundColor="#fff" /> */}
 
-        {/* Header section  */}
-        <View style={{flex: 0.5, zIndex: 4}}>
-          <CustomHeader
-            leftIcon={closeIcon}
-            rightIcon={logoSmall}
-            leftIconAction={() => this.props.navigation.goBack()}
-          />
-        </View>
-        {/* Header section End */}
+          {/* Header section  */}
 
-        {/* Form Section */}
-        <View style={{flex: 10, paddingHorizontal: 20}}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{marginTop: 130}}>
+          {/* Header section End */}
+
+          {/* Form Section */}
+          <View style={{height: 15}} />
+          <View style={{flex: 10, paddingHorizontal: 20}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{marginTop: 130}}>
+                <Container>
+                  <CustomInput
+                    placeholder="Full Name"
+                    label="Full Name"
+                    onchange={(data) => this.handleFormDatas(data, 'fullName')}
+                  />
+                </Container>
+              </View>
+
               <Container>
                 <CustomInput
-                  placeholder="Full Name"
-                  label="Full Name"
-                  onchange={(data) => this.handleFormDatas(data, 'fullName')}
+                  placeholder="Email"
+                  label="Email"
+                  onchange={(data) => this.handleFormDatas(data, 'email')}
+                  keyboardType="email-address"
                 />
               </Container>
-            </View>
 
-            <Container>
-              <CustomInput
-                placeholder="Email"
-                label="Email"
-                onchange={(data) => this.handleFormDatas(data, 'email')}
-                keyboardType="email-address"
-              />
-            </Container>
+              <Container>
+                <CustomInput
+                  placeholder="Mobile Number"
+                  label="Mobile Number"
+                  onchange={(data) =>
+                    this.handleFormDatas(data, 'mobileNumber')
+                  }
+                  type="phone"
+                  keyboardType="phone-pad"
+                />
+              </Container>
 
-            <Container>
-              <CustomInput
-                placeholder="Mobile Number"
-                label="Mobile Number"
-                onchange={(data) => this.handleFormDatas(data, 'mobileNumber')}
-                type="phone"
-                keyboardType="phone-pad"
-              />
-            </Container>
+              <Container>
+                <CustomInput
+                  placeholder="Enter Description"
+                  onchange={(data) => this.handleFormDatas(data, 'Description')}
+                  keyboardType="email-address"
+                  height={200}
+                />
+              </Container>
 
-            <Container>
-              <CustomInput
-                placeholder="Enter Description"
-                onchange={(data) => this.handleFormDatas(data, 'Description')}
-                keyboardType="email-address"
-                height={200}
-              />
-            </Container>
-
-            <Container>
-              <CustomButton
-                buttonStyles="btn-primary"
-                textStyles="txt-primary"
-                text="Submit"
-                alignCenter
-                onAction={() => this.submitRegister()} //this.props.navigation.navigate('LoginScreen')} //
-                width="100%"
-              />
-            </Container>
-          </ScrollView>
-        </View>
-        {isCustomToaster !== '' && (
-          <CustomToaster
-            position="flex-end"
-            onend={() => this.setState({isCustomToaster: ''})}
-            isCustomToaster={true}
-            message={isCustomToaster}
-          />
-        )}
-      </SafeAreaView>
+              <Container>
+                <CustomButton
+                  buttonStyles="btn-primary"
+                  textStyles="txt-primary"
+                  text="Submit"
+                  alignCenter
+                  onAction={() => this.submitRegister()} //this.props.navigation.navigate('LoginScreen')} //
+                  width="100%"
+                />
+              </Container>
+            </ScrollView>
+          </View>
+          {isCustomToaster !== '' && (
+            <CustomToaster
+              position="flex-end"
+              onend={() => this.setState({isCustomToaster: ''})}
+              isCustomToaster={true}
+              message={isCustomToaster}
+            />
+          )}
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              width: '100%',
+            }}>
+            <CustomHeader
+              leftIcon={closeIcon}
+              rightIcon={logoSmall}
+              leftIconAction={() => this.props.navigation.goBack()}
+            />
+          </View>
+        </SafeAreaView>
+      </>
     );
   }
 }

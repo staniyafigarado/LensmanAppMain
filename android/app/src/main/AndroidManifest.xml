@@ -14,16 +14,16 @@
 
     <application
       android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher_foreground"
-      android:roundIcon="@mipmap/ic_launcher_foreground"
+      android:label="Lensman Express"
+      android:icon="@mipmap/lensman_launcher"
+      android:roundIcon="@mipmap/lensman_launcher"
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="true" 
       android:requestLegacyExternalStorage="true">
       <activity
         android:name=".MainActivity"
-        android:label="@string/app_name"
+        android:label="Lensman Express"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize">
