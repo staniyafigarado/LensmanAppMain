@@ -207,7 +207,7 @@ class CameraSectionScreen extends Component {
       },
     };
     ImagePicker.launchImageLibrary(options, (response) => {
-      console.log('Response = ', response);
+      console.log('Response = ', response.data);
 
       // check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE)
       //   .then((result) => {

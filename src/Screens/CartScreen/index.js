@@ -98,7 +98,7 @@ class CartScreen extends Component {
     console.log('Count, Index', count);
     let cartList = this.props.cartList; //[this.state.productQtyIndex]
     cartList[this.state.productQtyIndex].count = count;
-    console.log('100', cartList);
+    console.warn('100', this.props.cartList);
     this.props.updateCart(cartList);
     this.setState({isQuantityModal: false});
     this.calculateTotalAmount();
@@ -137,7 +137,10 @@ class CartScreen extends Component {
       isSearchData,
     } = this.state;
     const {cartList, isFocused} = this.props;
-
+    console.warn(
+      '100',
+      cartList.map((item) => item.data.variants[0].price * item.count),
+    );
     return (
       <>
         <CustomStatusBar />
@@ -391,7 +394,9 @@ class CartScreen extends Component {
               leftIcon={logoSmall}
               placeholder="What are you looking for?"
               searchBox
-              handleSearchBox={() => console.log('search box')}
+              leftIconAction={() =>
+                this.props.navigation.navigate('DashboardScreen')
+              }
               filterData={this.filterData}
               onSearchEvent={(isShow) => {
                 this.setState({isSearchData: isShow});

@@ -24,16 +24,24 @@ import {
   radioButtonFill,
   appleBlackIcon,
 } from '../../SharedComponents/CommonIcons';
-import {connect} from 'react-redux';
-import {setCartItem, removeFromCart, updateCart} from '../../store/actions';
+
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
+import {TextInput} from 'react-native-gesture-handler';
 
-class CheckoutPaymentScreen extends Component {
+const CardIcon1 = require('../../../assests/CardLogo/icon1.png');
+const CardIcon2 = require('../../../assests/CardLogo/icon2.png');
+const CardIcon3 = require('../../../assests/CardLogo/icon3.png');
+class CheckoutPaymentScreen1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
+      CardName: '',
+      CardNumber: '',
+      CardMonth: '',
+      CardYear: '',
+      CardCVV: '',
     };
   }
 
@@ -53,30 +61,17 @@ class CheckoutPaymentScreen extends Component {
     const {TTComDB16, TTComL16, TTComDB28, TTComM14, TTComM18} = CommonStyles;
 
     const {isLoading, options, showStates} = this.state;
-    console.warn(
-      '100',
-      this.props.cartList.map(
-        (item) => item.data.variants[0].price * item.count,
-      ),
-    );
+
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
           {/* <StatusBar backgroundColor = "#fff" barStyle = "dark-content" /> */}
-
-          <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
-            <CustomHeaderPrim
-              leftIcon={LeftArrowIcon}
-              leftIconAction={() => this.props.navigation.goBack()}
-              centerLabel="Checkout"
-            />
-          </View>
 
           {isLoading ? (
             <Loader />
           ) : (
-            <View style={{flex: 9, paddingHorizontal: 20}}>
+            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 80}}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{marginTop: 100}} />
 
@@ -140,35 +135,96 @@ class CheckoutPaymentScreen extends Component {
                 </View>
 
                 <View style={{marginBottom: 30}}>
+                  <View
+                    style={{
+                      justifyContent: 'space-evenly',
+                      flexDirection: 'row',
+                      backgroundColor: 'white',
+                      shadowColor: 'white',
+                      //   shadowOffset: {height: 0, width: 0},
+                      elevation: 5,
+                      shadowOpacity: 0,
+                      borderRadius: 10,
+                      height: 70,
+                      alignItems: 'center',
+                      shadowRadius: 5,
+                      marginHorizontal: 3,
+                    }}>
+                    <Image
+                      source={CardIcon2}
+                      resizeMode="contain"
+                      style={{height: 35, width: 50, opacity: 0.2}}
+                    />
+                    <Image
+                      resizeMode="contain"
+                      source={CardIcon1}
+                      style={{height: 35, width: 50}}
+                    />
+                    <Image
+                      source={CardIcon3}
+                      style={{height: 35, width: 120, opacity: 0.2}}
+                    />
+                  </View>
+                  <View style={{marginTop: 30}} />
+                  <CustomTextInput
+                    placeholder="Name"
+                    width="80%"
+                    onPress={(CardName) => {
+                      this.setState({CardName});
+                    }}
+                  />
+                  <View style={{marginTop: 30}} />
+                  <CustomTextInput
+                    value={this.state.CardNumber}
+                    placeholder="Card Number"
+                    width="80%"
+                    imageSource={appleBlackIcon}
+                    onPress={(text) => {
+                      let formattedText = text.split(' ').join('');
+                      if (formattedText.length > 0) {
+                        formattedText = formattedText
+                          .match(new RegExp('.{1,4}', 'g'))
+                          .join(' ');
+                        this.setState({CardNumber: formattedText});
+                      } else {
+                        this.setState({CardNumber: ''});
+                      }
+                    }}
+                  />
+                  <View style={{marginTop: 30}} />
+                  <View
+                    style={{
+                      justifyContent: 'space-between',
+                      flex: 1,
+                      flexDirection: 'row',
+                    }}>
+                    <CustomTextInput
+                      placeholder="MM"
+                      flex={1 / 4}
+                      onPress={(CardMonth) => {
+                        this.setState({CardMonth});
+                      }}
+                    />
+                    <CustomTextInput
+                      placeholder="YY"
+                      flex={1 / 3}
+                      onPress={(CardYear) => {
+                        this.setState({CardYear});
+                      }}
+                    />
+                    <CustomTextInput
+                      placeholder="CVV"
+                      flex={1 / 3}
+                      onPress={(CardCVV) => {
+                        this.setState({CardCVV});
+                      }}
+                    />
+                  </View>
+                  <View style={{marginTop: 30}} />
                   <CustomButton
                     buttonStyles="btn-primary"
                     textStyles="txt-primary"
-                    text="Pay by Credit Card"
-                    width="100%"
-                    onAction={() =>
-                      this.props.navigation.navigate('CheckoutPaymentScreen1')
-                    }
-                  />
-
-                  <View style={{marginVertical: 10}} />
-
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: '#000',
-                      borderRadius: 26,
-                      paddingVertical: 10,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image source={appleBlackIcon} />
-                  </TouchableOpacity>
-
-                  <View style={{marginVertical: 10}} />
-
-                  <CustomButton
-                    buttonStyles="btn-secondary-black"
-                    textStyles="txt-secondary"
-                    text="Cash on delivery"
+                    text="Pay"
                     width="100%"
                     onAction={() =>
                       this.props.navigation.navigate('CheckoutHistoryScreen')
@@ -178,26 +234,25 @@ class CheckoutPaymentScreen extends Component {
               </ScrollView>
             </View>
           )}
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'transparent',
+            }}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              leftIconAction={() => this.props.navigation.goBack()}
+              centerLabel="Checkout"
+            />
+          </View>
         </SafeAreaView>
       </>
     );
   }
 }
-const mapStateToProps = (state) => {
-  return {
-    cartList: state.Layout.cartList,
-  };
-};
-const mapDispatchToProps = {
-  setCartItem,
-  removeFromCart,
-  updateCart,
-};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CheckoutPaymentScreen);
+export default CheckoutPaymentScreen1;
 
 const CustomSelector = (props) => {
   const {text, days, price, option, toggleOption} = props;
@@ -252,6 +307,29 @@ const CustomInputDropdown = (props) => {
           style={{position: 'absolute', top: '40%', right: 20}}
         />
       </TouchableOpacity>
+    </View>
+  );
+};
+const CustomTextInput = (props) => {
+  const {onPress, placeholder, width, flex, value} = props;
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingLeft: 6,
+        justifyContent: 'space-between',
+        borderRadius: 10,
+        alignItems: 'center',
+        flex: flex,
+      }}>
+      <TextInput
+        value={value}
+        placeholder={placeholder && placeholder}
+        style={{height: 40, width: '100%'}}
+        onChangeText={(text) => onPress && onPress(text)}
+      />
     </View>
   );
 };

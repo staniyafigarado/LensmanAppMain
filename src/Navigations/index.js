@@ -34,6 +34,7 @@ import {
   CheckoutNewUserScreen,
   CheckoutDetailsForm,
   CheckoutPaymentScreen,
+  CheckoutPaymentScreen1,
   CheckoutHistoryScreen,
   OrderHistory,
   SchoolIntructionScreen,
@@ -189,6 +190,11 @@ const WrapperNavigations = (props) => {
         <Stack.Screen
           name="CheckoutPaymentScreen"
           component={CheckoutPaymentScreen}
+          options={{headerShown: false, animationEnabled: false}}
+        />
+        <Stack.Screen
+          name="CheckoutPaymentScreen1"
+          component={CheckoutPaymentScreen1}
           options={{headerShown: false, animationEnabled: false}}
         />
         <Stack.Screen

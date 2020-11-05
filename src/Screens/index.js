@@ -19,6 +19,7 @@ import CustomGalleryScreen from './CustomGalleryScreen';
 import CheckoutNewUserScreen from './CheckoutNewUserScreen';
 import CheckoutDetailsForm from './CheckoutDetailsForm';
 import CheckoutPaymentScreen from './CheckoutPaymentScreen';
+import CheckoutPaymentScreen1 from './CheckoutPaymentScreen1';
 import CheckoutHistoryScreen from './CheckoutHistoryScreen';
 import OrderHistory from './OrderHistory';
 import SchoolIntructionScreen from './SchoolIntructionScreen';
@@ -63,6 +64,7 @@ export {
   CheckoutNewUserScreen,
   CheckoutDetailsForm,
   CheckoutPaymentScreen,
+  CheckoutPaymentScreen1,
   CheckoutHistoryScreen,
   OrderHistory,
   SchoolIntructionScreen,

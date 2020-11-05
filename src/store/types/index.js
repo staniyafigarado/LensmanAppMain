@@ -53,3 +53,7 @@ export const LOGIN = {
 export const STATUSBAR = {
   STATUSBAR_HIDE: 'HIDE_STATUSBAR',
 };
+
+// export const ORDER_DETAILS = {
+//   STATUSBAR_HIDE: 'HIDE_STATUSBAR',
+// };

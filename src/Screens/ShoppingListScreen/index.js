@@ -497,6 +497,9 @@ class ShoppingListScreen extends Component {
             ]}>
             <CustomHeaderPrim
               leftIcon={logoSmall}
+              leftIconAction={() =>
+                this.props.navigation.navigate('DashboardScreen')
+              }
               placeholder="What are you looking for?"
               searchBox
               handleSearchBox={() => console.log('search box')}
