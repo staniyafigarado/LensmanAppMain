@@ -37,6 +37,7 @@
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^2.15.1",
+    "react-native-webview": "^10.10.0",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",

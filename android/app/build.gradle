@@ -132,7 +132,7 @@ android {
         applicationId "com.lensman"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
+        versionCode 7
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this line for camera
         multiDexEnabled true

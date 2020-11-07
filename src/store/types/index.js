@@ -54,6 +54,7 @@ export const STATUSBAR = {
   STATUSBAR_HIDE: 'HIDE_STATUSBAR',
 };
 
-// export const ORDER_DETAILS = {
-//   STATUSBAR_HIDE: 'HIDE_STATUSBAR',
-// };
+export const BUY = {
+  BUY_ITEM: 'BUY_ITEM',
+  BUY_REMOVE: 'BUY_REMOVE',
+};

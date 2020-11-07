@@ -171,11 +171,15 @@ class ShoppingListScreen extends Component {
           });
       } else {
         await axios
-          .get(BaseUrl + '/admin/api/2020-07/products.json', {
-            headers: {
-              Authorization: base64Auth,
+          .get(
+            BaseUrl +
+              '/admin/api/2020-07/products.json?collection_id=235418124483',
+            {
+              headers: {
+                Authorization: base64Auth,
+              },
             },
-          })
+          )
           .then((res) => {
             console.warn('All', res);
             if (res.data.products && res.data.products.length) {

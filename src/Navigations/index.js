@@ -192,11 +192,11 @@ const WrapperNavigations = (props) => {
           component={CheckoutPaymentScreen}
           options={{headerShown: false, animationEnabled: false}}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="CheckoutPaymentScreen1"
           component={CheckoutPaymentScreen1}
           options={{headerShown: false, animationEnabled: false}}
-        />
+        /> */}
         <Stack.Screen
           name="CheckoutHistoryScreen"
           component={CheckoutHistoryScreen}

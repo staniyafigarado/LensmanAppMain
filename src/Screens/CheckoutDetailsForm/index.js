@@ -9,7 +9,6 @@ import {
   ToastAndroid,
   Image,
   Platform,
-  AsyncStorage,
   Linking,
 } from 'react-native';
 
@@ -21,7 +20,7 @@ import {
   Loader,
   CustomTracker,
 } from '../../SharedComponents';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   LeftArrowIcon,
   radioButton,
@@ -69,7 +68,6 @@ class CheckoutDetailsForm extends Component {
         country: '',
         state: '',
       },
-      iswebView: false,
     };
   }
 
@@ -191,60 +189,13 @@ class CheckoutDetailsForm extends Component {
       });
     const payload = {
       uid: UserData.id,
-      total: {products: products, GrandTotal: GrandTotal},
-      qty: '200',
+      items: {products: products, GrandTotal: GrandTotal},
       uname: UserData.firstName,
       uaddress: Address,
     };
-    console.warn(payload.total.products[0].id);
-    // await axios(`https://www.lensmanacademy.com/api/index.php`, {
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   method: 'POST',
-    //   data: payload,
-    // }).then((res) => {
-    //   console.warn(res);
-    // });
-  };
 
-  handlepayment = async () => {
-    let payload = {
-      profile_id: 47999,
-      tran_type: 'sale',
-      tran_class: 'ecom',
-      cart_id: '6543hgnbvds',
-      cart_description: 'hi hellweo',
-      cart_currency: 'AED',
-      cart_amount: 30,
-      framed: true,
-      customer_details: {
-        name: 'febin',
-        email: 'febineldhose98@gmail.com',
-        street1: 'adimaly',
-        city: 'adimaly',
-        country: 'India',
-        state: 'Kerala',
-        ip: '685561',
-      },
-      // card_details:{pan:'',cvv:'',expiry_month:'',expiry_year:''},
-      return:
-        'https://www.npmjs.com/package/react-native-document-picker/v/3.0.0',
-    };
-
-    axios(`https://secure.paytabs.com/payment/request`, {
-      method: 'POST',
-      data: payload,
-      headers: {
-        authorization: 'SBJNLL2696-HZKTR6L9DG-ZBG2BGJHZM',
-        'Content-Type': 'application/json',
-      },
-      // auth: 'SBJNLL2696-HZKTR6L9DG-ZBG2BGJHZM',
-    }).then((res) => {
-      this.setState({iswebView: true});
-      Linking.openURL(res.data.redirect_url);
-      console.warn(res.data.redirect_url);
+    this.props.navigation.navigate('CheckoutPaymentScreen', {
+      apiparams: payload,
     });
   };
 
@@ -254,6 +205,9 @@ class CheckoutDetailsForm extends Component {
     else if (type == 'address1') Address.address1 = text;
     else if (type == 'address2') Address.address2 = text;
     else if (type == 'pincode') Address.pincode = text;
+  };
+  onload = (loadweb) => {
+    console.warn(loadweb);
   };
   render() {
     const {TTComM16, TTComDB16, TTComL16, TTComDB28} = CommonStyles;
@@ -269,230 +223,221 @@ class CheckoutDetailsForm extends Component {
       showCountries,
     } = this.state;
     console.warn(this.props.cartList);
-    if (this.state.iswebView) {
-      <View style={{flex: 1}}></View>;
-    } else
-      return (
-        <>
-          <CustomStatusBar />
-          <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-            {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-            {isLoading ? (
-              <Loader />
-            ) : (
-              <TouchableOpacity
-                onPress={() => this.handleDropdownClose()}
-                activeOpacity={1}
-                style={{flex: 9, paddingHorizontal: 20}}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <View style={{marginTop: 160}} />
+    return (
+      <>
+        <CustomStatusBar />
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+          {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-                  <CustomTracker stage={1} />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <TouchableOpacity
+              onPress={() => this.handleDropdownClose()}
+              activeOpacity={1}
+              style={{flex: 9, paddingHorizontal: 20}}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{marginTop: 160}} />
 
-                  <View style={{marginVertical: 20}}>
-                    <CustomInput
-                      placeholder="Name"
-                      keyboardType="email-address"
-                      onchange={(data) => this.handleTextInput(data, 'name')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                <CustomTracker stage={1} />
 
-                    <View style={{marginVertical: 10}} />
+                <View style={{marginVertical: 20}}>
+                  <CustomInput
+                    placeholder="Name"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'name')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Address 1"
-                      keyboardType="email-address"
-                      onchange={(data) =>
-                        this.handleTextInput(data, 'address1')
-                      }
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{marginVertical: 10}} />
+                  <CustomInput
+                    placeholder="Address 1"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'address1')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Address optional"
-                      keyboardType="email-address"
-                      onchange={(data) =>
-                        this.handleTextInput(data, 'address2')
-                      }
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{marginVertical: 10}} />
-                    <CustomInput
-                      placeholder="Pincode"
-                      keyboardType="email-address"
-                      onchange={(data) => this.handleTextInput(data, 'pincode')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
-                    <View style={{marginVertical: 10}} />
-                    <CustomInputDropdown
-                      value={selectedState}
-                      placeholder="States"
-                      onAction={() => this.toggleStatesList()}
-                    />
+                  <CustomInput
+                    placeholder="Address optional"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'address2')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    {showStates && (
-                      <View
-                        style={{
-                          maxHeight: 200,
-                          borderColor: '#E9E9E9',
-                          borderWidth: 1.5,
-                          borderRadius: 12,
-                        }}>
-                        <ScrollView nestedScrollEnabled={true}>
-                          {statesList &&
-                            statesList.length &&
-                            statesList.map((list, index) => {
-                              return (
-                                <TouchableOpacity
-                                  key={index}
-                                  onPress={() => this.handleChooseState(index)}
-                                  style={{
-                                    paddingVertical: 15,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}>
-                                  <View
-                                    style={
-                                      list.isSelected
-                                        ? {
-                                            paddingVertical: 15,
-                                            width: 5,
-                                            backgroundColor: '#FFC000',
-                                          }
-                                        : {}
-                                    }
-                                  />
-                                  <Text
-                                    style={[
-                                      list.isSelected ? TTComM16 : TTComL16,
-                                      {paddingLeft: 15},
-                                    ]}>
-                                    {list.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              );
-                            })}
-                        </ScrollView>
-                      </View>
-                    )}
+                  <View style={{marginVertical: 10}} />
+                  <CustomInput
+                    placeholder="Pincode"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'pincode')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
+                  <View style={{marginVertical: 10}} />
+                  <CustomInputDropdown
+                    value={selectedState}
+                    placeholder="States"
+                    onAction={() => this.toggleStatesList()}
+                  />
 
-                    <View style={{marginVertical: 10}} />
-
-                    <CustomInputDropdown
-                      value={selectedCountry}
-                      placeholder="Country"
-                      onAction={() => this.toggleCountrieList()}
-                    />
-
-                    {showCountries && (
-                      <View
-                        style={{
-                          maxHeight: 200,
-                          borderColor: '#E9E9E9',
-                          borderWidth: 1.5,
-                          borderRadius: 12,
-                        }}>
-                        <ScrollView nestedScrollEnabled={true}>
-                          {countriesList &&
-                            countriesList.length &&
-                            countriesList.map((list, index) => {
-                              return (
-                                <TouchableOpacity
-                                  key={index}
-                                  onPress={() =>
-                                    this.handleChooseCountry(index)
+                  {showStates && (
+                    <View
+                      style={{
+                        maxHeight: 200,
+                        borderColor: '#E9E9E9',
+                        borderWidth: 1.5,
+                        borderRadius: 12,
+                      }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {statesList &&
+                          statesList.length &&
+                          statesList.map((list, index) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => this.handleChooseState(index)}
+                                style={{
+                                  paddingVertical: 15,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <View
+                                  style={
+                                    list.isSelected
+                                      ? {
+                                          paddingVertical: 15,
+                                          width: 5,
+                                          backgroundColor: '#FFC000',
+                                        }
+                                      : {}
                                   }
-                                  style={{
-                                    paddingVertical: 15,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}>
-                                  <View
-                                    style={
-                                      list.isSelected
-                                        ? {
-                                            paddingVertical: 15,
-                                            width: 5,
-                                            backgroundColor: '#FFC000',
-                                          }
-                                        : {}
-                                    }
-                                  />
-                                  <Text
-                                    style={[
-                                      list.isSelected ? TTComM16 : TTComL16,
-                                      {paddingLeft: 15},
-                                    ]}>
-                                    {list.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              );
-                            })}
-                        </ScrollView>
-                      </View>
-                    )}
-                  </View>
+                                />
+                                <Text
+                                  style={[
+                                    list.isSelected ? TTComM16 : TTComL16,
+                                    {paddingLeft: 15},
+                                  ]}>
+                                  {list.name}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                      </ScrollView>
+                    </View>
+                  )}
 
-                  <View
-                    style={{
-                      borderWidth: 1.5,
-                      borderColor: '#E9E9E9',
-                      borderRadius: 12,
-                      marginBottom: 30,
-                      paddingVertical: 20,
-                    }}>
-                    <CustomSelector
-                      option={options.option1}
-                      text="Express shipping"
-                      days="1-2 days"
-                      price="(15AED)"
-                      toggleOption={() => this.toggleOption('option1')}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <CustomSelector
-                      option={options.option2}
-                      text="Standard shipping"
-                      days="3-5 days"
-                      price="(FREE)"
-                      toggleOption={() => this.toggleOption('option2')}
-                    />
-                  </View>
+                  <CustomInputDropdown
+                    value={selectedCountry}
+                    placeholder="Country"
+                    onAction={() => this.toggleCountrieList()}
+                  />
 
-                  <View style={{marginBottom: 30}}>
-                    <CustomButton
-                      buttonStyles="btn-primary"
-                      textStyles="txt-primary"
-                      text="Next"
-                      width="100%"
-                      onAction={() => {
-                        this.handlepayment();
-                        // this.props.navigation.navigate('CheckoutPaymentScreen');
-                      }}
-                    />
-                  </View>
-                </ScrollView>
-              </TouchableOpacity>
-            )}
-            <View
-              style={{
-                flex: 1,
-                position: 'absolute',
-                backgroundColor: 'transparent',
-                width: '100%',
-              }}>
-              <CustomHeaderPrim
-                leftIcon={LeftArrowIcon}
-                leftIconAction={() => this.props.navigation.goBack()}
-                centerLabel="Checkout"
-              />
-            </View>
-          </SafeAreaView>
-        </>
-      );
+                  {showCountries && (
+                    <View
+                      style={{
+                        maxHeight: 200,
+                        borderColor: '#E9E9E9',
+                        borderWidth: 1.5,
+                        borderRadius: 12,
+                      }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {countriesList &&
+                          countriesList.length &&
+                          countriesList.map((list, index) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => this.handleChooseCountry(index)}
+                                style={{
+                                  paddingVertical: 15,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <View
+                                  style={
+                                    list.isSelected
+                                      ? {
+                                          paddingVertical: 15,
+                                          width: 5,
+                                          backgroundColor: '#FFC000',
+                                        }
+                                      : {}
+                                  }
+                                />
+                                <Text
+                                  style={[
+                                    list.isSelected ? TTComM16 : TTComL16,
+                                    {paddingLeft: 15},
+                                  ]}>
+                                  {list.name}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                      </ScrollView>
+                    </View>
+                  )}
+                </View>
+
+                {/* <View
+                  style={{
+                    borderWidth: 1.5,
+                    borderColor: '#E9E9E9',
+                    borderRadius: 12,
+                    marginBottom: 30,
+                    paddingVertical: 20,
+                  }}>
+                  <CustomSelector
+                    option={options.option1}
+                    text="Express shipping"
+                    days="1-2 days"
+                    price="(15AED)"
+                    toggleOption={() => this.toggleOption('option1')}
+                  />
+
+                  <CustomSelector
+                    option={options.option2}
+                    text="Standard shipping"
+                    days="3-5 days"
+                    price="(FREE)"
+                    toggleOption={() => this.toggleOption('option2')}
+                  />
+                </View> */}
+
+                <View style={{marginBottom: 30}}>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Next"
+                    width="100%"
+                    onAction={() => {
+                      this.handleProductDetailApi();
+                    }}
+                  />
+                </View>
+              </ScrollView>
+            </TouchableOpacity>
+          )}
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'transparent',
+              width: '100%',
+            }}>
+            <CustomHeaderPrim
+              leftIcon={LeftArrowIcon}
+              leftIconAction={() => this.props.navigation.goBack()}
+              centerLabel="Checkout"
+            />
+          </View>
+        </SafeAreaView>
+      </>
+    );
   }
 }
 

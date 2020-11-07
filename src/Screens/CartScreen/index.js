@@ -234,8 +234,9 @@ class CartScreen extends Component {
                     onAction={() =>
                       this.props.navigation.navigate(
                         Id !== '' && Id !== '1wf23gv3erty3jt1234he'
-                          ? 'CheckoutDetailsForm'
+                          ? 'CheckoutPaymentScreen'
                           : 'CheckoutNewUserScreen',
+                        {itemdata: '', productQty: '', type: 'cart'},
                       )
                     }
                   />

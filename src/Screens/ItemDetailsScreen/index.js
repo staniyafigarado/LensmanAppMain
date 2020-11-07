@@ -65,10 +65,12 @@ class ItemDetailsScreen extends Component {
       colorSelector: '',
       relatedProducts: [],
       isSearchData: false,
+      UserData: [],
     };
   }
 
   componentDidMount() {
+    this.getAsyncData();
     console.warn('getdata from prodcut page');
 
     const {productId} = this.props.route.params;
@@ -169,6 +171,21 @@ class ItemDetailsScreen extends Component {
           console.log('Err in get Product Details ', err);
         });
     });
+  };
+
+  getAsyncData = async () => {
+    try {
+      let loggedData = await AsyncStorage.getItem('loginDetails');
+      console.warn('Is Logged', loggedData);
+
+      if (loggedData !== null) {
+        this.setState({UserData: JSON.parse(loggedData)});
+      } else {
+        this.setState({UserData: ''});
+      }
+    } catch (err) {
+      console.log('Is Logged', err);
+    }
   };
 
   getReleatedProducts = async (type) => {
@@ -352,6 +369,7 @@ class ItemDetailsScreen extends Component {
       colorSelector,
       relatedProducts,
       isSearchData,
+      UserData,
     } = this.state;
 
     const {cartList} = this.props;
@@ -637,15 +655,28 @@ class ItemDetailsScreen extends Component {
                       textStyles="txt-primary"
                       text="Buy Now"
                       width="49%"
-                      onAction={() =>
-                        this.props.navigation.navigate(
-                          'CheckoutNewUserScreen',
-                          {
-                            data: productDetails,
-                            productQty: productQty,
-                          },
-                        )
-                      }
+                      onAction={() => {
+                        if (UserData.id == '1wf23gv3erty3jt1234he') {
+                          this.props.navigation.navigate(
+                            'CheckoutNewUserScreen',
+                            {
+                              itemdata: productDetails,
+                              productQty: productQty,
+                              type: 'Buy',
+                            },
+                          );
+                        } else {
+                          this.props.navigation.navigate(
+                            'CheckoutPaymentScreen',
+                            {
+                              itemdata: productDetails,
+                              productQty: productQty,
+                              type: 'Buy',
+                            },
+                          );
+                          console.warn(productDetails, productQty);
+                        }
+                      }}
                     />
                     <CustomButton
                       buttonStyles="btn-secondary-black"

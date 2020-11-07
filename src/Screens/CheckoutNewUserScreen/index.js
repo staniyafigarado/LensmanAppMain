@@ -128,9 +128,18 @@ class CheckoutNewUserScreen extends Component {
                     textStyles="txt-secondary"
                     text="Checkout as guest"
                     width="100%"
-                    onAction={() =>
-                      this.props.navigation.navigate('CheckoutDetailsForm')
-                    }
+                    onAction={() => {
+                      const {
+                        itemdata,
+                        productQty,
+                        type,
+                      } = this.props.route.params;
+                      this.props.navigation.navigate('CheckoutPaymentScreen', {
+                        itemdata: itemdata,
+                        productQty: productQty,
+                        type: type,
+                      });
+                    }}
                   />
                 </View>
 

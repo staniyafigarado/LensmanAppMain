@@ -24,15 +24,18 @@ import {
   yellowBoxIcon,
   circleWithQuestMarkIcon,
 } from '../../SharedComponents/CommonIcons';
-
+import {connect} from 'react-redux';
+import {setCartItem, removeFromCart, updateCart} from '../../store/actions';
 import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
+import {FlatList} from 'react-native-gesture-handler';
 
 class CheckoutHistoryScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
+      cartItems: [],
     };
   }
 
@@ -41,6 +44,30 @@ class CheckoutHistoryScreen extends Component {
       this.props.navigation.navigate('ShoppingListScreen');
       return true;
     });
+    this.props.navigation.addListener('blur', () => {
+      this.props.removeFromCart();
+      // The screen is focused
+      // Call any action
+    });
+    const products = [];
+    const {itemdata, productQty, type} = this.props.route.params;
+    if (type == 'Buy') {
+      products.push({
+        itemname: itemdata.title,
+        images: itemdata.images[0].src,
+        quantity: productQty,
+      });
+    } else {
+      this.props.cartList.map((item) => {
+        products.push({
+          itemname: item.data.title,
+          images: item.data.images[0].src,
+          quantity: item.count,
+        });
+      });
+    }
+    this.setState({cartItems: products});
+    console.warn(products);
   }
 
   componentWillUnmount() {
@@ -89,7 +116,7 @@ class CheckoutHistoryScreen extends Component {
                     style={{position: 'absolute', top: -20, left: 20}}
                   />
                   <Text style={[TTComDB28, {color: '#fff', padding: 20}]}>
-                    Arriving 2 Sep - 4 Sep
+                    Arriving 2 Dec - 4 Dec
                   </Text>
                 </View>
 
@@ -113,7 +140,7 @@ class CheckoutHistoryScreen extends Component {
                         Order Ref.
                       </Text>
                       <Text style={[TTComDB18, {marginVertical: 5}]}>
-                        #230AE3700
+                        {this.props.route.params.orderRef}
                       </Text>
                     </View>
 
@@ -123,77 +150,31 @@ class CheckoutHistoryScreen extends Component {
                   </View>
 
                   <View style={{marginTop: 30}}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 15,
-                      }}>
-                      <View>
-                        <Image
-                          source={require('../../../assests/Test/photo_mug_large-51.png')}
-                          style={{width: 60, height: 60}}
-                        />
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginLeft: 25,
-                        }}>
-                        <Text style={[TTComDB14, {marginRight: 10}]}>1x</Text>
-                        <Text style={TTComM18}>Coffee Mug</Text>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 15,
-                      }}>
-                      <View>
-                        <Image
-                          source={require('../../../assests/Test/photo_mug_large-51.png')}
-                          style={{width: 60, height: 60}}
-                        />
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginLeft: 25,
-                        }}>
-                        <Text style={[TTComDB14, {marginRight: 10}]}>1x</Text>
-                        <Text style={TTComM18}>Coffee Mug</Text>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 15,
-                      }}>
-                      <View>
-                        <Image
-                          source={require('../../../assests/Test/photo_mug_large-51.png')}
-                          style={{width: 60, height: 60}}
-                        />
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginLeft: 25,
-                        }}>
-                        <Text style={[TTComDB14, {marginRight: 10}]}>2x</Text>
-                        <Text style={TTComM18}>Coffee Mug</Text>
-                      </View>
-                    </View>
+                    <FlatList
+                      keyExtractor={(index) => index.toString()}
+                      data={this.state.cartItems}
+                      renderItem={({item}) => {
+                        return (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginTop: 10,
+                            }}>
+                            <Image
+                              source={{uri: item.images}}
+                              style={{height: 50, width: 50, borderRadius: 10}}
+                            />
+                            <Text style={{marginLeft: 10}}>
+                              X{item.quantity}
+                            </Text>
+                            <Text style={{marginLeft: 10, width: '70%'}}>
+                              {item.itemname}
+                            </Text>
+                          </View>
+                        );
+                      }}
+                    />
                   </View>
                 </View>
 
@@ -231,4 +212,18 @@ class CheckoutHistoryScreen extends Component {
   }
 }
 
-export default CheckoutHistoryScreen;
+const mapStateToProps = (state) => {
+  return {
+    cartList: state.Layout.cartList,
+  };
+};
+const mapDispatchToProps = {
+  setCartItem,
+  removeFromCart,
+  updateCart,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CheckoutHistoryScreen);
