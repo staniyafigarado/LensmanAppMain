@@ -667,7 +667,7 @@ class ItemDetailsScreen extends Component {
                           );
                         } else {
                           this.props.navigation.navigate(
-                            'CheckoutPaymentScreen',
+                            'CheckoutDetailsForm',
                             {
                               itemdata: productDetails,
                               productQty: productQty,

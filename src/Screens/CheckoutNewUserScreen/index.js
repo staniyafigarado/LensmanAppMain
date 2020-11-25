@@ -134,7 +134,7 @@ class CheckoutNewUserScreen extends Component {
                         productQty,
                         type,
                       } = this.props.route.params;
-                      this.props.navigation.navigate('CheckoutPaymentScreen', {
+                      this.props.navigation.navigate('CheckoutDetailsForm', {
                         itemdata: itemdata,
                         productQty: productQty,
                         type: type,

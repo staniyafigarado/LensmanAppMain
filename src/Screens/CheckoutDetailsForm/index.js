@@ -49,19 +49,22 @@ class CheckoutDetailsForm extends Component {
       showStates: false,
       showCountries: false,
       statesList: [
-        {name: 'state 01', isSelected: false},
-        {name: 'state 02', isSelected: false},
-        {name: 'state 03', isSelected: false},
+        {name: 'Abu Dhabi', isSelected: false},
+        {name: 'Ajman', isSelected: false},
+        {name: 'Dubai', isSelected: false},
+        {name: 'Fujairah', isSelected: false},
+        {name: 'Ras al-khaimah', isSelected: false},
+        {name: 'Sharjah', isSelected: false},
+        {name: 'Umm al-Quwain', isSelected: false},
       ],
       selectedState: '',
       countriesList: [
-        {name: 'Country 01', isSelected: false},
-        {name: 'Country 02', isSelected: false},
-        {name: 'Country 03', isSelected: false},
+        {name: 'United Arab Emirates', isSelected: false, iso: 'AE'},
       ],
       selectedCountry: '',
       Address: {
-        name: '',
+        first_name: '',
+        last_name: '',
         address1: '',
         address2: '',
         pincode: '',
@@ -161,6 +164,11 @@ class CheckoutDetailsForm extends Component {
       countriesList,
       selectedCountry: countriesList[index].name,
       showCountries: false,
+      Address: {
+        ...this.state.Address,
+        country: countriesList[index].name,
+        countryISO: countriesList[index].iso,
+      },
     });
     this.state.Address.country = countriesList[index].name;
   };
@@ -177,31 +185,56 @@ class CheckoutDetailsForm extends Component {
     const {UserData, Address} = this.state;
     let products = [];
     let GrandTotal = 0;
-    this.props.cartList.map((item) => {
+    const {productQty, itemdata} = this.props.route.params || {};
+    if (productQty) {
       products.push({
-        id: item.data.id,
-        total: item.data.variants[0].price * item.count,
-        quantity: item.count,
+        id: itemdata.variants[0].id,
+        total: itemdata.variants[0].price * productQty,
+        quantity: productQty,
       });
-    }),
-      products.map((price) => {
-        GrandTotal = GrandTotal + Number(price.total);
+    } else {
+      this.props.cartList.map((item) => {
+        products.push({
+          id: item.data.variants[0].id,
+          total: item.data.variants[0].price * item.count,
+          quantity: item.count,
+        });
       });
+    }
+    products.map((price) => {
+      GrandTotal = GrandTotal + Number(price.total);
+    });
     const payload = {
       uid: UserData.id,
       items: {products: products, GrandTotal: GrandTotal},
       uname: UserData.firstName,
       uaddress: Address,
     };
-
-    this.props.navigation.navigate('CheckoutPaymentScreen', {
-      apiparams: payload,
-    });
+    if (
+      Address.address1 &&
+      Address.country &&
+      Address.first_name &&
+      Address.last_name &&
+      Address.phone &&
+      Address.country &&
+      Address.city &&
+      (UserData.id !== '1wf23gv3erty3jt1234he' || Address.email)
+    ) {
+      this.props.navigation.navigate('CheckoutPaymentScreen', {
+        apiparams: payload,
+      });
+    } else {
+      alert('Please fill the required fields');
+    }
   };
 
   handleTextInput = (text, type) => {
     const {Address} = this.state;
-    if (type == 'name') Address.name = text;
+    if (type == 'first_name') Address.first_name = text;
+    else if (type == 'phone') Address.phone = text;
+    else if (type == 'email') Address.email = text;
+    else if (type == 'city') Address.city = text;
+    else if (type == 'last_name') Address.last_name = text;
     else if (type == 'address1') Address.address1 = text;
     else if (type == 'address2') Address.address2 = text;
     else if (type == 'pincode') Address.pincode = text;
@@ -221,8 +254,9 @@ class CheckoutDetailsForm extends Component {
       countriesList,
       selectedCountry,
       showCountries,
+      UserData,
     } = this.state;
-    console.warn(this.props.cartList);
+    console.log('user', UserData);
 
     return (
       <>
@@ -243,17 +277,47 @@ class CheckoutDetailsForm extends Component {
                 <CustomTracker stage={1} />
 
                 <View style={{marginVertical: 20}}>
+                  {UserData.id == '1wf23gv3erty3jt1234he' && (
+                    <CustomInput
+                      placeholder="Email Address"
+                      keyboardType="email-address"
+                      onchange={(data) => this.handleTextInput(data, 'email')}
+                      onFocus={() => this.handleDropdownClose()}
+                    />
+                  )}
+
+                  <View style={{marginVertical: 10}} />
                   <CustomInput
-                    placeholder="Name"
+                    placeholder="First Name"
                     keyboardType="email-address"
-                    onchange={(data) => this.handleTextInput(data, 'name')}
+                    onchange={(data) =>
+                      this.handleTextInput(data, 'first_name')
+                    }
                     onFocus={() => this.handleDropdownClose()}
                   />
 
                   <View style={{marginVertical: 10}} />
 
                   <CustomInput
-                    placeholder="Address 1"
+                    placeholder="Last Name"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'last_name')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
+
+                  <View style={{marginVertical: 10}} />
+
+                  <CustomInput
+                    placeholder="Phone Number"
+                    keyboardType="number-pad"
+                    onchange={(data) => this.handleTextInput(data, 'phone')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
+
+                  <View style={{marginVertical: 10}} />
+
+                  <CustomInput
+                    placeholder="Address "
                     keyboardType="email-address"
                     onchange={(data) => this.handleTextInput(data, 'address1')}
                     onFocus={() => this.handleDropdownClose()}
@@ -262,27 +326,27 @@ class CheckoutDetailsForm extends Component {
                   <View style={{marginVertical: 10}} />
 
                   <CustomInput
-                    placeholder="Address optional"
-                    keyboardType="email-address"
+                    placeholder="Apartment, Suits etc (optional)"
                     onchange={(data) => this.handleTextInput(data, 'address2')}
                     onFocus={() => this.handleDropdownClose()}
                   />
 
                   <View style={{marginVertical: 10}} />
                   <CustomInput
-                    placeholder="Pincode"
-                    keyboardType="email-address"
-                    onchange={(data) => this.handleTextInput(data, 'pincode')}
+                    placeholder="City"
+                    onchange={(data) => this.handleTextInput(data, 'city')}
                     onFocus={() => this.handleDropdownClose()}
                   />
+
                   <View style={{marginVertical: 10}} />
+
                   <CustomInputDropdown
-                    value={selectedState}
-                    placeholder="States"
-                    onAction={() => this.toggleStatesList()}
+                    value={selectedCountry}
+                    placeholder="Country"
+                    onAction={() => this.toggleCountrieList()}
                   />
 
-                  {showStates && (
+                  {showCountries && (
                     <View
                       style={{
                         maxHeight: 200,
@@ -291,13 +355,13 @@ class CheckoutDetailsForm extends Component {
                         borderRadius: 12,
                       }}>
                       <ScrollView nestedScrollEnabled={true}>
-                        {statesList &&
-                          statesList.length &&
-                          statesList.map((list, index) => {
+                        {countriesList &&
+                          countriesList.length &&
+                          countriesList.map((list, index) => {
                             return (
                               <TouchableOpacity
                                 key={index}
-                                onPress={() => this.handleChooseState(index)}
+                                onPress={() => this.handleChooseCountry(index)}
                                 style={{
                                   paddingVertical: 15,
                                   flexDirection: 'row',
@@ -329,14 +393,13 @@ class CheckoutDetailsForm extends Component {
                   )}
 
                   <View style={{marginVertical: 10}} />
-
                   <CustomInputDropdown
-                    value={selectedCountry}
-                    placeholder="Country"
-                    onAction={() => this.toggleCountrieList()}
+                    value={selectedState}
+                    placeholder="States"
+                    onAction={() => this.toggleStatesList()}
                   />
 
-                  {showCountries && (
+                  {showStates && (
                     <View
                       style={{
                         maxHeight: 200,
@@ -345,13 +408,13 @@ class CheckoutDetailsForm extends Component {
                         borderRadius: 12,
                       }}>
                       <ScrollView nestedScrollEnabled={true}>
-                        {countriesList &&
-                          countriesList.length &&
-                          countriesList.map((list, index) => {
+                        {statesList &&
+                          statesList.length &&
+                          statesList.map((list, index) => {
                             return (
                               <TouchableOpacity
                                 key={index}
-                                onPress={() => this.handleChooseCountry(index)}
+                                onPress={() => this.handleChooseState(index)}
                                 style={{
                                   paddingVertical: 15,
                                   flexDirection: 'row',

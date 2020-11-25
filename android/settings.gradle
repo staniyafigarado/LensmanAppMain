@@ -1,3 +1,4 @@
+include ':paytabs_sdk-v4.0.1'
 rootProject.name = 'expressApp'
 include ':react-native-permissions'
 project(':react-native-permissions').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-permissions/android')
