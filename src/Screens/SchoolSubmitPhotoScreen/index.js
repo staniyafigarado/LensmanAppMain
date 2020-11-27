@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {
   View,
   Text,
@@ -37,6 +37,7 @@ import {connect} from 'react-redux';
 
 import {BaseUrlSchool} from '../../utils/constants';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
+import {TextInput} from 'react-native-gesture-handler';
 const {height} = Dimensions.get('screen');
 class SchoolSubmitPhotoScreen extends Component {
   constructor(props) {
@@ -71,6 +72,7 @@ class SchoolSubmitPhotoScreen extends Component {
       selectedSchoolDetails: '',
       loginData: '',
       isCustomToaster: '',
+      schoolListsave: [],
     };
   }
 
@@ -98,7 +100,11 @@ class SchoolSubmitPhotoScreen extends Component {
         .then((res) => {
           console.warn('Res School List', res.data.result.rows);
           res.data.result.rows.map((items) => (items.isSelected = false));
-          this.setState({isLoading: false, schoolList: res.data.result.rows});
+          this.setState({
+            isLoading: false,
+            schoolList: res.data.result.rows,
+            schoolListsave: res.data.result.rows,
+          });
         })
         .catch((err) => {
           this.setState({
@@ -346,7 +352,30 @@ class SchoolSubmitPhotoScreen extends Component {
     }
     this.setState({form});
   };
-
+  handleSchoolListSearch = (e) => {
+    const {schoolList, schoolListsave, isSchoolList} = this.state;
+    if (e !== 'toggle') {
+      let filterlist = schoolList.filter((item) => {
+        let lowercasename = item.name.toLowerCase();
+        let lowercasetext = e.toLowerCase();
+        return lowercasename.includes(lowercasetext);
+      });
+      this.setState((state) => ((state.form.school = e), state));
+      if (e.length !== 0 && filterlist.length > 0) {
+        this.setState({
+          schoolList: filterlist,
+          isSchoolList: true,
+        });
+      } else {
+        this.setState({
+          schoolList: schoolListsave,
+          isSchoolList: false,
+        });
+      }
+    } else {
+      this.setState({isSchoolList: !isSchoolList});
+    }
+  };
   render() {
     const {TTComM16, TTComL16} = CommonStyles;
 
@@ -357,6 +386,7 @@ class SchoolSubmitPhotoScreen extends Component {
       isLoading,
       validationError,
       isCustomToaster,
+      schoolListsave,
     } = this.state;
     return (
       <>
@@ -415,56 +445,72 @@ class SchoolSubmitPhotoScreen extends Component {
                   </CustomWrapper>
                   <CustomInputDropdown
                     label="School"
+                    onSearch={this.handleSchoolListSearch}
+                    onPress={(index) => this.handleSelectSchool(index)}
                     onAction={() => this.handleSchoolList()}
                     value={form.school}
                     isValidationErr={validationError.name}
+                    schoolList={schoolList}
                   />
 
-                  {isSchoolList && (
-                    <View
-                      style={{
-                        maxHeight: 200,
-                        borderColor: '#E9E9E9',
-                        borderWidth: 1.5,
-                        borderRadius: 12,
-                      }}>
-                      <ScrollView nestedScrollEnabled={true}>
-                        {schoolList &&
-                          schoolList.length &&
-                          schoolList.map((list, index) => {
-                            return (
-                              <TouchableOpacity
-                                key={index}
-                                onPress={() => this.handleSelectSchool(index)}
-                                style={{
-                                  paddingVertical: 15,
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
-                                <View
-                                  style={
-                                    list.isSelected
-                                      ? {
-                                          paddingVertical: 15,
-                                          width: 5,
-                                          backgroundColor: '#FFC000',
-                                        }
-                                      : {}
-                                  }
-                                />
-                                <Text
-                                  style={[
-                                    list.isSelected ? TTComM16 : TTComL16,
-                                    {paddingLeft: 15},
-                                  ]}>
-                                  {list.name}
-                                </Text>
-                              </TouchableOpacity>
-                            );
-                          })}
-                      </ScrollView>
-                    </View>
-                  )}
+                  <View
+                    style={{
+                      maxHeight: isSchoolList ? 200 : 0,
+                      borderColor: '#E9E9E9',
+                      borderWidth: isSchoolList ? 1.5 : 0,
+                      borderRadius: 12,
+                    }}>
+                    <ScrollView nestedScrollEnabled={true}>
+                      {schoolList.length == 0 && (
+                        <Text
+                          style={{
+                            alignSelf: 'center',
+                            marginTop: 10,
+                            marginBottom: 10,
+                          }}>
+                          no matches found
+                        </Text>
+                      )}
+                      {schoolList &&
+                        schoolList.length !== 0 &&
+                        schoolList.map((list, index) => {
+                          return (
+                            <TouchableOpacity
+                              key={index}
+                              onPress={() => {
+                                list.name !== 'no matches found' &&
+                                  this.handleSelectSchool(index);
+                              }}
+                              style={{
+                                paddingVertical: 15,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <View
+                                style={
+                                  form.school == list.name && list.isSelected
+                                    ? {
+                                        paddingVertical: 15,
+                                        width: 5,
+                                        backgroundColor: '#FFC000',
+                                      }
+                                    : {}
+                                }
+                              />
+                              <Text
+                                style={[
+                                  form.school == list.name && list.isSelected
+                                    ? TTComM16
+                                    : TTComL16,
+                                  {paddingLeft: 15},
+                                ]}>
+                                {list.name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                    </ScrollView>
+                  </View>
                 </CustomWrapper>
                 <CustomWrapper>
                   <CustomInput
@@ -602,12 +648,27 @@ const CustomWrapper = (props) => {
 };
 
 const CustomInputDropdown = (props) => {
-  const {label, value, onAction} = props;
+  const {label, value, onAction, onSearch, schoolList, onPress} = props;
+  const [listVisible, setlistVisible] = useState(false);
+  const [listitem, setlistitem] = useState('');
+  const {TTComM16, TTComL16} = CommonStyles;
   return (
     <View>
       {label && <Text style={CommonStyles.customInputLabel}>{label}</Text>}
       <TouchableOpacity onPress={() => onAction()} style={{}}>
-        <Text
+        <TextInput
+          value={value}
+          onChangeText={(e) => {
+            if (e.length > 0) {
+              onSearch && onSearch(e);
+              setlistVisible(true);
+            } else {
+              setlistVisible(false);
+              onSearch && onSearch(e);
+            }
+          }}
+          placeholder="School"
+          onFocus={() => onSearch && onSearch('toggle')}
           style={{
             color: '#000',
             fontSize: 16,
@@ -621,14 +682,64 @@ const CustomInputDropdown = (props) => {
             paddingBottom: 15,
             // height: 50,
             // textAlignVertical: 'center',
-          }}>
-          {value === '' ? 'School' : value}
-        </Text>
+            paddingRight: 40,
+          }}
+        />
         <Image
           source={require('../../../assests/RegisterScreen/dropdownDownIcon/Polygon2.png')}
-          style={{position: 'absolute', top: '40%', right: 20}}
+          style={{
+            position: 'absolute',
+            top: '40%',
+            right: 20,
+            alignSelf: 'center',
+          }}
         />
       </TouchableOpacity>
+      {/* {listVisible && (
+        <View
+          style={{
+            maxHeight: 200,
+            borderColor: '#E9E9E9',
+            borderWidth: 1.5,
+            borderRadius: 12,
+          }}>
+          <ScrollView nestedScrollEnabled={true}>
+            {schoolList &&
+              schoolList.length &&
+              schoolList.map((list, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => onPress && onPress(index)}
+                    style={{
+                      paddingVertical: 15,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View
+                      style={
+                        list.isSelected
+                          ? {
+                              paddingVertical: 15,
+                              width: 5,
+                              backgroundColor: '#FFC000',
+                            }
+                          : {}
+                      }
+                    />
+                    <Text
+                      style={[
+                        list.isSelected ? TTComM16 : TTComL16,
+                        {paddingLeft: 15},
+                      ]}>
+                      {list.name}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+          </ScrollView>
+        </View>
+      )} */}
     </View>
   );
 };

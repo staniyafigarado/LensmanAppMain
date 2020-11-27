@@ -26,3 +26,11 @@ export const updateCart = (data) => {
     });
   };
 };
+export const removeAllItems = (data) => {
+  return (dispatch) => {
+    return dispatch({
+      type: LAYOUT.CART_REMOVE_ALL,
+      payload: data,
+    });
+  };
+};

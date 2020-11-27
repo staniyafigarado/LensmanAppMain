@@ -364,12 +364,34 @@ class DashboardScreen extends Component {
                             // textStyles="txt-primary"
                             text="Take Picture"
                             width="49%"
+                            onAction={() => {
+                              this.props.navigation.navigate(
+                                this.state.screen.screen,
+                                {
+                                  fromScreen: 'GroupPortraitPoseGuide',
+                                  formData: this.state.screen.data,
+                                },
+                              );
+                            }}
+                            // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
                           />
                           <CustomButton
                             buttonStyles="btn-secondary"
                             // textStyles="txt-primary"
                             text="Upload"
                             width="50%"
+                            onAction={() => {
+                              if (
+                                asyncData &&
+                                asyncData.id !== '1wf23gv3erty3jt1234he'
+                              ) {
+                                this.props.navigation.navigate(
+                                  'CustomGalleryScreen',
+                                );
+                              } else {
+                                this.props.navigation.navigate('LoginScreen');
+                              }
+                            }}
                           />
                         </View>
                       </View>

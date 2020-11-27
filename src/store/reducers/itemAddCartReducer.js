@@ -29,6 +29,12 @@ export default (state = {cartList: []}, action) => {
         cartList: cartList,
       };
     }
+    case LAYOUT.CART_REMOVE_ALL: {
+      return {
+        ...state,
+        cartList: [],
+      };
+    }
 
     default:
       return state;

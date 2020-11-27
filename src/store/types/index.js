@@ -45,6 +45,7 @@ export const LAYOUT = {
   CART_ITEM: 'CART_ITEM',
   CART_REMOVE: 'CART_REMOVE',
   CART_UPDATE: 'CART_UPDATE',
+  CART_REMOVE_ALL: 'CART_REMOVE_ALL',
 };
 
 export const LOGIN = {
