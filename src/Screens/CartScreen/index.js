@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -10,16 +10,16 @@ import {
   Modal,
   KeyboardAvoidingView,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import { connect } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 import {
   CustomHeaderPrim,
   logoSmall,
   TabNavButton,
   CustomButton,
 } from '../../SharedComponents';
-import {setCartItem, removeFromCart, updateCart} from '../../store/actions';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { setCartItem, removeFromCart, updateCart } from '../../store/actions';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import {
   upDownArrowIcon,
   uploadIcon,
@@ -29,7 +29,7 @@ import {
 } from '../../SharedComponents/CommonIcons';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import {QuantityList} from '../ItemDetailsScreen/components';
+import { QuantityList } from '../ItemDetailsScreen/components';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class CartScreen extends Component {
@@ -84,7 +84,7 @@ class CartScreen extends Component {
       total = total + Number(price);
     });
 
-    this.setState({totalAmount: total}, () => {});
+    this.setState({ totalAmount: total }, () => { });
   };
 
   handleQuantity = (index) => {
@@ -100,7 +100,7 @@ class CartScreen extends Component {
     cartList[this.state.productQtyIndex].count = count;
     console.warn('100', this.props.cartList);
     this.props.updateCart(cartList);
-    this.setState({isQuantityModal: false});
+    this.setState({ isQuantityModal: false });
     this.calculateTotalAmount();
   };
 
@@ -108,10 +108,10 @@ class CartScreen extends Component {
     let loginDetails = await AsyncStorage.getItem('loginDetails');
     if (loginDetails !== null) {
       let userId = JSON.parse(loginDetails);
-      this.setState({Id: userId.id});
+      this.setState({ Id: userId.id });
       console.warn(userId.id);
     } else {
-      this.setState({Id: ''});
+      this.setState({ Id: '' });
     }
   };
 
@@ -120,11 +120,11 @@ class CartScreen extends Component {
 
     if (data) {
       let id = data.id;
-      this.props.navigation.navigate('ItemDetailsScreen', {productId: id});
+      this.props.navigation.navigate('ItemDetailsScreen', { productId: id });
     }
   };
   render() {
-    const {TTComDB28, TTComDB18, TTComM18, tabNavContainer} = CommonStyles;
+    const { TTComDB28, TTComDB18, TTComM18, tabNavContainer } = CommonStyles;
 
     const {
       isCancelItemModal,
@@ -136,7 +136,7 @@ class CartScreen extends Component {
       Id,
       isSearchData,
     } = this.state;
-    const {cartList, isFocused} = this.props;
+    const { cartList, isFocused } = this.props;
     console.warn(
       '100',
       cartList.map((item) => item.data.variants[0].price * item.count),
@@ -144,7 +144,7 @@ class CartScreen extends Component {
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
           <View
@@ -155,7 +155,7 @@ class CartScreen extends Component {
               paddingTop: 100,
             }}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={[TTComDB28, {marginTop: 100}]}>Your Cart</Text>
+              <Text style={[TTComDB28, { marginTop: 100 }]}>Your Cart</Text>
 
               {cartList && cartList.length ? (
                 cartList.map((item, index) => {
@@ -167,21 +167,21 @@ class CartScreen extends Component {
                       count={item.count ? item.count : 1}
                       handleCancelModal={this.handleCancelModal}
                       handleQuantity={this.handleQuantity}
-                      // changeCount={() => this.handleChangeCount()}
+                    // changeCount={() => this.handleChangeCount()}
                     />
                   );
                 })
               ) : (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 150,
-                  }}>
-                  <Text style={CommonStyles.TTComDB14}>Your Cart is Empty</Text>
-                </View>
-              )}
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 150,
+                    }}>
+                    <Text style={CommonStyles.TTComDB14}>Your Cart is Empty</Text>
+                  </View>
+                )}
 
               {cartList && cartList.length > 0 && (
                 <View
@@ -190,7 +190,7 @@ class CartScreen extends Component {
                     flexDirection: 'row',
                     alignItems: 'flex-end',
                   }}>
-                  <View style={{width: '50%', paddingBottom: 5}}>
+                  <View style={{ width: '50%', paddingBottom: 5 }}>
                     <TouchableOpacity
                       style={{
                         minHeight: 10,
@@ -201,7 +201,7 @@ class CartScreen extends Component {
                         paddingVertical: 5,
                         width: '80%',
                       }}>
-                      <Text style={[TTComDB18, {textAlign: 'center'}]}>
+                      <Text style={[TTComDB18, { textAlign: 'center' }]}>
                         Apply voucher
                       </Text>
                     </TouchableOpacity>
@@ -213,7 +213,7 @@ class CartScreen extends Component {
                       // paddingLeft: 20,
                     }}>
                     <Text style={TTComM18}>Total</Text>
-                    <Text style={TTComDB28}>{totalAmount} AED</Text>
+                    <Text style={TTComDB28}>{(totalAmount).toFixed(2)} AED</Text>
                   </View>
                 </View>
               )}
@@ -236,7 +236,7 @@ class CartScreen extends Component {
                         Id !== '' && Id !== '1wf23gv3erty3jt1234he'
                           ? 'CheckoutDetailsForm'
                           : 'CheckoutNewUserScreen',
-                        {itemdata: '', productQty: '', type: 'cart'},
+                        { itemdata: '', productQty: '', type: 'cart' },
                       )
                     }
                   />
@@ -244,7 +244,7 @@ class CartScreen extends Component {
               )}
             </ScrollView>
             {!isSearchData && (
-              <View style={[tabNavContainer, {width: '100%'}]}>
+              <View style={[tabNavContainer, { width: '100%' }]}>
                 <TabNavButton
                   nav={this.props}
                   active="3"
@@ -275,7 +275,7 @@ class CartScreen extends Component {
                     <Text
                       style={[
                         TTComDB18,
-                        {textAlign: 'center', paddingTop: 10},
+                        { textAlign: 'center', paddingTop: 10 },
                       ]}>
                       Remove
                     </Text>
@@ -307,14 +307,14 @@ class CartScreen extends Component {
                         width="80%"
                         onAction={() => this.handleRemoveItemFromCart()}
                       />
-                      <View style={{marginVertical: 5}} />
+                      <View style={{ marginVertical: 5 }} />
                       <CustomButton
                         buttonStyles="btn-secondary-black"
                         textStyles="txt-secondary"
                         text="No"
                         width="80%"
                         onAction={() =>
-                          this.setState({isCancelItemModal: false})
+                          this.setState({ isCancelItemModal: false })
                         }
                       />
                     </View>
@@ -346,13 +346,13 @@ class CartScreen extends Component {
                         justifyContent: 'space-between',
                         padding: 10,
                       }}>
-                      <Text style={[TTComDB18, {paddingVertical: 5}]}>
+                      <Text style={[TTComDB18, { paddingVertical: 5 }]}>
                         Select Quantity
                       </Text>
                       <TouchableOpacity
-                        style={{paddingLeft: 10, padding: 10}}
-                        onPress={() => this.setState({isQuantityModal: false})}>
-                        <Image source={closeIcon} style={{tintColor: '#000'}} />
+                        style={{ paddingLeft: 10, padding: 10 }}
+                        onPress={() => this.setState({ isQuantityModal: false })}>
+                        <Image source={closeIcon} style={{ tintColor: '#000' }} />
                       </TouchableOpacity>
                     </View>
 
@@ -389,7 +389,7 @@ class CartScreen extends Component {
                 backgroundColor: 'transparent',
                 width: '100%',
               },
-              isSearchData && {height: '100%'},
+              isSearchData && { height: '100%' },
             ]}>
             <CustomHeaderPrim
               leftIcon={logoSmall}
@@ -400,7 +400,7 @@ class CartScreen extends Component {
               }
               filterData={this.filterData}
               onSearchEvent={(isShow) => {
-                this.setState({isSearchData: isShow});
+                this.setState({ isSearchData: isShow });
               }}
             />
           </View>
@@ -431,11 +431,11 @@ export default connect(
 });
 
 const CatItems = (props) => {
-  const {TTComDB18, TTComM16, TTComM18} = CommonStyles;
+  const { TTComDB18, TTComM16, TTComM18 } = CommonStyles;
 
-  const {handleCancelModal, data, index, count, handleQuantity} = props;
+  const { handleCancelModal, data, index, count, handleQuantity } = props;
   return (
-    <View style={{flex: 1, flexDirection: 'row', marginVertical: 8}}>
+    <View style={{ flex: 1, flexDirection: 'row', marginVertical: 8 }}>
       <View
         style={{
           flex: 10.5,
@@ -444,7 +444,7 @@ const CatItems = (props) => {
           borderWidth: 1.5,
           flexDirection: 'row',
         }}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Image
             source={{
               uri:
@@ -476,7 +476,7 @@ const CatItems = (props) => {
             }}
           /> */}
         </View>
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={TTComDB18}>
             {data && data.title && data.title.length > 15
               ? data.title.slice(0, 11) + '...'
@@ -499,7 +499,7 @@ const CatItems = (props) => {
         </View>*/}
         <TouchableOpacity
           onPress={() => handleQuantity(index)}
-          style={{justifyContent: 'center'}}>
+          style={{ justifyContent: 'center' }}>
           <View
             style={{
               backgroundColor: '#E9E9E9',
@@ -512,7 +512,7 @@ const CatItems = (props) => {
               padding: 10,
               marginRight: 10,
             }}>
-            <Text style={[TTComM18, {paddingRight: 10}]}>{count}</Text>
+            <Text style={[TTComM18, { paddingRight: 10 }]}>{count}</Text>
             <Image source={upDownArrowIcon} />
           </View>
         </TouchableOpacity>
@@ -520,7 +520,7 @@ const CatItems = (props) => {
 
       <TouchableOpacity
         onPress={() => handleCancelModal(index)}
-        style={{flex: 1.5, justifyContent: 'center', alignItems: 'center'}}>
+        style={{ flex: 1.5, justifyContent: 'center', alignItems: 'center' }}>
         <Image source={closeIconBlack} />
       </TouchableOpacity>
     </View>

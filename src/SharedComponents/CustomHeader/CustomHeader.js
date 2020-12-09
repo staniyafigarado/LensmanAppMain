@@ -1,24 +1,24 @@
 import React from 'react';
-import {View, ImageBackground, Image, TouchableOpacity} from 'react-native';
+import { View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 
-import {headerImage} from '../../SharedComponents';
+import { headerImage } from '../../SharedComponents';
 
 const CustomHeader = (props) => {
-  const {leftIcon, rightIcon, leftIconAction} = props;
+  const { leftIcon, rightIcon, leftIconAction } = props;
   return (
-    <View style={{zIndex: 10}}>
+    <View style={{ zIndex: 10 }}>
       <ImageBackground
         source={headerImage}
         style={
           leftIcon && rightIcon
             ? {
-                minHeight: 130,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingHorizontal: 20,
-              }
-            : {flex: 3}
+              minHeight: 160,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingHorizontal: 20,
+            }
+            : { flex: 3 }
         }>
         {leftIcon && rightIcon && (
           <>

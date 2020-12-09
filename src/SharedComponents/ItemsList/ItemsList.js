@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
-import {RFPercentage} from 'react-native-responsive-fontsize';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 import Styles from '../../Screens/DashboardScreen/DashboardStyles';
 export const ItemList = (props) => {
-  const {image, itemName, price, onAction, discount} = props;
-  const {TTComDB18, TTComM16} = CommonStyles;
+  const { image, itemName, price, onAction, discount } = props;
+  const { TTComDB18, TTComM16 } = CommonStyles;
 
   return (
     <View
@@ -32,13 +32,14 @@ export const ItemList = (props) => {
         }}>
         <ImagePlaceHolder image={image} />
       </TouchableOpacity>
-      <View style={{paddingLeft: 15, marginTop: 15}}>
+      <View style={{ paddingLeft: 15, marginTop: 15 }}>
         <Text style={TTComDB18}>{itemName}</Text>
         {price && <Text style={TTComM16}>{price}</Text>}
       </View>
       {discount !== '0' && (
         <View style={Styles.discountBadge}>
-          <Text style={Styles.discountBadgeText}>{discount + '%'}</Text>
+          {/* <Text style={Styles.discountBadgeText}>{discount + '%'}</Text> */}
+          <Text style={Styles.discountBadgeText}>{discount}</Text>
         </View>
       )}
     </View>
@@ -46,7 +47,7 @@ export const ItemList = (props) => {
 };
 
 export default ItemList;
-const ImagePlaceHolder = ({image}) => {
+const ImagePlaceHolder = ({ image }) => {
   const [loading, setLoading] = useState(true);
   return (
     // <ImageBackground

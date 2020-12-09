@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -11,9 +11,9 @@ import {
   StatusBar,
   ToastAndroid,
 } from 'react-native';
-import {RFPercentage} from 'react-native-responsive-fontsize';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 import axios from 'axios';
-import {BaseUrl, base64Auth} from '../../utils/constants';
+import { BaseUrl, base64Auth } from '../../utils/constants';
 
 import {
   CustomInput,
@@ -25,8 +25,8 @@ import {
   radioButtonFill,
 } from '../../SharedComponents';
 
-import {Container} from '../RegisterScreen/components';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { Container } from '../RegisterScreen/components';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class AccountSettingScreen extends Component {
@@ -43,7 +43,7 @@ class AccountSettingScreen extends Component {
   };
 
   submitRegister = () => {
-    const {fullName, email, phone} = this.state.form;
+    const { fullName, email, phone } = this.state.form;
 
     let payload = {
       customer: {
@@ -85,7 +85,7 @@ class AccountSettingScreen extends Component {
   };
 
   handleFormDatas = (data, type) => {
-    let form = {...this.state.form};
+    let form = { ...this.state.form };
 
     if (type === 'fullName') {
       form.fullName = data;
@@ -98,25 +98,25 @@ class AccountSettingScreen extends Component {
     } else if (type === 'confirmPassword') {
       form.confirmPassword = data;
     }
-    this.setState({form}, () => console.log('Result in form', this.state.form));
+    this.setState({ form }, () => console.log('Result in form', this.state.form));
   };
 
   validatePasswordConfirm = () => {
-    let form = {...this.state.form};
+    let form = { ...this.state.form };
     console.log(form.password, form.confirmPassword);
     if (form.confirmPassword === '') {
-      this.setState({passwordConfirm: ''});
+      this.setState({ passwordConfirm: '' });
     } else {
       if (form.password !== form.confirmPassword) {
-        this.setState({passwordConfirm: true});
+        this.setState({ passwordConfirm: true });
       } else {
-        this.setState({passwordConfirm: false});
+        this.setState({ passwordConfirm: false });
       }
     }
   };
 
   toggleSelect = () => {
-    this.setState({isSelected: !this.state.isSelected});
+    this.setState({ isSelected: !this.state.isSelected });
   };
 
   showToastWithGravityAndOffset = () => {
@@ -130,26 +130,22 @@ class AccountSettingScreen extends Component {
   };
 
   render() {
-    const {passwordConfirm, isSelected} = this.state;
-    const {TTComM16} = CommonStyles;
+    const { passwordConfirm, isSelected } = this.state;
+    const { TTComM16 } = CommonStyles;
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           {/* <StatusBar barStyle="dark-content" backgroundColor="#fff" /> */}
 
           {/* Header section  */}
-          <View style={{flex: 0.5}}>
-            <CustomHeader
-              leftIcon={closeIcon}
-              rightIcon={logoSmall}
-              leftIconAction={() => this.props.navigation.goBack()}
-            />
-          </View>
+          {/* <View style={{ flex: 0.5 }}>
+
+          </View> */}
           {/* Header section End */}
 
           {/* Form Section */}
-          <View style={{flex: 10, paddingHorizontal: 20}}>
+          <View style={{ flex: 10, paddingHorizontal: 20 }}>
             <View
               style={{
                 flex: 1,
@@ -162,6 +158,14 @@ class AccountSettingScreen extends Component {
               </Text>
             </View>
           </View>
+          <View style={{ flex: 1, position: 'absolute', backgroundColor: 'Transparent', width: '100%' }}>
+            <CustomHeader
+              leftIcon={closeIcon}
+              rightIcon={logoSmall}
+              leftIconAction={() => this.props.navigation.goBack()}
+            />
+          </View>
+
         </SafeAreaView>
       </>
     );

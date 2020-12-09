@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -26,20 +26,20 @@ import {
   radioButtonFill,
   appleBlackIcon,
 } from '../../SharedComponents/CommonIcons';
-import {connect} from 'react-redux';
-import {WebView} from 'react-native-webview';
+import { connect } from 'react-redux';
+import { WebView } from 'react-native-webview';
 import {
   setCartItem,
   removeFromCart,
   updateCart,
   removeAllItems,
 } from '../../store/actions';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import AsyncStorage from '@react-native-community/async-storage';
-import {BaseUrl, base64Auth} from '../../utils/constants';
+import { BaseUrl, base64Auth } from '../../utils/constants';
 import base64 from 'react-native-base64';
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 function IdGenerator() {
   var S4 = function () {
@@ -81,15 +81,15 @@ class CheckoutPaymentScreen extends Component {
 
   componentDidMount() {
     this.getAsyncData();
-    const {route} = this.props;
-    const {itemdata, productQty, apiparams = null} = route.params;
+    const { route } = this.props;
+    const { itemdata, productQty, apiparams = null } = route.params;
     this.BackHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.state.paymentdata.length > 0 &&
         this.props.navigation.navigate('DashboardScreen');
     });
     if (apiparams) {
       console.log(apiparams);
-      this.setState({GrandTotal: apiparams.items.GrandTotal});
+      this.setState({ GrandTotal: apiparams.items.GrandTotal });
     } else {
       if (itemdata && itemdata.variants && itemdata.variants.length > 0) {
         const price = parseFloat(itemdata.variants[0].price) * productQty;
@@ -118,9 +118,9 @@ class CheckoutPaymentScreen extends Component {
       let loggedData = await AsyncStorage.getItem('loginDetails');
       console.warn('Is Logged', loggedData);
       if (loggedData !== null) {
-        this.setState({UserData: JSON.parse(loggedData)});
+        this.setState({ UserData: JSON.parse(loggedData) });
       } else {
-        this.setState({UserData: ''});
+        this.setState({ UserData: '' });
       }
     } catch (err) {
       console.log('Is Logged', err);
@@ -128,8 +128,8 @@ class CheckoutPaymentScreen extends Component {
   };
 
   handleProductDetailApi = async () => {
-    const {UserData} = this.state;
-    const {itemdata, productQty, type} = this.props.route.params;
+    const { UserData } = this.state;
+    const { itemdata, productQty, type } = this.props.route.params;
     console.warn(itemdata);
 
     if (type == 'Buy') {
@@ -139,7 +139,7 @@ class CheckoutPaymentScreen extends Component {
         total: itemdata.variants[0].price * itemdata.count,
         quantity: productQty,
       });
-      this.setState({GrandTotal: itemdata.variants[0].price * productQty});
+      this.setState({ GrandTotal: itemdata.variants[0].price * productQty });
     } else {
       let products = [];
       let GrandTotal = 0;
@@ -155,18 +155,18 @@ class CheckoutPaymentScreen extends Component {
         products.map((price) => {
           GrandTotal = GrandTotal + Number(price.total);
         });
-      this.setState({GrandTotal: GrandTotal});
+      this.setState({ GrandTotal: GrandTotal });
     }
   };
   handlepayment = async () => {
-    const {GrandTotal} = this.state;
+    const { GrandTotal } = this.state;
     const cartId = IdGenerator();
-    const {apiparams = null} = this.props.route.params;
-    const {uaddress} = apiparams;
+    const { apiparams = null } = this.props.route.params;
+    const { uaddress } = apiparams;
     // const Total = GrandTotal + GrandTotal * 0.05 + 9.99;
     const amount = Number(GrandTotal + GrandTotal * 0.05 + 9.99).toFixed(2);
     let payload = {
-      profile_id: 47999,
+      profile_id: 47606,
       tran_type: 'sale',
       tran_class: 'ecom',
       cart_id: cartId,
@@ -197,7 +197,7 @@ class CheckoutPaymentScreen extends Component {
       method: 'POST',
       data: payload,
       headers: {
-        authorization: 'SBJNLL2696-HZKTR6L9DG-ZBG2BGJHZM',
+        authorization: 'SDJNLL26JN-HZHWDR6DJN-BWHWGWRMMZ',
         'Content-Type': 'application/json',
       },
     }).then((res) => {
@@ -215,8 +215,8 @@ class CheckoutPaymentScreen extends Component {
   };
 
   handleBackApi = async (list) => {
-    const {UserData} = this.state;
-    const {itemdata, productQty, type} = this.props.route.params;
+    const { UserData } = this.state;
+    const { itemdata, productQty, type } = this.props.route.params;
     let products = [];
     let GrandTotal = 0;
     if (type == 'Buy') {
@@ -241,7 +241,7 @@ class CheckoutPaymentScreen extends Component {
     let payload = {
       tran_ref: list.tran_ref,
       uid: UserData.id,
-      items: {products: products, GrandTotal: GrandTotal},
+      items: { products: products, GrandTotal: GrandTotal },
       uname: UserData.firstName,
       uaddress: list.customer_details,
     };
@@ -253,7 +253,7 @@ class CheckoutPaymentScreen extends Component {
       method: 'POST',
       data: payload,
     }).then((res) => {
-      this.setState({iswebView: false});
+      this.setState({ iswebView: false });
       // this.createShopifyOrder();
       console.warn(res);
     });
@@ -262,18 +262,18 @@ class CheckoutPaymentScreen extends Component {
   handlePaymentResponse = () => {
     axios(`https://secure.paytabs.com/payment/query`, {
       headers: {
-        authorization: 'SBJNLL2696-HZKTR6L9DG-ZBG2BGJHZM',
+        authorization: 'SDJNLL26JN-HZHWDR6DJN-BWHWGWRMMZ',
         'Content-Type': 'application/json',
       },
       method: 'POST',
       data: {
-        profile_id: 47999,
+        profile_id: 47606,
         tran_ref: JSON.stringify(this.state.paymentdata.tran_ref),
       },
     }).then((res) => {
-      const {itemdata, productQty, type} = this.props.route.params;
+      const { itemdata, productQty, type } = this.props.route.params;
       if (res && res.data.payment_result.response_message == 'Authorised') {
-        this.setState({paymentdata: res.data});
+        this.setState({ paymentdata: res.data });
         // this.handleBackApi(res.data);
         // this.saveData();
         this.createShopifyOrder();
@@ -290,11 +290,11 @@ class CheckoutPaymentScreen extends Component {
   };
   createShopifyOrder = async () => {
     try {
-      const {UserData} = this.state;
-      const {apiparams = null} = this.props.route.params;
+      const { UserData } = this.state;
+      const { apiparams = null } = this.props.route.params;
       let products = [];
-      const {uaddress} = apiparams;
-      const {id} = UserData;
+      const { uaddress } = apiparams;
+      const { id } = UserData;
       const customerData = base64.decode(
         id === '1wf23gv3erty3jt1234he'
           ? 'Z2lkOi8vc2hvcGlmeS9DdXN0b21lci80NDQ2NTE2NzczMDU5'
@@ -330,7 +330,7 @@ class CheckoutPaymentScreen extends Component {
         quantity: item.quantity,
       }));
       console.log('products', products);
-      const {GrandTotal} = this.state;
+      const { GrandTotal } = this.state;
       const tax = Number(GrandTotal * 0.05).toFixed(2);
       if (customer_id) {
         let order = {
@@ -377,7 +377,46 @@ class CheckoutPaymentScreen extends Component {
         axios
           .post(
             `${BaseUrl}/admin/api/2020-10/orders.json`,
-            JSON.stringify(order),
+            JSON.stringify({
+              order: {
+                line_items: products,
+                shipping_address,
+                customer: {
+                  id: customer_id,
+                },
+                tax_lines: [
+                  {
+                    price: (GrandTotal * 0.05).toFixed(2).toString(),
+                    rate: 0.05,
+                    title: 'VAT',
+                  },
+                ],
+                shipping_lines: [
+                  {
+                    custom: true,
+                    // price: parseInt(GrandTotal) >= 200 ? '0.00' : '4.99',
+                    // title: parseInt(GrandTotal) >= 200 ? 'Free' : 'Standard',
+                    price: 4.99,
+                    currency_code: "AED",
+                    title: "Standard",
+                  },
+                ],
+                transactions: [
+                  {
+                    amount: (GrandTotal * 0.05 + 4.99 + GrandTotal)
+                      .toFixed(2)
+                      .toString(),
+                    kind: 'capture',
+                    status: 'success',
+                    currency: 'AED',
+                    gateway: 'manual',
+                    user_id: customer_id,
+                  },
+                ],
+                total_tax: (GrandTotal * 0.05).toFixed(2).toString(),
+                financial_status: 'paid',
+              },
+            }),
             {
               headers: {
                 Authorization: base64Auth,
@@ -387,7 +426,7 @@ class CheckoutPaymentScreen extends Component {
             },
           )
           .then((resp) => {
-            const {data} = resp;
+            const { data } = resp;
             console.log(data);
             this.props.removeFromCart([]);
             this.props.navigation.navigate('CheckoutHistoryScreen', {
@@ -437,7 +476,7 @@ class CheckoutPaymentScreen extends Component {
           },
         },
       );
-      const {data} = user;
+      const { data } = user;
       return data.customer.id;
     } catch (e) {
       console.log(e.response);
@@ -457,14 +496,14 @@ class CheckoutPaymentScreen extends Component {
       },
     );
 
-    const {data} = customersData;
+    const { data } = customersData;
     const user = data.customers.find(
       (customer) => customer.email.toLowerCase() == email.toLowerCase(),
     );
     return user;
   };
   render() {
-    const {TTComDB16, TTComL16, TTComDB28, TTComM14, TTComM18} = CommonStyles;
+    const { TTComDB16, TTComL16, TTComDB28, TTComM14, TTComM18 } = CommonStyles;
 
     const {
       isLoading,
@@ -477,7 +516,7 @@ class CheckoutPaymentScreen extends Component {
     const total = Number(GrandTotal + GrandTotal * 0.05 + 4.99).toFixed(2);
     if (iswebView) {
       return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <WebView
             ref={(ref) => {
               this.webview = ref;
@@ -487,7 +526,7 @@ class CheckoutPaymentScreen extends Component {
                 ? !paymentdata.length > 0 && this.createShopifyOrder()
                 : null;
             }}
-            source={{uri: this.state.webUrl, method: 'GET'}}
+            source={{ uri: this.state.webUrl, method: 'GET' }}
             containerStyle={{
               backfaceVisibility: 'hidden',
               height: height,
@@ -510,96 +549,96 @@ class CheckoutPaymentScreen extends Component {
             {isLoading ? (
               <Loader />
             ) : (
-              <View
-                style={{
-                  flex: 9,
-                  paddingHorizontal: iswebView ? 0 : 20,
-                  marginTop: 60,
-                }}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <View style={{marginTop: 100}} />
+                <View
+                  style={{
+                    flex: 9,
+                    paddingHorizontal: iswebView ? 0 : 20,
+                    marginTop: 60,
+                  }}>
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ marginTop: 100 }} />
 
-                  {!iswebView && (
-                    <View>
-                      <CustomTracker stage={2} />
-
-                      <View
-                        style={{
-                          borderRadius: 12,
-                          borderColor: '#E9E9E9',
-                          padding: 20,
-                          width: '100%',
-                          marginVertical: 20,
-                          backgroundColor: '#F2F2F2',
-                        }}>
-                        <View style={{flexDirection: 'row'}}>
-                          <View style={{width: '50%'}}>
-                            <Text style={[TTComM14, {marginVertical: 5}]}>
-                              Subtotal
-                            </Text>
-                            <Text style={[TTComM14, {marginVertical: 5}]}>
-                              Shipping
-                            </Text>
-                            <Text style={[TTComM14, {marginVertical: 5}]}>
-                              VAT 5%
-                            </Text>
-                          </View>
-
-                          <View style={{width: '50%', alignItems: 'flex-end'}}>
-                            <Text style={[TTComM18, {marginVertical: 3}]}>
-                              {Number(GrandTotal).toFixed(2)} AED
-                            </Text>
-                            <Text style={[TTComM18, {marginVertical: 3}]}>
-                              4.99 AED
-                            </Text>
-                            <Text style={[TTComM18, {marginVertical: 3}]}>
-                              {Number(GrandTotal * 0.05).toFixed(2)} AED
-                            </Text>
-                          </View>
-                        </View>
+                    {!iswebView && (
+                      <View>
+                        <CustomTracker stage={2} />
 
                         <View
                           style={{
+                            borderRadius: 12,
+                            borderColor: '#E9E9E9',
+                            padding: 20,
                             width: '100%',
-                            height: 1,
-                            backgroundColor: '#000',
-                            marginVertical: 5,
-                          }}
-                        />
-
-                        <View style={{flexDirection: 'row'}}>
-                          <View style={{width: '50%'}}>
-                            <Text style={[TTComM18, {marginVertical: 5}]}>
-                              Total
+                            marginVertical: 20,
+                            backgroundColor: '#F2F2F2',
+                          }}>
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: '50%' }}>
+                              <Text style={[TTComM14, { marginVertical: 5 }]}>
+                                Subtotal
                             </Text>
+                              <Text style={[TTComM14, { marginVertical: 5 }]}>
+                                Shipping
+                            </Text>
+                              <Text style={[TTComM14, { marginVertical: 5 }]}>
+                                VAT 5%
+                            </Text>
+                            </View>
+
+                            <View style={{ width: '50%', alignItems: 'flex-end' }}>
+                              <Text style={[TTComM18, { marginVertical: 3 }]}>
+                                {Number(GrandTotal).toFixed(2)} AED
+                            </Text>
+                              <Text style={[TTComM18, { marginVertical: 3 }]}>
+                                4.99 AED
+                            </Text>
+                              <Text style={[TTComM18, { marginVertical: 3 }]}>
+                                {Number(GrandTotal * 0.05).toFixed(2)} AED
+                            </Text>
+                            </View>
                           </View>
 
-                          <View style={{width: '50%', alignItems: 'flex-end'}}>
-                            <Text style={[TTComDB28, {marginVertical: 3}]}>
-                              {total} AED
+                          <View
+                            style={{
+                              width: '100%',
+                              height: 1,
+                              backgroundColor: '#000',
+                              marginVertical: 5,
+                            }}
+                          />
+
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={{ width: '50%' }}>
+                              <Text style={[TTComM18, { marginVertical: 5 }]}>
+                                Total
                             </Text>
+                            </View>
+
+                            <View style={{ width: '50%', alignItems: 'flex-end' }}>
+                              <Text style={[TTComDB28, { marginVertical: 3 }]}>
+                                {total} AED
+                            </Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                      <View style={{marginVertical: 20}} />
-                      <View style={{marginBottom: 30}}>
-                        <CustomButton
-                          buttonStyles="btn-primary"
-                          textStyles="txt-primary"
-                          text="Pay by Credit Card"
-                          width="100%"
-                          onAction={
-                            () => {
-                              this.handlepayment();
+                        <View style={{ marginVertical: 20 }} />
+                        <View style={{ marginBottom: 30 }}>
+                          <CustomButton
+                            buttonStyles="btn-primary"
+                            textStyles="txt-primary"
+                            text="Pay by Credit Card"
+                            width="100%"
+                            onAction={
+                              () => {
+                                this.handlepayment();
+                              }
+                              // this.props.navigation.navigate(
+                              //   'CheckoutPaymentScreen1',
+                              // )
                             }
-                            // this.props.navigation.navigate(
-                            //   'CheckoutPaymentScreen1',
-                            // )
-                          }
-                        />
+                          />
 
-                        <View style={{marginVertical: 30}} />
-                        {/* 
+                          <View style={{ marginVertical: 30 }} />
+                          {/* 
                         <TouchableOpacity
                           style={{
                             backgroundColor: '#000',
@@ -611,7 +650,7 @@ class CheckoutPaymentScreen extends Component {
                           <Image source={appleBlackIcon} />
                         </TouchableOpacity> */}
 
-                        {/* <View style={{marginVertical: 10}} />
+                          {/* <View style={{marginVertical: 10}} />
                         <CustomButton
                           buttonStyles="btn-secondary-black"
                           textStyles="txt-secondary"
@@ -623,12 +662,12 @@ class CheckoutPaymentScreen extends Component {
                             )
                           }
                         /> */}
+                        </View>
                       </View>
-                    </View>
-                  )}
-                </ScrollView>
-              </View>
-            )}
+                    )}
+                  </ScrollView>
+                </View>
+              )}
             <View
               style={{
                 flex: 1,
@@ -664,27 +703,27 @@ export default connect(
 )(CheckoutPaymentScreen);
 
 const CustomSelector = (props) => {
-  const {text, days, price, option, toggleOption} = props;
-  const {TTComM16, TTComDB16} = CommonStyles;
+  const { text, days, price, option, toggleOption } = props;
+  const { TTComM16, TTComDB16 } = CommonStyles;
   return (
     <TouchableOpacity
       onPress={() => toggleOption && toggleOption()}
-      style={{flexDirection: 'row', marginVertical: 10, marginHorizontal: 20}}>
+      style={{ flexDirection: 'row', marginVertical: 10, marginHorizontal: 20 }}>
       <Image
         source={option ? radioButtonFill : radioButton}
-        style={{marginRight: 15}}
+        style={{ marginRight: 15 }}
       />
       <Text style={TTComM16}>{text && text}</Text>
-      <Text style={[TTComDB16, {color: '#7E82E6', marginHorizontal: 5}]}>
+      <Text style={[TTComDB16, { color: '#7E82E6', marginHorizontal: 5 }]}>
         {days && days}
       </Text>
-      <Text style={[TTComDB16, {color: '#7E82E6'}]}>{price && price}</Text>
+      <Text style={[TTComDB16, { color: '#7E82E6' }]}>{price && price}</Text>
     </TouchableOpacity>
   );
 };
 
 const CustomInputDropdown = (props) => {
-  const {label, value, onAction, placeholder} = props;
+  const { label, value, onAction, placeholder } = props;
   console.log('value', value);
   return (
     <View>
@@ -708,12 +747,12 @@ const CustomInputDropdown = (props) => {
           {value === '' && placeholder
             ? placeholder
             : value === ''
-            ? 'Country'
-            : value}
+              ? 'Country'
+              : value}
         </Text>
         <Image
           source={require('../../../assests/RegisterScreen/dropdownDownIcon/Polygon2.png')}
-          style={{position: 'absolute', top: '40%', right: 20}}
+          style={{ position: 'absolute', top: '40%', right: 20 }}
         />
       </TouchableOpacity>
     </View>

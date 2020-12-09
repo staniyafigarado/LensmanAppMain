@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "607392749221",
+    "firebase_url": "https://lensman-express.firebaseio.com",
+    "project_id": "lensman-express",
+    "storage_bucket": "lensman-express.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607392749221:android:569867da4beff7f48a9f4c",
+        "android_client_info": {
+          "package_name": "com.lensman"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxVs_-wjMkyXpfspaNWfXV-dUHx6Rs0cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
