@@ -127,7 +127,7 @@ class ShoppingListScreen extends Component {
         await axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=226213822629',
+            '/admin/api/2020-07/products.json?collection_id=224956088485',
             {
               headers: {
                 Authorization: base64Auth,
