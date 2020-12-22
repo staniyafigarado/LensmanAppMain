@@ -50,7 +50,7 @@ import AuthScreen from '../AuthScreen';
 
 import { setCartItem } from '../../store/actions';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-
+import { headerImage, closeIcon, rightArrowIcon } from '../../SharedComponents/CommonIcons';
 class DashboardScreen extends Component {
   constructor(props) {
     super(props);
@@ -280,6 +280,31 @@ class DashboardScreen extends Component {
         this.setState({ productList: res.data.products });
       });
   };
+
+  fetchSearchData = async (text) => {
+    // this.setState(
+    //   { serachText: text, isSearchView: text == '' ? false : true },
+    //   () => {
+    //     this.props.onSearchEvent &&
+    //       this.props.onSearchEvent(text == '' ? true : false);
+    //   },
+    // );
+    // await axios
+    //   .get(BaseUrl + `/search/suggest.json?q=${text}&resources[type]=product`)
+    //   .then((res) => {
+    //     this.setState({
+    //       serachData: res.data.resources.results.products,
+    //     });
+    //     console.warn(
+    //       'search data',
+    //       res.data.resources.results.products.map((item) => {
+    //         return item.title;
+    //       }),
+    //     );
+    //   });
+    this.props.navigation.navigate("Search");
+  };
+
   render() {
     const { tabNavContainer } = Styles;
     const {
@@ -426,9 +451,8 @@ class DashboardScreen extends Component {
                                   item.variants[0].price &&
                                   item.variants[0].compare_at_price
                                   ?
-                                  (item.variants[0].price -
+                                  'AED ' + (item.variants[0].price -
                                     item.variants[0].compare_at_price)
-                                  + ' AED'
                                   : '0'
                               }
                               key={index}
@@ -437,7 +461,7 @@ class DashboardScreen extends Component {
                                 item.variants &&
                                   item.variants[0] &&
                                   item.variants[0].price
-                                  ? item.variants[0].price + ' AED'
+                                  ? 'AED  ' + Math.floor(item.variants[0].price)
                                   : '12 AED'
                               }
                               itemImage={
@@ -562,6 +586,47 @@ class DashboardScreen extends Component {
                 this.setState({ isSearchData: isShow });
               }}
             />
+            {/* <View>
+              <ImageBackground
+                source={headerImage}
+                style={{
+                  height: 160,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  // zIndex: 2,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                  <Image source={logoSmall} />
+                  <TextInput
+                    // value={serachText}
+                    onChangeText={(text) => this.fetchSearchData(text)}
+                    placeholder={"What are you looking for?"}
+                    style={{
+                      backgroundColor: '#fff',
+                      borderRadius: 50,
+                      borderColor: '#FFFFFF',
+                      borderWidth: 1,
+                      width: logoSmall ? '85%' : '100%',
+                      paddingHorizontal: 20,
+                      fontSize: 18,
+                      paddingVertical: 3,
+                      color: '#000',
+
+                      fontFamily: 'TTCommons-Medium',
+                      height: 40,
+                    }}
+                    placeholderTextColor={'#656565'}
+                  />
+                </View>
+              </ImageBackground>
+
+            </View> */}
           </View>
           {/* </KeyboardAvoidingView> */}
         </SafeAreaView>

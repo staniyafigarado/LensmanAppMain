@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import {
   TabNavButton,
 } from '../../SharedComponents';
 
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import {
   ordersIcon,
   pictresIcon,
@@ -44,7 +44,7 @@ class ProfileScreen extends Component {
       console.log('Is Logged data in profile ', loggedData);
 
       if (loggedData && loggedData !== null) {
-        this.setState({loginData: JSON.parse(loggedData)});
+        this.setState({ loginData: JSON.parse(loggedData) });
       }
     } catch (err) {
       console.log('Is Logged data in profile Err', err);
@@ -57,7 +57,7 @@ class ProfileScreen extends Component {
       firstName: 'Guest User',
       id: '1wf23gv3erty3jt1234he',
       lastName: null,
-      orders: {edges: []},
+      orders: { edges: [] },
       phone: null,
     };
     try {
@@ -78,22 +78,22 @@ class ProfileScreen extends Component {
 
     if (data) {
       let id = data.id;
-      this.props.navigation.navigate('ItemDetailsScreen', {productId: id});
+      this.props.navigation.navigate('ItemDetailsScreen', { productId: id });
     }
   };
   render() {
-    const {TTComDB28, tabNavContainer} = CommonStyles;
+    const { TTComDB28, tabNavContainer } = CommonStyles;
 
-    const {loginData, isSearchData} = this.state;
+    const { loginData, isSearchData } = this.state;
     if (loginData !== null) console.log('In Profile ', loginData.id);
 
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
-          <View style={{flex: 9, paddingHorizontal: 20, paddingTop: 140}}>
+          <View style={{ flex: 9, paddingHorizontal: 20, paddingTop: 140 }}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <View
                 style={{
@@ -103,8 +103,8 @@ class ProfileScreen extends Component {
                   marginTop: 40,
                   paddingRight: 10,
                 }}>
-                <View style={{paddingLeft: 15}}>
-                  <Text style={[TTComDB28, {fontSize: 19, marginBottom: 8}]}>
+                <View style={{ paddingLeft: 15 }}>
+                  <Text style={[TTComDB28, { fontSize: 19, marginBottom: 8 }]}>
                     Hello,
                   </Text>
                   <Text style={TTComDB28}>
@@ -114,11 +114,11 @@ class ProfileScreen extends Component {
 
                 <Image
                   source={require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')}
-                  style={{width: 52, height: 52, borderRadius: 25}}
+                  style={{ width: 52, height: 52, borderRadius: 25 }}
                 />
               </View>
 
-              <View style={{marginBottom: 90}}>
+              <View style={{ marginBottom: 90 }}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -132,13 +132,13 @@ class ProfileScreen extends Component {
                       this.props.navigation.navigate('OrderHistoryScreen')
                     }
                   />
-                  <View style={{marginLeft: 10}} />
+                  <View style={{ marginLeft: 10 }} />
                   <ContainerBox
                     image={pictresIcon}
                     label="Your Pictures"
                     onAction={() => {
                       loginData !== null &&
-                      loginData.id !== '1wf23gv3erty3jt1234he'
+                        loginData.id !== '1wf23gv3erty3jt1234he'
                         ? this.props.navigation.navigate('CustomGalleryScreen')
                         : this.props.navigation.navigate('LoginScreen');
                     }}
@@ -158,7 +158,7 @@ class ProfileScreen extends Component {
                       this.props.navigation.navigate('AccountSettingScreen')
                     }
                   />
-                  <View style={{marginLeft: 10}} />
+                  <View style={{ marginLeft: 10 }} />
                   <ContainerBox
                     image={contactUsIcon}
                     label="Contact us"
@@ -167,14 +167,14 @@ class ProfileScreen extends Component {
                     }
                   />
                 </View>
-                <View style={{marginVertical: 7}} />
+                <View style={{ marginVertical: 7 }} />
                 <CustomButton
                   buttonStyles="btn-primary"
                   textStyles="txt-primary"
                   text={
                     (loginData !== null &&
                       loginData.id === '1wf23gv3erty3jt1234he') ||
-                    loginData == null
+                      loginData == null
                       ? 'Login'
                       : 'Logout'
                   }
@@ -185,7 +185,7 @@ class ProfileScreen extends Component {
             </ScrollView>
 
             {!isSearchData && (
-              <View style={[tabNavContainer, {width: '100%'}]}>
+              <View style={[tabNavContainer, { width: '100%' }]}>
                 <TabNavButton
                   nav={this.props}
                   active="4"
@@ -202,7 +202,7 @@ class ProfileScreen extends Component {
                 backgroundColor: 'transparent',
                 width: '100%',
               },
-              isSearchData && {height: '100%'},
+              isSearchData && { height: '100%' },
             ]}>
             <CustomHeaderPrim
               leftIcon={logoSmall}
@@ -214,7 +214,7 @@ class ProfileScreen extends Component {
               handleSearchBox={() => console.log('search box')}
               filterData={this.filterData}
               onSearchEvent={(isShow) => {
-                this.setState({isSearchData: isShow});
+                this.setState({ isSearchData: isShow });
               }}
             />
           </View>
@@ -227,13 +227,13 @@ class ProfileScreen extends Component {
 export default ProfileScreen;
 
 const ContainerBox = (props) => {
-  const {image, label, onAction} = props;
-  const {TTComDB17} = CommonStyles;
+  const { image, label, onAction } = props;
+  const { TTComDB17 } = CommonStyles;
   return (
     <TouchableOpacity
       onPress={() => onAction && onAction()}
-      style={{width: '50%'}}>
-      <Text style={[TTComDB17, {paddingLeft: 30, paddingVertical: 10}]}>
+      style={{ width: '50%' }}>
+      <Text style={[TTComDB17, { paddingLeft: 30, paddingVertical: 10 }]}>
         {label}
       </Text>
       <View

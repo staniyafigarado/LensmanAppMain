@@ -10,14 +10,14 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
-import {headerImage, closeIcon, rightArrowIcon} from '../CommonIcons';
+import { headerImage, closeIcon, rightArrowIcon } from '../CommonIcons';
 
-import {CommonStyles} from '../CustomStyles';
+import { CommonStyles } from '../CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import axios from 'axios';
-import {BaseUrl} from '../../utils/constants';
+import { BaseUrl } from '../../utils/constants';
 class CustomHeaderPrimary extends React.Component {
   state = {
     serachData: [],
@@ -54,7 +54,7 @@ class CustomHeaderPrimary extends React.Component {
           }
         })
         .map((item) => {
-          return {title: item.title, id: item.id};
+          return { title: item.title, id: item.id };
         });
 
       console.log('text', titlesAndIds);
@@ -68,14 +68,14 @@ class CustomHeaderPrimary extends React.Component {
   };
 
   handleFilterData = (data) => {
-    this.setState({isSearchView: false, serachText: ''}, () => {
+    this.setState({ isSearchView: false, serachText: '' }, () => {
       this.props.filterData && this.props.filterData(data);
     });
   };
 
   fetchSearchData = async (text) => {
     this.setState(
-      {serachText: text, isSearchView: text == '' ? false : true},
+      { serachText: text, isSearchView: text == '' ? false : true },
       () => {
         this.props.onSearchEvent &&
           this.props.onSearchEvent(text == '' ? true : false);
@@ -105,9 +105,9 @@ class CustomHeaderPrimary extends React.Component {
       centerLabel,
     } = this.props;
 
-    const {serachData, isSearchView, serachText} = this.state;
+    const { serachData, isSearchView, serachText } = this.state;
 
-    const {TTComDB28, TTComDB18} = CommonStyles;
+    const { TTComDB28, TTComDB18 } = CommonStyles;
 
     return (
       <View
@@ -167,7 +167,7 @@ class CustomHeaderPrimary extends React.Component {
             {searchBoxClearButton && (
               <Image
                 source={closeIcon}
-                style={{tintColor: '#000', position: 'absolute', right: 10}}
+                style={{ tintColor: '#000', position: 'absolute', right: 10 }}
               />
             )}
 
@@ -188,7 +188,7 @@ class CustomHeaderPrimary extends React.Component {
                   onPress={() => leftIconAction && leftIconAction()}>
                   <Image source={leftIcon} />
                 </TouchableOpacity>
-                <Text style={[TTComDB28, {color: '#fff'}]}>{centerLabel}</Text>
+                <Text style={[TTComDB28, { color: '#fff' }]}>{centerLabel}</Text>
               </View>
             )}
           </View>
@@ -213,7 +213,7 @@ class CustomHeaderPrimary extends React.Component {
               }}>
               {serachData.map((data, index) => {
                 return (
-                  <View style={{marginVertical: 20}} key={index}>
+                  <View style={{ marginVertical: 20 }} key={index}>
                     <TouchableOpacity
                       onPress={() => this.handleFilterData(data)}
                       style={{

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {RNCamera} from 'react-native-camera';
+import React, { Component } from 'react';
+import { RNCamera } from 'react-native-camera';
 import {
   View,
   Text,
@@ -21,7 +21,7 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage';
 
-import {DemoOverlay1, DemoOverlay2, DemoOverlay3} from '../../Screens';
+import { DemoOverlay1, DemoOverlay2, DemoOverlay3 } from '../../Screens';
 
 const Overlay = require('../../../assests/Test/Group310.png');
 
@@ -41,7 +41,7 @@ class CameraSectionScreen extends Component {
   }
 
   componentDidMount() {
-    const {params} = this.props.route;
+    const { params } = this.props.route;
     if (params && params.fromdata && params.fromdata === 'productSection') {
       // console.log('Camera section DID Mount productSection');
       this.setState({
@@ -84,7 +84,7 @@ class CameraSectionScreen extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {params} = this.props.route;
+    const { params } = this.props.route;
     if (prevProps.route.params !== this.props.route.params) {
       console.log('Camera section DID Update Changed', this.props.route.params);
       if (
@@ -121,19 +121,19 @@ class CameraSectionScreen extends Component {
   }
 
   handleOverlay = (status) => {
-    this.setState({overlayNum: this.state.overlayNum + 1}, () => {
+    this.setState({ overlayNum: this.state.overlayNum + 1 }, () => {
       // console.log("12222",this.state.overlayNum)
       if (this.state.overlayNum === 3) {
-        this.setState({isDemoShow: false});
+        this.setState({ isDemoShow: false });
       }
     });
-    if (status) this.setState({isDemoShow: false});
+    if (status) this.setState({ isDemoShow: false });
   };
 
   takePicture = async () => {
     let sectionType = this.state.sectionType;
-    let {formData} = this.props.route.params;
-    const {imageItem} = this.state;
+    let { formData } = this.props.route.params;
+    const { imageItem } = this.state;
 
     console.log('sectionType =>', sectionType);
 
@@ -145,13 +145,13 @@ class CameraSectionScreen extends Component {
         base64: true,
       };
 
-      this.setState({takingPic: true});
+      this.setState({ takingPic: true });
       await this.camera
         .takePictureAsync(options)
         .then((data) => {
           // console.log('Success', JSON.stringify(data));
-          this.saveData({uri: data.uri, base64: data.base64});
-          this.setState({takingPic: false}, () => {
+          this.saveData({ uri: data.uri, base64: data.base64 });
+          this.setState({ takingPic: false }, () => {
             console.log('Dataaa', data.uri, sectionType);
             // if (sectionType === '') {
             //   this.props.navigation.navigate('PhotoTakenSectioinScreen', {
@@ -198,8 +198,8 @@ class CameraSectionScreen extends Component {
 
   launchImageLibrary = () => {
     let sectionType = this.state.sectionType;
-    let {formData} = this.props.route.params;
-    const {imageItem} = this.state;
+    let { formData } = this.props.route.params;
+    const { imageItem } = this.state;
     let options = {
       storageOptions: {
         skipBackup: true,
@@ -243,7 +243,7 @@ class CameraSectionScreen extends Component {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        const source = {uri: response.uri};
+        const source = { uri: response.uri };
         console.log('response', JSON.stringify(response));
         // this.setState({
         //   filePath: response,
@@ -274,17 +274,17 @@ class CameraSectionScreen extends Component {
 
   cameraSwitch = () => {
     if (this.state.cameraType === 'back') {
-      this.setState({cameraType: 'front'});
+      this.setState({ cameraType: 'front' });
     } else {
-      this.setState({cameraType: 'back'});
+      this.setState({ cameraType: 'back' });
     }
   };
 
   toggleFlashMode = () => {
     if (this.state.flashMode === 'on') {
-      this.setState({flashMode: 'off'});
+      this.setState({ flashMode: 'off' });
     } else {
-      this.setState({flashMode: 'on'});
+      this.setState({ flashMode: 'on' });
     }
   };
 
@@ -298,15 +298,15 @@ class CameraSectionScreen extends Component {
       isOverlay,
     } = this.state;
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <StatusBar hidden={true} />
-        <View style={{flex: 10}}>
+        <View style={{ flex: 10 }}>
           <RNCamera
             ref={(ref) => {
               this.camera = ref;
             }}
             captureAudio={false}
-            style={{flex: 1, zIndex: 2}}
+            style={{ flex: 1, zIndex: 2 }}
             type={
               cameraType === 'back'
                 ? RNCamera.Constants.Type.back
@@ -395,13 +395,13 @@ class CameraSectionScreen extends Component {
 
         {isDemoShow && (
           <Modal animationType="slide" transparent={true} visible={isDemoShow}>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               {overlayNum < 3 && (
                 <CustomOverlayDemo
                   {...this.props}
                   overlayNum={overlayNum}
                   handleOverlay={this.handleOverlay}
-                  handleCloseOverlay={() => this.setState({isDemoShow: false})}
+                  handleCloseOverlay={() => this.setState({ isDemoShow: false })}
                 />
               )}
             </View>
@@ -415,7 +415,7 @@ class CameraSectionScreen extends Component {
 export default CameraSectionScreen;
 
 const CustomOverlayDemo = (props) => {
-  const {overlayNum, handleOverlay, handleCloseOverlay} = props;
+  const { overlayNum, handleOverlay, handleCloseOverlay } = props;
 
   if (overlayNum === 0) {
     return <DemoOverlay1 handleOverlay={handleOverlay} {...props} />;

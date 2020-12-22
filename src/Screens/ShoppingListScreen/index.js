@@ -42,7 +42,7 @@ class ShoppingListScreen extends Component {
       isLoading: false,
       image: '',
       whichCategory: '',
-      isSearchData: false,
+      isSearchData: false, selectedItem: null, selectedProduct: ''
     };
   }
 
@@ -94,10 +94,10 @@ class ShoppingListScreen extends Component {
   getProductList = (area) => {
     this.setState({ isLoading: true }, async () => {
       if (area == 'Print') {
-        axios
+        await axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=224954450085',
+            '/admin/api/2020-07/products.json?collection_id=226213822629',
             {
               headers: {
                 Authorization: base64Auth,
@@ -106,12 +106,16 @@ class ShoppingListScreen extends Component {
           )
           .then((res) => {
             console.warn('Print', res);
-
-            if (res.data.product && res.data.products.length) {
-              this.setState({
-                productList: [res.data.product],
-                isLoading: false,
-              });
+            if (res.data.products && res.data.products.length) {
+              this.setState(
+                { productList: res.data.products, isLoading: false },
+                //   () => {
+                //     console.log(
+                //       'Res get Product list in Dashboard ',
+                //       this.state.productList,
+                //     );
+                //   },
+              );
             } else {
               this.setState({ isLoading: false, productList: [] });
             }
@@ -123,7 +127,7 @@ class ShoppingListScreen extends Component {
         await axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=224956088485',
+            '/admin/api/2020-07/products.json?collection_id=226213822629',
             {
               headers: {
                 Authorization: base64Auth,
@@ -133,7 +137,15 @@ class ShoppingListScreen extends Component {
           .then((res) => {
             console.warn('Buy', res);
             if (res.data.products && res.data.products.length) {
-              this.setState({ productList: res.data.products, isLoading: false });
+              this.setState(
+                { productList: res.data.products, isLoading: false },
+                //   () => {
+                //     console.log(
+                //       'Res get Product list in Dashboard ',
+                //       this.state.productList,
+                //     );
+                //   },
+              );
             } else {
               this.setState({ isLoading: false, productList: [] });
             }
@@ -237,20 +249,50 @@ class ShoppingListScreen extends Component {
       'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIyNDkyNDUwMDEzMw==',
       'Z2lkOi8vc2hvcGlmeS9Db2xsZWN0aW9uLzIzNzQyNzI5NDQwMw==',
     ];
-    let index = 0;
-    while (index < categories.length) {
+    //   let index = 0;
+    //   while (index < categories.length) {
+    //     const query = `
+    //     {
+    //       node(id:"${categories[index]}") {
+    //         ...on Collection {
+    //             title
+    //           image{
+    //             originalSrc
+    //           }
+    //             }
+    //         }
+    //     }
+    // `;
+    //     graphqlFetchHandler(
+    //       { query },
+    //       (onSuccess) => {
+    //         this.setState({ image: onSuccess.data.node.image });
+    //         console.warn(onSuccess);
+    //         this.setState({
+    //           categoriesList: [...this.state.categoriesList, onSuccess.data.node],
+    //         });
+    //       },
+    //       (error) => {
+    //         this.setState({ isCustomToaster: 'Something wrong', isLoader: false });
+    //         console.log(error);
+    //       },
+    //     );
+    //     index++;
+    //   }
+
+    for (let index = 0; index < categories.length; index++) {
       const query = `
-      {
-        node(id:"${categories[index]}") {
-          ...on Collection {
-              title
-            image{
-              originalSrc
-            }
+        {
+          node(id:"${categories[index]}") {
+            ...on Collection {
+                title
+              image{
+                originalSrc
               }
-          }
-      }
-  `;
+                }
+            }
+        }
+    `;
       graphqlFetchHandler(
         { query },
         (onSuccess) => {
@@ -265,40 +307,17 @@ class ShoppingListScreen extends Component {
           console.log(error);
         },
       );
-      index++;
     }
-
-    //     for (let index = 0; index < categories.length; index++) {
-    //       const query = `
-    //     {
-    //       node(id:"${categories[index]}") {
-    //         ...on Collection {
-    //             title
-    //           image{
-    //             originalSrc
-    //           }
-    //             }
-    //         }
-    //     }
-    // `;
-    //       graphqlFetchHandler(
-    //         { query },
-    //         (onSuccess) => {
-    //           this.setState({ image: onSuccess.data.node.image });
-    //           console.warn(onSuccess);
-    //           this.setState({
-    //             categoriesList: [...this.state.categoriesList, onSuccess.data.node],
-    //           });
-    //         },
-    //         (error) => {
-    //           this.setState({ isCustomToaster: 'Something wrong', isLoader: false });
-    //           console.log(error);
-    //         },
-    //       );
-    //     }
   };
+  _choosen(selectedItem) {
+    this.setState({ selectedItem });
+    this.setState({ selectedProduct: selectedItem.title })
+  }
+  // actionOnRow(item) {
+  //   alert(item.title);
+  // }
   render() {
-    const { TTComDB28, tabNavContainer } = CommonStyles;
+    const { TTComDB28, tabNavContainer, TTComDB16 } = CommonStyles;
 
     const {
       isFilter,
@@ -333,34 +352,58 @@ class ShoppingListScreen extends Component {
                       }
                       renderItem={(item, index) => {
                         // console.warn('1122', item.item);
+                        const isSelected = (this.state.selectedItem === item.item);
+                        const borderColor = isSelected ? "#6d74fc" : "#ffffff";
                         return (
-                          <CategoryList
-                            label={
-                              item.item.title && item.item.title.length > 15
-                                ? item.item.title.slice(0, 15) + '...'
-                                : item.item.title
-                            }
-                            image={
-                              item.item &&
-                                item.item.image !== null &&
-                                item.item.image !== undefined &&
-                                item.item.image.originalSrc !== null &&
-                                item.item.image.originalSrc !== ''
-                                ? { uri: item.item.image.originalSrc }
-                                : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
-                            }
-                            selectCategory={() =>
-                              this.getCategoryProductlList(item.item)
-                            }
-                          />
+                          // <CategoryList
+                          //   label={
+                          //     item.item.title && item.item.title.length > 15
+                          //       ? item.item.title.slice(0, 15) + '...'
+                          //       : item.item.title
+                          //   }
+                          //   image={
+                          //     item.item &&
+                          //       item.item.image !== null &&
+                          //       item.item.image !== undefined &&
+                          //       item.item.image.originalSrc !== null &&
+                          //       item.item.image.originalSrc !== ''
+                          //       ? { uri: item.item.image.originalSrc }
+                          //       : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
+                          //   }
+                          //   selectCategory={() =>
+                          //     this.getCategoryProductlList(item.item)
+                          //   }
+                          // />
+                          <TouchableOpacity
+                            onPress={() => { this.getCategoryProductlList(item.item); this._choosen(item.item) }}
+                            style={{ alignItems: 'center', padding: 10 }}>
+                            <View style={{ width: 105, height: 105, borderRadius: 70, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor }}>
+                              <Image
+                                // defaultSource={require('../../../assests/Common/imagePlaceholder/placeholder.jpg')}
+                                source={item.item &&
+                                  item.item.image !== null &&
+                                  item.item.image !== undefined &&
+                                  item.item.image.originalSrc !== null &&
+                                  item.item.image.originalSrc !== ''
+                                  ? { uri: item.item.image.originalSrc }
+                                  : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')}
+                                style={{ width: 90, height: 90, borderRadius: 50 }}
+                              />
+                            </View>
+                            <Text style={[TTComDB16, { paddingVertical: 10 }]}>{item.item.title && item.item.title.length > 15
+                              ? item.item.title.slice(0, 15) + '...'
+                              : item.item.title}</Text>
+                          </TouchableOpacity>
                         );
                       }}
                       style={{ flexDirection: 'row' }}
                       keyExtractor={(item, index) => index.toString()}
                     />
                   </View>
-
-                  <View
+                  {
+                    this.state.selectedItem ? <Text style={TTComDB28}>{this.state.selectedProduct}</Text> : <Text style={TTComDB28}>Products for you</Text>
+                  }
+                  {/* <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -369,7 +412,7 @@ class ShoppingListScreen extends Component {
                     {/* <TouchableOpacity onPress={() => this.handleFilter()}>
                     <Image source={filterIcon} />
                   </TouchableOpacity> */}
-                  </View>
+                  {/* </View>  */}
 
                   <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                     <CustomSelectList
@@ -431,9 +474,8 @@ class ShoppingListScreen extends Component {
                                 // )
                                 // : '0'
                                 ?
-                                (item.variants[0].price -
+                                'AED ' + (item.variants[0].price -
                                   item.variants[0].compare_at_price)
-                                + ' AED'
                                 : '0'
                             }
                             key={index}
@@ -453,8 +495,10 @@ class ShoppingListScreen extends Component {
                             itemName={item.title}
                             price={
                               item.variants &&
-                              item.variants[0] &&
-                              item.variants[0].price
+                                item.variants[0] &&
+                                item.variants[0].price
+                                ? 'AED  ' + Math.floor(item.variants[0].price)
+                                : '12 AED'
                             }
                           />
                         );

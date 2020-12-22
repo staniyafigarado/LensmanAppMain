@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Text, TextInput, Image} from 'react-native';
+import { View, Text, TextInput, Image } from 'react-native';
 
-import {CommonStyles} from '../';
+import { CommonStyles } from '../';
 
 const CustomInput = (props) => {
   const {
@@ -22,10 +22,10 @@ const CustomInput = (props) => {
   } = props;
   return (
     <View style={{}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {label && <Text style={CommonStyles.customInputLabel}>{label}</Text>}
         {validationErr !== '' && validationErr && (
-          <Text style={[CommonStyles.customInputLabel, {color: '#FA3838'}]}>
+          <Text style={[CommonStyles.customInputLabel, { color: '#FA3838' }]}>
             {validationErr === '' ? '' : validationErr ? 'Does not match!' : ''}
           </Text>
         )}
@@ -34,7 +34,7 @@ const CustomInput = (props) => {
         <View
           style={
             isValidationErr
-              ? {borderWidth: 1, borderColor: 'red', borderRadius: 12}
+              ? { borderWidth: 1, borderColor: 'red', borderRadius: 12 }
               : {}
           }>
           <View style={CommonStyles.customInputWrapper}>
@@ -42,7 +42,7 @@ const CustomInput = (props) => {
               style={{
                 position: 'relative',
                 backgroundColor: '#E9E9E9',
-                width: 100,
+                width: 88,
                 justifyContent: 'space-around',
                 alignItems: 'center',
                 borderRadius: 12,
@@ -54,13 +54,13 @@ const CustomInput = (props) => {
               <Image source={require('../../../assests/Test/Image91.png')} />
               <Text style={CommonStyles.TTComM16}>+971</Text>
             </View>
-            <View style={{width: '83%', zIndex: 0}}>
+            <View style={{ width: '83%', zIndex: 0 }}>
               <TextInput
                 placeholder={placeholder && placeholder}
                 value={value && value}
                 style={[
                   CommonStyles.customInputPhone,
-                  isValidationErr && {width: '84%'},
+                  isValidationErr && { width: '84%' },
                 ]}
                 onChangeText={(text) => onchange && onchange(text)}
                 keyboardType={keyboardType && keyboardType}
@@ -95,24 +95,24 @@ const CustomInput = (props) => {
               padding: 7,
               paddingTop: 16,
             },
-            isValidationErr && {borderColor: 'red'},
+            isValidationErr && { borderColor: 'red' },
           ]}
         />
       ) : (
-        <TextInput
-          placeholder={placeholder && placeholder}
-          value={value && value}
-          onChangeText={(text) => onchange && onchange(text)}
-          secureTextEntry={secure ? true : false}
-          onEndEditing={() => validatePassword && validatePassword()}
-          keyboardType={keyboardType && keyboardType}
-          onFocus={(data) => onFocus && onFocus(data)}
-          style={[
-            CommonStyles.customInput,
-            isValidationErr && {borderColor: 'red'},
-          ]}
-        />
-      )}
+              <TextInput
+                placeholder={placeholder && placeholder}
+                value={value && value}
+                onChangeText={(text) => onchange && onchange(text)}
+                secureTextEntry={secure ? true : false}
+                onEndEditing={() => validatePassword && validatePassword()}
+                keyboardType={keyboardType && keyboardType}
+                onFocus={(data) => onFocus && onFocus(data)}
+                style={[
+                  CommonStyles.customInput,
+                  isValidationErr && { borderColor: 'red' },
+                ]}
+              />
+            )}
     </View>
   );
 };

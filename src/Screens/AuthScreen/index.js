@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
-import {View, Text, SafeAreaView, Image, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 
-import {RFPercentage} from 'react-native-responsive-fontsize';
-import {setLoginData} from '../../store/actions';
+import { RFPercentage } from 'react-native-responsive-fontsize';
+import { setLoginData } from '../../store/actions';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 // custom components
-import {CustomButton} from '../../SharedComponents';
+import { CustomButton } from '../../SharedComponents';
 
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 // import CustomFonts from "../../utils/CommonUtils";
 import {
   closeIcon,
@@ -28,7 +28,7 @@ class AuthScreen extends Component {
       firstName: 'Guest User',
       id: '1wf23gv3erty3jt1234he',
       lastName: null,
-      orders: {edges: []},
+      orders: { edges: [] },
       phone: null,
     };
     try {
@@ -40,7 +40,7 @@ class AuthScreen extends Component {
     }
   };
   render() {
-    const {TTComDB16, TTComL16} = CommonStyles;
+    const { TTComDB16, TTComL16 } = CommonStyles;
     return (
       <SafeAreaView
         style={{
@@ -80,7 +80,7 @@ class AuthScreen extends Component {
             <Image source={closeIcon} />
           </TouchableOpacity>
           <View
-            style={{flex: 5, justifyContent: 'flex-end', alignItems: 'center'}}>
+            style={{ flex: 5, justifyContent: 'flex-end', alignItems: 'center' }}>
             <Image
               source={require('../../../assests/Common/logo/icon[-20.png')}
             />
@@ -98,7 +98,7 @@ class AuthScreen extends Component {
           </View>
 
           <View
-            style={{flex: 7, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 7, justifyContent: 'center', alignItems: 'center' }}>
             <View
               style={{
                 justifyContent: 'space-around',
@@ -116,7 +116,7 @@ class AuthScreen extends Component {
                 }}
               />
 
-              <View style={{marginVertical: 5}} />
+              <View style={{ marginVertical: 5 }} />
 
               {/* <CustomButton
                                 text            = "Continue with Google"
@@ -133,10 +133,10 @@ class AuthScreen extends Component {
                                 icon            = {fbWhiteIcon}
                             />
                                  */}
-              <View style={{marginVertical: 5}} />
+              <View style={{ marginVertical: 5 }} />
 
-              <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
-                <Text style={[TTComL16, {color: '#fff'}]}>
+              <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+                <Text style={[TTComL16, { color: '#fff' }]}>
                   Already have an account?
                 </Text>
                 <TouchableOpacity
@@ -149,7 +149,7 @@ class AuthScreen extends Component {
                     allowFontScaling={false}
                     style={[
                       TTComL16,
-                      {color: '#fff', fontFamily: 'TTCommons-Bold'},
+                      { color: '#fff', fontFamily: 'TTCommons-Bold' },
                     ]}>
                     {''} Login
                   </Text>
