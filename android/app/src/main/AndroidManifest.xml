@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.lensman">  
+  package="com.lensman"
+  xmlns:tools="http://schemas.android.com/tools">  
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required -->
@@ -12,7 +13,7 @@
     <!-- Include this only if you are planning to use the microphone for video recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
-    <application
+    <application tools:replace="android:label"
       android:name=".MainApplication"
       android:label="Lensman Express"
       android:icon="@mipmap/lensman_launcher"
@@ -21,6 +22,7 @@
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="true" 
       android:requestLegacyExternalStorage="true">
+      <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
       <activity
         android:name=".MainActivity"
         android:label="Lensman Express"
@@ -31,6 +33,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+            <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/> 
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

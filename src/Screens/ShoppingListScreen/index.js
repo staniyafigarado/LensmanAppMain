@@ -108,7 +108,10 @@ class ShoppingListScreen extends Component {
             console.warn('Print', res);
             if (res.data.products && res.data.products.length) {
               this.setState(
-                { productList: res.data.products, isLoading: false },
+                {
+                  productList: res.data.products,
+                  isLoading: false
+                },
                 //   () => {
                 //     console.log(
                 //       'Res get Product list in Dashboard ',
@@ -127,7 +130,7 @@ class ShoppingListScreen extends Component {
         await axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=224956088485',
+            '/admin/api/2020-07/products.json?collection_id=235418124483',
             {
               headers: {
                 Authorization: base64Auth,
@@ -138,7 +141,7 @@ class ShoppingListScreen extends Component {
             console.warn('Buy', res);
             if (res.data.products && res.data.products.length) {
               this.setState(
-                { productList: res.data.products, isLoading: false },
+                { productList: res.data.products, isLoading: false, whichCategory: 'Buy' },
                 //   () => {
                 //     console.log(
                 //       'Res get Product list in Dashboard ',
@@ -168,7 +171,7 @@ class ShoppingListScreen extends Component {
             console.warn('Rent', res);
             if (res.data.products && res.data.products.length) {
               this.setState(
-                { productList: res.data.products, isLoading: false },
+                { productList: res.data.products, isLoading: false, whichCategory: 'Rent' },
                 //   () => {
                 //     console.log(
                 //       'Res get Product list in Dashboard ',

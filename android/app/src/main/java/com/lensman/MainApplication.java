@@ -13,7 +13,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.reactnative.camera.RNCameraPackage;
-
+import com.RNFetchBlob.RNFetchBlobPackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -30,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
       // example:
       // packages.add(new MyReactNativePackage());
       new RNCameraPackage();
+      new RNFetchBlobPackage() ;
       return packages;
     }
 

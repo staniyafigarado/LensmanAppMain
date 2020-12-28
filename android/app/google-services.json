@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "607392749221-ift85p5bcknjn47jcnn42ivmk9fpqf1o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lensman",
+            "certificate_hash": "c0bda83be4b0fbf9b210c42eea5c40f5e22d17fd"
+          }
+        },
+        {
           "client_id": "607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +38,13 @@
             {
               "client_id": "607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "607392749221-18vjubfhipjpiooop07g7sp8lqcqvs6d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.LensmanExpress.h2bonza"
+              }
             }
           ]
         }

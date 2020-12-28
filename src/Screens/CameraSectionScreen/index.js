@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  StatusBar,
+  StatusBar, PermissionsAndroid
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 // import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
@@ -22,7 +22,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { DemoOverlay1, DemoOverlay2, DemoOverlay3 } from '../../Screens';
-
+import CameraRoll from "@react-native-community/cameraroll";
 const Overlay = require('../../../assests/Test/Group310.png');
 
 class CameraSectionScreen extends Component {
@@ -130,6 +130,17 @@ class CameraSectionScreen extends Component {
     if (status) this.setState({ isDemoShow: false });
   };
 
+  hasAndroidPermission = async () => {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
+  }
   takePicture = async () => {
     let sectionType = this.state.sectionType;
     let { formData } = this.props.route.params;
@@ -146,14 +157,26 @@ class CameraSectionScreen extends Component {
       };
 
       this.setState({ takingPic: true });
+
       await this.camera
         .takePictureAsync(options)
         .then((data) => {
           // console.log('Success', JSON.stringify(data));
           this.saveData({ uri: data.uri, base64: data.base64 });
+
           this.setState({ takingPic: false }, () => {
-            console.log('Dataaa', data.uri, sectionType);
+            // console.log('Dataaa', data.uri, sectionType);
             // if (sectionType === '') {
+            this.hasAndroidPermission();
+            var promise = CameraRoll.saveImageWithTag(data.uri);
+            promise.then(function (result) {
+              console.log('save succeeded ' + result);
+            }).catch(function (error) {
+              console.log('save failed ' + error);
+            });
+            // CameraRoll.saveToCameraRoll("file:///sdcard/data.uri");
+            // console.log(data.base64)
+            // console.log("data", data.uri)
             //   this.props.navigation.navigate('PhotoTakenSectioinScreen', {
             //     data: data.uri,
             //   });
@@ -196,6 +219,85 @@ class CameraSectionScreen extends Component {
     }
   };
 
+
+  // hasAndroidPermission = () => {
+  //   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+  //   const hasPermission = await PermissionsAndroid.check(permission);
+  //   if (hasPermission) {
+  //     return true;
+  //   }
+
+  //   const status = await PermissionsAndroid.request(permission);
+  //   return status === 'granted';
+  // }
+
+  // savePicture = () => {
+  //   if (Platform.OS === "android" && !(await hasAndroidPermission())) {
+  //     return;
+  //   }
+
+  //   CameraRoll.save(tag, { type, album })
+  // };
+  // takePicture = () => {
+  //   let sectionType = this.state.sectionType;
+  //   let { formData } = this.props.route.params;
+  //   const { imageItem } = this.state;
+  //   let options = {
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       path: 'Lensman',
+  //     },
+  //   };
+  //   ImagePicker.launchCamera(options, (response) => {
+  //     console.log('Response = ', response.data);
+
+  //     // check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE)
+  //     //   .then((result) => {
+  //     //     console.log('Data Permisiions', result);
+  //     //   })
+  //     //   .catch((err) => {
+  //     //     console.log('Errr', err);
+  //     //   });
+
+  //     if (sectionType === 'GroupPoseGuide') {
+  //       this.props.navigation.navigate('GroupPoseGuide', {
+  //         fromScreen: 'GroupPoseGuide',
+  //         data: response.uri,
+  //         formData: formData,
+  //         base64Data: response.data,
+  //         imageItem: imageItem,
+  //       });
+  //     } else if (sectionType === 'GroupPortraitPoseGuide') {
+  //       this.props.navigation.navigate('GroupPortraitPoseGuide', {
+  //         fromScreen: 'GroupPortraitPoseGuide',
+  //         data: response.uri,
+  //         formData: formData,
+  //         base64Data: response.data,
+  //         imageItem: imageItem,
+  //       });
+  //     }
+
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ', response.error);
+  //     } else if (response.customButton) {
+  //       console.log('User tapped custom button: ', response.customButton);
+  //       alert(response.customButton);
+  //     } else {
+  //       const source = { uri: response.uri };
+  //       console.log('response', JSON.stringify(response));
+  //       // this.setState({
+  //       //   filePath: response,
+  //       //   fileData: response.data,
+  //       //   fileUri: response.uri,
+  //       // });
+  //     }
+  //   });
+  // };
+
+
   launchImageLibrary = () => {
     let sectionType = this.state.sectionType;
     let { formData } = this.props.route.params;
@@ -203,7 +305,7 @@ class CameraSectionScreen extends Component {
     let options = {
       storageOptions: {
         skipBackup: true,
-        path: 'images',
+        path: 'Lensman',
       },
     };
     ImagePicker.launchImageLibrary(options, (response) => {
