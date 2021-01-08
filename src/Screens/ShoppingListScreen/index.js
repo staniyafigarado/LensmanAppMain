@@ -505,6 +505,7 @@ class ShoppingListScreen extends Component {
                       }}
                       style={{ flexDirection: 'row' }}
                       keyExtractor={(item, index) => index.toString()}
+
                     />
                   </View>
                   {

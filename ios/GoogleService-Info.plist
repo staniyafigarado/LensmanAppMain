@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>607392749221-18vjubfhipjpiooop07g7sp8lqcqvs6d.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.607392749221-18vjubfhipjpiooop07g7sp8lqcqvs6d</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>607392749221-rqio0h12pouhtp4cgo2beo3p5oehcuco.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAw7_FCP9WdzoqCA4I7hfBOuoEbLaqCzpI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>607392749221</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.LensmanExpress.h2bonza</string>
+	<key>PROJECT_ID</key>
+	<string>lensman-express</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lensman-express.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:607392749221:ios:54389cb69d020a498a9f4c</string>
+	<key>DATABASE_URL</key>
+	<string>https://lensman-express.firebaseio.com</string>
+</dict>
+</plist>

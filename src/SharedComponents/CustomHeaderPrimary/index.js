@@ -113,14 +113,14 @@ class CustomHeaderPrimary extends React.Component {
     return (
       <View
         style={{
-          height: serachText === '' ? height * 0.22 : Dimensions.get('screen').height,
+          height: serachText === '' ? 115 : Dimensions.get('screen').height,
           backgroundColor: 'white',
         }}>
         <ImageBackground
           source={headerImage}
           style={{
-            // height: 160,
-            height: height * 0.24,
+            height: 160,
+            // height: height * 0.25,
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: 20,

@@ -38,7 +38,6 @@ import {
   ForStudentSection,
   DemoSection,
 } from './components';
-import { Items } from './FlatListItems';
 import Styles from './DashboardStyles';
 import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import { BaseUrl, base64Auth } from '../../utils/constants';
