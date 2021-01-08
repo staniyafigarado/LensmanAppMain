@@ -38,7 +38,7 @@ import {
   ForStudentSection,
   DemoSection,
 } from './components';
-
+import { Items } from './FlatListItems';
 import Styles from './DashboardStyles';
 import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import { BaseUrl, base64Auth } from '../../utils/constants';
@@ -51,6 +51,7 @@ import AuthScreen from '../AuthScreen';
 import { setCartItem } from '../../store/actions';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import { headerImage, closeIcon, rightArrowIcon } from '../../SharedComponents/CommonIcons';
+import Shimmer from '../../SharedComponents/Shimmer';
 class DashboardScreen extends Component {
   constructor(props) {
     super(props);
@@ -337,7 +338,84 @@ class DashboardScreen extends Component {
           > */}
 
           {isLoading ? (
-            <Loader />
+            // <Loader />
+            <View style={{ flex: 11, paddingHorizontal: 20 }}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{ flex: 1, marginTop: 170 }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '100%', height: 450 }}>
+                    <View />
+                  </Shimmer>
+                </View>
+                <View style={{ marginVertical: 5 }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000}>
+                    <Image
+                      source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
+                    />
+                  </Shimmer>
+                </View>
+                <View style={{ marginTop: 30, paddingBottom: 100 }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000}>
+                    <Text style={[CommonStyles.TTComDB28, { color: 'black' }]}>
+                      Featured Products
+                  </Text>
+                  </Shimmer>
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingVertical: 10
+                    }}>
+
+                    {productList && productList.length
+                      ? productList.map((item, index) => {
+                        // console.warn(item.variants[0].compare_at_price);
+
+                        return (
+                          <Shimmer autoRun={true} visible={false} duration={3000}>
+                            <ItemList
+                              discount={
+                                item.variants &&
+                                  item.variants[0] &&
+                                  item.variants[0].price &&
+                                  item.variants[0].compare_at_price
+                                  ?
+                                  'AED ' + (item.variants[0].price -
+                                    item.variants[0].compare_at_price)
+                                  : '0'
+                              }
+                              key={index}
+                              label={item.title}
+                              price={
+                                item.variants &&
+                                  item.variants[0] &&
+                                  item.variants[0].price
+                                  ? 'AED  ' + Math.floor(item.variants[0].price)
+                                  : '12 AED'
+                              }
+                              itemImage={
+                                item.image &&
+                                item.image.src !== '' &&
+                                item.image.src !== null &&
+                                item.image.src
+                              }
+                              onAction={() =>
+                                this.props.navigation.navigate(
+                                  'ItemDetailsScreen',
+                                  { productId: productList[index].id },
+                                )
+                              }
+                            />
+                          </Shimmer>
+                        );
+                      })
+                      : null}
+
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
           ) : (
               <View style={{ flex: 11, paddingHorizontal: 20 }}>
                 <ScrollView showsVerticalScrollIndicator={false}>

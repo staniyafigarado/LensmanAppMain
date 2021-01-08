@@ -41,7 +41,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { FlatList } from 'react-native-gesture-handler';
 import graphQlhandler from '../../utils/graphqlFetchHandler';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-
+import Shimmer from '../../SharedComponents/Shimmer';
 class ItemDetailsScreen extends Component {
   constructor(props) {
     super(props);
@@ -395,7 +395,33 @@ class ItemDetailsScreen extends Component {
 
           <View style={{ flex: 9, paddingTop: 100 }}>
             {isLoading ? (
-              <Loader />
+              // <Loader />
+
+              <View>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{
+                  width: '100%',
+                  height: 400,
+                  position: 'relative',
+                  top: 50,
+                  zIndex: 3,
+                  resizeMode: 'contain',
+                }}>
+                  <Text>bj,</Text>
+
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '100%', height: 20, marginTop: 10 }}>
+                  <View />
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '25%', marginTop: 10 }}>
+                  <Text>item name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '25%', marginTop: 10 }}>
+                  <Text>item name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '100%', marginTop: 10, height: 200 }}>
+                  <Text>Product specification</Text>
+                </Shimmer>
+              </View>
             ) : (
                 <ScrollView showsVerticalScrollIndicator={false}>
                   {productDetails !== null && (

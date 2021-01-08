@@ -32,10 +32,12 @@ class ProfileScreen extends Component {
   state = {
     loginData: null,
     isSearchData: false,
+    profile: ''
   };
 
   componentDidMount() {
     this.getDataFromStore('loginDetails');
+    AsyncStorage.getItem('profile').then((value) => this.setState({ 'profile': value }));
   }
 
   getDataFromStore = async (value) => {
@@ -112,10 +114,16 @@ class ProfileScreen extends Component {
                   </Text>
                 </View>
 
-                <Image
-                  source={require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')}
-                  style={{ width: 52, height: 52, borderRadius: 25 }}
-                />
+                {this.state.profile ? (
+                  <Image
+                    source={{ uri: this.state.profile }}
+                    style={{ width: 52, height: 52, borderRadius: 25 }}
+                  />
+                ) : <Image
+                    source={require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')}
+                    style={{ width: 52, height: 52, borderRadius: 25 }}
+                  />
+                }
               </View>
 
               <View style={{ marginBottom: 90 }}>

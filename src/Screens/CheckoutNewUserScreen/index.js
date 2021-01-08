@@ -26,7 +26,7 @@ import {
   LeftArrowIcon,
   signatureIconBlack,
 } from '../../SharedComponents/CommonIcons';
-
+import Shimmer from '../../SharedComponents/Shimmer';
 import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
@@ -84,7 +84,29 @@ class CheckoutNewUserScreen extends Component {
           </View>
 
           {isLoading ? (
-            <Loader />
+            // <Loader />
+
+            <View style={{ marginTop: 125 }}>
+              <Shimmer autoRun={true} visible={false} duration={3000}>
+                <Text style={TTComDB28}>New here?</Text>
+              </Shimmer>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Text style={TTComL16}>
+                  We need your email so we can help track your order and
+                  notify you on updates along the way.
+                  </Text>
+              </Shimmer>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+            </View>
+
           ) : (
               <View style={{ flex: 9, paddingHorizontal: 20 }}>
 
@@ -98,6 +120,7 @@ class CheckoutNewUserScreen extends Component {
                       We need your email so we can help track your order and
                       notify you on updates along the way.
                   </Text>
+
                   </View>
 
                   <View style={{ marginVertical: 20 }}>

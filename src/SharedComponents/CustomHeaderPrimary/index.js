@@ -18,6 +18,7 @@ import { CommonStyles } from '../CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import axios from 'axios';
 import { BaseUrl } from '../../utils/constants';
+const { width, height } = Dimensions.get('window')
 class CustomHeaderPrimary extends React.Component {
   state = {
     serachData: [],
@@ -112,13 +113,14 @@ class CustomHeaderPrimary extends React.Component {
     return (
       <View
         style={{
-          height: serachText === '' ? 120 : Dimensions.get('screen').height,
+          height: serachText === '' ? height * 0.22 : Dimensions.get('screen').height,
           backgroundColor: 'white',
         }}>
         <ImageBackground
           source={headerImage}
           style={{
-            height: 160,
+            // height: 160,
+            height: height * 0.24,
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: 20,

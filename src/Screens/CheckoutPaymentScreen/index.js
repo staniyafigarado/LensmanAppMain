@@ -39,6 +39,7 @@ import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatus
 import AsyncStorage from '@react-native-community/async-storage';
 import { BaseUrl, base64Auth } from '../../utils/constants';
 import base64 from 'react-native-base64';
+import Shimmer from '../../SharedComponents/Shimmer';
 const { height, width } = Dimensions.get('window');
 
 function IdGenerator() {
@@ -547,7 +548,88 @@ class CheckoutPaymentScreen extends Component {
             {/* <StatusBar backgroundColor = "#fff" barStyle = "dark-content" /> */}
 
             {isLoading ? (
-              <Loader />
+              // <Loader />
+              <View
+                style={{
+                  flex: 9,
+                  paddingHorizontal: iswebView ? 0 : 20,
+                  marginTop: 60,
+                }}>
+                <View>
+                  <CustomTracker stage={2} />
+                  <View
+                    style={{
+                      borderRadius: 12,
+                      borderColor: '#E9E9E9',
+                      padding: 20,
+                      width: '100%',
+                      marginVertical: 20,
+                      backgroundColor: '#F2F2F2',
+                    }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', height: 100 }}>
+                        <View style={{ width: '50%' }}>
+                          <Text style={[TTComM14, { marginVertical: 5 }]}>
+                            Subtotal
+                            </Text>
+                          <Text style={[TTComM14, { marginVertical: 5 }]}>
+                            Shipping
+                            </Text>
+                          <Text style={[TTComM14, { marginVertical: 5 }]}>
+                            VAT 5%
+                            </Text>
+                        </View>
+                      </Shimmer>
+
+
+                      <View style={{ width: '50%', alignItems: 'flex-end' }}>
+                        <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', marginVertical: 3 }}>
+                          <Text style={[TTComM18, { marginVertical: 3 }]}>
+                            AED
+                            </Text>
+                        </Shimmer>
+                        <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', marginVertical: 3 }}>
+                          <Text style={[TTComM18, { marginVertical: 3 }]}>
+                            4.99 AED
+                            </Text>
+                        </Shimmer>
+                        <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', marginVertical: 3 }}>
+                          <Text style={[TTComM18, { marginVertical: 3 }]}>
+                            AED
+                            </Text>
+                        </Shimmer>
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        width: '100%',
+                        height: 1,
+                        backgroundColor: '#000',
+                        marginVertical: 5,
+                      }}
+                    />
+
+                    <View style={{ flexDirection: 'row' }}>
+                      <View style={{ width: '50%' }}>
+                        <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', marginVertical: 5 }}>
+                          <Text style={[TTComM18, { marginVertical: 5 }]}>
+                            Total
+                            </Text>
+                        </Shimmer>
+                      </View>
+
+                      <View style={{ width: '50%', alignItems: 'flex-end' }}>
+                        <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '50%', marginVertical: 3 }}>
+                          <Text style={[TTComDB28, { marginVertical: 3 }]}>
+                            AED
+                            </Text>
+                        </Shimmer>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
             ) : (
                 <View
                   style={{

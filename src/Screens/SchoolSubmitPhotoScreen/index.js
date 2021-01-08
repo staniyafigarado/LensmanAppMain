@@ -38,6 +38,7 @@ import { connect } from 'react-redux';
 import { BaseUrlSchool } from '../../utils/constants';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import { TextInput } from 'react-native-gesture-handler';
+import Shimmer from '../../SharedComponents/Shimmer';
 const { height } = Dimensions.get('screen');
 class SchoolSubmitPhotoScreen extends Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class SchoolSubmitPhotoScreen extends Component {
       selectedSchoolDetails: '',
       loginData: '',
       isCustomToaster: '',
-      schoolListsave: [], setlistVisible: false, schoolValidation: false
+      schoolListsave: [], setlistVisible: false, schoolValidation: false, refferenceId: ''
     };
   }
 
@@ -122,7 +123,6 @@ class SchoolSubmitPhotoScreen extends Component {
         .post(BaseUrlSchool + '/api/student', payload)
         .then((res) => {
           console.log('Res add Student 1 ', res.data.result.id);
-
           let form = { ...this.state.form };
           form.schoolId = res.data.result.id;
           this.props.navigation.navigate('SchoolIntructionScreen', {
@@ -132,7 +132,9 @@ class SchoolSubmitPhotoScreen extends Component {
             {
               isLoading: false,
               isCustomToaster: 'Successfully Added',
+              refferenceId: res.data.result.id
             },
+
             async () => {
               const data = {
                 data: form,
@@ -143,7 +145,10 @@ class SchoolSubmitPhotoScreen extends Component {
                 JSON.stringify(data),
               );
             },
+
           );
+          AsyncStorage.setItem('refferenceId', JSON.stringify(this.state.refferenceId));
+          console.log(this.state.refferenceId)
         })
         .catch((err) => {
           this.setState({ isLoading: false });
@@ -413,7 +418,80 @@ class SchoolSubmitPhotoScreen extends Component {
           {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
           {isLoading ? (
-            <Loader />
+            // <Loader />
+            <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 80 }}>
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingTop: 100,
+                  paddingBottom: Platform.OS == 'ios' ? 100 : 0,
+                }}>
+                <Shimmer autoRun={true} visible={false} duration={3000}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                  <Text>Name</Text>
+                </Shimmer>
+              </ScrollView>
+            </View>
           ) : (
               <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 80 }}>
                 <ScrollView

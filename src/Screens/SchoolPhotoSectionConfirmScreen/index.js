@@ -17,18 +17,32 @@ import {
   CustomHeaderPrim,
   CustomButton,
 } from '../../SharedComponents';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import AsyncStorage from '@react-native-community/async-storage';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
+import { BaseUrl, base64Auth } from '../../utils/constants';
 class SchoolPhotoSectionConfirmScreen extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      lastImage: '',
+      lastImage: '', refferenceId: '', loginData: '',
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
+    AsyncStorage.getItem('refferenceId').then((value) => this.setState({ 'refferenceId': value }));
+    // this.getDataFromStore('loginDetails');
+    try {
+      let data = await AsyncStorage.getItem('loginDetails');
+      console.log('Data 100', data);
+      if (data !== null) {
+        this.setState({ loginData: JSON.parse(data) });
+        // this.props.setLoginData(data);
+        this.submitRegister()
+      }
+    } catch (error) {
+      console.log('School Photo  Form Submit not success,', error);
+    }
     this.BackHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.props.navigation.navigate('DashboardScreen');
       return true;
@@ -37,12 +51,51 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
       'this.props.route.params in Did Mount',
       this.props.route.params,
     );
-    const {params} = this.props.route;
+    const { params } = this.props.route;
     if (params.image) {
-      this.setState({lastImage: params.image});
+      this.setState({ lastImage: params.image });
     }
     this.resetAlreadyTakenStoreage();
+
   }
+  getDataFromStore = async (value) => {
+    try {
+      let data = await AsyncStorage.getItem('loginDetails');
+      console.log('Data 100', data);
+      if (data !== null) {
+        this.setState({ loginData: JSON.parse(data) });
+        // this.props.setLoginData(data);
+        this.submitRegister()
+      } console.log(this.state.loginData.email)
+    } catch (error) {
+      console.log('School Photo  Form Submit not success,', error);
+    }
+  };
+
+  submitRegister = async () => {
+    let payload = {
+      email: this.state.loginData.email,
+      referenceId: this.state.refferenceId
+    };
+    await fetch(`http://15.185.152.100/api/photo/email`, {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: base64Auth,
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        // this.setState({isCustomToaster: res.result});
+        console.log('Res 110', res);
+      })
+      .catch((err) => {
+        // this.setState({isCustomToaster: err});
+        console.log('Err in res', err);
+      });
+  };
 
   resetAlreadyTakenStoreage = async () => {
     await AsyncStorage.removeItem('AlreadyTakePhoto');
@@ -52,8 +105,8 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
     this.BackHandler.remove();
   }
   render() {
-    const {TTComDB28, TTComM14, TTComDB18, TTComDB16} = CommonStyles;
-    const {lastImage} = this.state;
+    const { TTComDB28, TTComM14, TTComDB18, TTComDB16 } = CommonStyles;
+    const { lastImage } = this.state;
     return (
       <>
         <CustomStatusBar />
@@ -61,14 +114,14 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
           style={{
             height: Dimensions.get('screen').height,
           }}>
-          <View style={{flex: 1, backfaceVisibility: 'hidden'}}>
+          <View style={{ flex: 1, backfaceVisibility: 'hidden' }}>
             <ScrollView
               style={{
                 flex: 1,
                 paddingHorizontal: 20,
                 marginTop: 120,
               }}>
-              <View style={{marginVertical: 15}}>
+              <View style={{ marginVertical: 15 }}>
                 <CustomTracker stage={3} label="schoolSection" />
               </View>
 
@@ -96,14 +149,14 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
                     <Image
                       source={
                         lastImage !== ''
-                          ? {uri: lastImage}
+                          ? { uri: lastImage }
                           : require('../../../assests/Common/imagePlaceholder/placeholder.jpg')
                       }
-                      style={{width: 90, height: 90, borderRadius: 45}}
+                      style={{ width: 90, height: 90, borderRadius: 45 }}
                     />
                     <Image
                       source={verifedWithBlueFillIcon}
-                      style={{position: 'absolute', right: 0}}
+                      style={{ position: 'absolute', right: 0 }}
                     />
                   </View>
                   <View
@@ -112,10 +165,10 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
                       justifyContent: 'center',
                       marginLeft: 10,
                     }}>
-                    <Text style={[TTComDB28, {color: '#fff'}]}>
+                    <Text style={[TTComDB28, { color: '#fff' }]}>
                       Your photos have{' '}
                     </Text>
-                    <Text style={[TTComDB28, {color: '#fff'}]}>
+                    <Text style={[TTComDB28, { color: '#fff' }]}>
                       been uploaded!
                     </Text>
                   </View>
@@ -133,9 +186,9 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
                     height: 90,
                     paddingHorizontal: 10,
                   }}>
-                  <Text style={[TTComM14, {lineHeight: 20}]}>Order Ref.</Text>
-                  <Text style={[TTComDB18, {lineHeight: 27}]}>#230AE3700</Text>
-                  <Text style={[TTComDB16, {lineHeight: 17}]}>
+                  <Text style={[TTComM14, { marginVertical: 5 }]}>Order Ref: </Text>
+                  <Text style={[TTComDB18, { marginVertical: 5 }]}>#{this.state.refferenceId}</Text>
+                  <Text style={[TTComDB16, { marginVertical: 5 }]}>
                     Please check your email for confirmation.
                   </Text>
                 </View>
@@ -155,7 +208,7 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
                     width: 310,
                   }}>
                   <Text
-                    style={[TTComDB16, {textAlign: 'center', marginTop: 25}]}>
+                    style={[TTComDB16, { textAlign: 'center', marginTop: 25 }]}>
                     Add your photo to these products?
                   </Text>
                   <View
@@ -169,7 +222,7 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
                       label="Coffee Mug"
                       price="16.75"
                     />
-                    <View style={{marginHorizontal: 15}} />
+                    <View style={{ marginHorizontal: 15 }} />
                     <ItemList
                       img={require('../../../assests/Test/photo_mug_large-5.jpg')}
                       label="Picture Frame"
@@ -232,13 +285,13 @@ class SchoolPhotoSectionConfirmScreen extends React.Component {
 export default SchoolPhotoSectionConfirmScreen;
 
 const ItemList = (props) => {
-  const {TTComDB18, TTComM14} = CommonStyles;
-  const {img, label, price} = props;
+  const { TTComDB18, TTComM14 } = CommonStyles;
+  const { img, label, price } = props;
   return (
     <View>
-      <Image source={img} style={{borderRadius: 27, width: 101, height: 106}} />
-      <View style={{marginLeft: 10}}>
-        <Text style={[TTComDB18, {marginTop: 10}]}>{label && label}</Text>
+      <Image source={img} style={{ borderRadius: 27, width: 101, height: 106 }} />
+      <View style={{ marginLeft: 10 }}>
+        <Text style={[TTComDB18, { marginTop: 10 }]}>{label && label}</Text>
         <Text style={TTComM14}>
           {' '}
           {price && price}

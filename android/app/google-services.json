@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "607392749221-ift85p5bcknjn47jcnn42ivmk9fpqf1o.apps.googleusercontent.com",
+          "client_id": "607392749221-mi3lugo66hkmi4rqt4e8hadr9qq5khl2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lensman",
-            "certificate_hash": "c0bda83be4b0fbf9b210c42eea5c40f5e22d17fd"
+            "certificate_hash": "4e985923bab9e803f0b42fb794ab65771c13374a"
+          }
+        },
+        {
+          "client_id": "607392749221-pkgbmc4svceonm28o4ugg2k8l3djahjp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lensman",
+            "certificate_hash": "8eea62f6c044ac3edfb36dd3a4a939b8b1512472"
           }
         },
         {

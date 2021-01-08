@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Image,
 } from 'react-native';
 
-import {CustomHeaderPrim, CustomButton} from '../../SharedComponents';
+import { CustomHeaderPrim, CustomButton } from '../../SharedComponents';
 
 import {
   LeftArrowIcon,
@@ -29,7 +29,7 @@ import {
   girlPortraitePose3Icon,
   verifedWithBlueFillIcon,
 } from '../../SharedComponents/CommonIcons';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 
 class SchoolAfterTakePhotScreen6 extends Component {
   state = {
@@ -43,19 +43,19 @@ class SchoolAfterTakePhotScreen6 extends Component {
     );
 
     if (this.props.route.params && this.props.route.params.formData) {
-      this.setState({formData: this.props.route.params.formData});
+      this.setState({ formData: this.props.route.params.formData });
     }
   }
 
   render() {
-    const {TTComDB28, TTComM16, TTComDB18, TTComDB20, TTComDB16} = CommonStyles;
-    const {formData} = this.state;
+    const { TTComDB28, TTComM16, TTComDB18, TTComDB20, TTComDB16, TTComDB14 } = CommonStyles;
+    const { formData } = this.state;
 
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
 
-        <View style={{flex: 1, zIndex: 4, backgroundColor: 'transparent'}}>
+        <View style={{ flex: 1, zIndex: 4, backgroundColor: 'transparent' }}>
           <CustomHeaderPrim
             leftIcon={LeftArrowIcon}
             centerLabel="Add photo"
@@ -63,13 +63,13 @@ class SchoolAfterTakePhotScreen6 extends Component {
           />
         </View>
 
-        <View style={{flex: 9}}>
+        <View style={{ flex: 9 }}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{marginTop: 100}} />
+            <View style={{ marginTop: 100 }} />
 
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
               <Text
-                style={[TTComDB16, {textAlign: 'center', marginBottom: 30}]}>
+                style={[TTComDB16, { textAlign: 'center', marginBottom: 30 }]}>
                 Group Photo Pose 6 of 6 uploaded!
               </Text>
               <View
@@ -83,7 +83,7 @@ class SchoolAfterTakePhotScreen6 extends Component {
                 }}>
                 <Image
                   source={verifedWithBlueFillIcon}
-                  style={{position: 'absolute', right: 0}}
+                  style={{ position: 'absolute', right: 0 }}
                 />
               </View>
 
@@ -97,7 +97,7 @@ class SchoolAfterTakePhotScreen6 extends Component {
                 }}></View>
             </View>
 
-            <View style={{flex: 1, paddingHorizontal: 20}}>
+            <View style={{ flex: 1, paddingHorizontal: 20 }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -122,11 +122,11 @@ class SchoolAfterTakePhotScreen6 extends Component {
                   alignItems: 'center',
                   marginVertical: 5,
                 }}>
-                <View style={{flexDirection: 'row', marginTop: 40}}>
-                  <Text>Powered by</Text>
+                <View style={{ flexDirection: 'row', marginTop: 40 }}>
+                  <Text style={TTComDB16}>Powered by</Text>
                   <Image
                     source={newSignatureIcon}
-                    style={{position: 'relative', top: -10, left: -1}}
+                    style={{ position: 'relative', top: -10, left: -1 }}
                   />
                 </View>
               </View>

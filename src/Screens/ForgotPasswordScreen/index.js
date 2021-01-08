@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   SafeAreaView,
@@ -17,15 +17,15 @@ import {
   CustomToaster,
 } from '../../SharedComponents';
 
-import {setLoginData} from '../../store/actions';
+import { setLoginData } from '../../store/actions';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
-import {InputContainer} from '../Login/components';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
+import { InputContainer } from '../Login/components';
 import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-
+import Shimmer from '../../SharedComponents/Shimmer';
 class ForgotPasswordScreen extends Component {
   state = {
     email: '',
@@ -44,13 +44,13 @@ class ForgotPasswordScreen extends Component {
   };
 
   handleLogin = (data, type) => {
-    let form = {...this.state.form};
+    let form = { ...this.state.form };
     if (type === 'userName') {
       form.userName = data;
     } else if (type === 'password') {
       form.password = data;
     }
-    this.setState({form});
+    this.setState({ form });
   };
 
   validateEmail = (email) => {
@@ -59,7 +59,7 @@ class ForgotPasswordScreen extends Component {
   };
 
   submitLogin = () => {
-    const {email} = this.state;
+    const { email } = this.state;
     if (!this.validateEmail(email)) {
       this.setState({
         isCustomToaster: 'Enter valid Email',
@@ -78,7 +78,7 @@ class ForgotPasswordScreen extends Component {
     }`;
     const onSuccess = (response) => {
       console.warn(response);
-      this.setState({isLoading: false});
+      this.setState({ isLoading: false });
       let message = 'Recovery link send to yor email';
       if (
         response &&
@@ -92,8 +92,8 @@ class ForgotPasswordScreen extends Component {
       });
     };
 
-    this.setState({isLoading: true});
-    graphqlFetchHandler({query, variables: {email}}, onSuccess, (error) => {
+    this.setState({ isLoading: true });
+    graphqlFetchHandler({ query, variables: { email } }, onSuccess, (error) => {
       this.setState({
         isLoading: false,
         isCustomToaster: 'Something Error occured',
@@ -103,12 +103,12 @@ class ForgotPasswordScreen extends Component {
   };
 
   render() {
-    const {isLoading, isCustomToaster} = this.state;
-    const {TTComDB16} = CommonStyles;
+    const { isLoading, isCustomToaster } = this.state;
+    const { TTComDB16 } = CommonStyles;
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           <CustomHeader
             leftIcon={closeIcon}
             rightIcon={logoSmall}
@@ -119,44 +119,52 @@ class ForgotPasswordScreen extends Component {
             }
           />
           {isLoading ? (
-            <Loader />
+            // <Loader />
+            <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 25 }}>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+            </View>
           ) : (
-            <>
-              <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
-                <InputContainer>
-                  <CustomInput
-                    placeholder="Email"
-                    label="Email"
-                    keyboardType="email-address"
-                    onchange={(data) => this.setState({email: data})}
-                  />
-                </InputContainer>
+              <>
+                <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 25 }}>
+                  <InputContainer>
+                    <CustomInput
+                      placeholder="Email"
+                      label="Email"
+                      keyboardType="email-address"
+                      onchange={(data) => this.setState({ email: data })}
+                    />
+                  </InputContainer>
 
-                <InputContainer alignCenter>
-                  <CustomButton
-                    buttonStyles="btn-primary"
-                    textStyles="txt-primary"
-                    text="Recover"
-                    onAction={() => this.submitLogin()}
-                    width="100%"
-                  />
-                </InputContainer>
+                  <InputContainer alignCenter>
+                    <CustomButton
+                      buttonStyles="btn-primary"
+                      textStyles="txt-primary"
+                      text="Recover"
+                      onAction={() => this.submitLogin()}
+                      width="100%"
+                    />
+                  </InputContainer>
 
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('LoginScreen')}
-                  style={{
-                    marginVertical: 15,
-                    alignItems: 'center',
-                  }}>
-                  <Text style={TTComDB16}>Back to login</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
+                  <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('LoginScreen')}
+                    style={{
+                      marginVertical: 15,
+                      alignItems: 'center',
+                    }}>
+                    <Text style={TTComDB16}>Back to login</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
           {isCustomToaster !== '' && (
             <CustomToaster
               position="flex-end"
-              onend={() => this.setState({isCustomToaster: ''})}
+              onend={() => this.setState({ isCustomToaster: '' })}
               isCustomToaster={true}
               message={isCustomToaster}
             />

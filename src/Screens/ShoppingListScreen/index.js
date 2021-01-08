@@ -31,7 +31,7 @@ import { CommonStyles } from '../../SharedComponents';
 import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
 import { CategoryList, CustomSelectList, FilterItem } from './components';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-
+import Shimmer from '../../SharedComponents/Shimmer';
 class ShoppingListScreen extends Component {
   constructor(props) {
     super(props);
@@ -160,7 +160,7 @@ class ShoppingListScreen extends Component {
         await axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=224574767269',
+            '/admin/api/2020-07/products.json?collection_id=224574242981',
             {
               headers: {
                 Authorization: base64Auth,
@@ -340,7 +340,111 @@ class ShoppingListScreen extends Component {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           <View style={{ flex: 9, paddingHorizontal: 20 }}>
             {isLoading ? (
-              <Loader />
+              // <Loader />
+              <View style={{ flex: 1, marginTop: 170 }}>
+                <Shimmer autoRun={true} visible={false} duration={3000}>
+                  <Text style={TTComDB28}>Shop by Category</Text>
+                </Shimmer>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <View style={{ alignItems: 'center', padding: 10 }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: 100, height: 100, borderRadius: 50 }}>
+                        <View></View>
+                      </Shimmer>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                        <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                      </Shimmer>
+                    </View>
+                    <View style={{ alignItems: 'center', padding: 10 }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: 100, height: 100, borderRadius: 50 }}>
+                        <View></View>
+                      </Shimmer>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                        <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                      </Shimmer>
+                    </View>
+                    <View style={{ alignItems: 'center', padding: 10 }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: 100, height: 100, borderRadius: 50 }}>
+                        <View></View>
+                      </Shimmer>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                        <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                      </Shimmer>
+                    </View>
+                    <View style={{ alignItems: 'center', padding: 10 }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: 100, height: 100, borderRadius: 50 }}>
+                        <View></View>
+                      </Shimmer>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                        <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                      </Shimmer>
+                    </View>
+                    <View style={{ alignItems: 'center', padding: 10 }}>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: 100, height: 100, borderRadius: 50 }}>
+                        <View></View>
+                      </Shimmer>
+                      <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                        <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                      </Shimmer>
+                    </View>
+                  </ScrollView>
+                </View>
+
+                <Shimmer autoRun={true} visible={false} duration={3000}>
+                  <Text style={[TTComDB16, { paddingVertical: 10 }]}>name</Text>
+                </Shimmer>
+                <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '10%' }}>
+                    <Text>All</Text>
+                  </Shimmer>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '10%', marginHorizontal: 5 }}>
+                    <Text>Buy</Text>
+                  </Shimmer>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '10%' }}>
+                    <Text>Rent</Text>
+                  </Shimmer>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '10%', marginHorizontal: 5 }}>
+                    <Text>Print</Text>
+                  </Shimmer>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 160 }}>
+                    <View
+                      style={{
+                        borderRadius: 27
+                      }}>
+
+                    </View>
+                  </Shimmer>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 160, marginLeft: '10%' }}>
+                    <View
+                      style={{
+                        borderRadius: 27
+                      }}>
+
+                    </View>
+                  </Shimmer>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 160, marginTop: 20 }}>
+                    <View
+                      style={{
+                        borderRadius: 27
+                      }}>
+
+                    </View>
+                  </Shimmer>
+                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 160, marginLeft: '10%', marginTop: 20 }}>
+                    <View
+                      style={{
+                        borderRadius: 27
+                      }}>
+
+                    </View>
+                  </Shimmer>
+                </View>
+              </View>
             ) : (
                 <ScrollView showsVerticalScrollIndicator={false}>
                   <View style={{ flex: 1, marginTop: 170 }}>

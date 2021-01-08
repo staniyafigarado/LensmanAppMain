@@ -111,6 +111,7 @@ class AuthScreen extends Component {
   _configureGoogleSignIn() {
     GoogleSignin.configure({
       scopes: ['openid', 'email', 'profile'],
+      // scopes: ['https://www.googleapis.com/auth/drive.readonly'],
       webClientId: '607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com'
     });
     // this._isSignedIn();
@@ -163,6 +164,7 @@ class AuthScreen extends Component {
       // AsyncStorage.setItem('username', this.state.username);
       AsyncStorage.setItem('email', this.state.email);
       // this.handlSubmit();
+      // alert("Picture" + this.state.profile + "Name" + this.state.username + "Email" + this.state.email);
       this.submitRegister();
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -297,7 +299,7 @@ class AuthScreen extends Component {
       AsyncStorage.setItem('email', this.state.email);
       console.log('result:', user);
       this.submitRegister();
-      alert("Picture" + this.state.profile + "Name" + this.state.username + "Email" + this.state.email);
+      // alert("Picture" + this.state.profile + "Name" + this.state.username + "Email" + this.state.email);
     }
   }
 
@@ -396,8 +398,8 @@ class AuthScreen extends Component {
         ) {
           apiStatus.message =
             res.data.customerCreate.customerUserErrors[0].message;
-          alert(apiStatus.message)
-          // ToastAndroid.show(apiStatus.message, ToastAndroid.SHORT)
+          // alert(apiStatus.message)
+          ToastAndroid.show(apiStatus.message, ToastAndroid.SHORT)
           this.checkLoginData();
         }
         // else

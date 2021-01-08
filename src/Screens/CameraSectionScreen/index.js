@@ -497,7 +497,7 @@ class CameraSectionScreen extends Component {
 
         {isDemoShow && (
           <Modal animationType="slide" transparent={true} visible={isDemoShow}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, height: '100%' }}>
               {overlayNum < 3 && (
                 <CustomOverlayDemo
                   {...this.props}

@@ -13,14 +13,14 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   CustomTracker,
   CustomHeaderPrim,
   CustomButton,
   Loader,
 } from '../../SharedComponents';
-import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import { CommonStyles } from '../../SharedComponents/CustomStyles';
 import {
   LeftArrowIcon,
   newSignatureIcon,
@@ -32,9 +32,9 @@ import {
   girlGroupPose3Icon,
   groupPoseBgDashedIcon,
 } from '../../SharedComponents/CommonIcons';
-import {BaseUrlSchool} from '../../utils/constants';
+import { BaseUrlSchool } from '../../utils/constants';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-
+import Shimmer from '../../SharedComponents/Shimmer';
 class GroupPoseGuide extends React.Component {
   constructor() {
     super();
@@ -53,17 +53,17 @@ class GroupPoseGuide extends React.Component {
     };
   }
   componentDidMount() {
-    const {formData} = this.props.route.params;
+    const { formData } = this.props.route.params;
     console.log('Did Mount in GROUP Pose', this.props.route.params);
     console.log('Did Mount in GROUP Pose isFocused', this.props.isFocused);
     if (formData) {
-      this.setState({formData});
+      this.setState({ formData });
     }
   }
 
   componentDidUpdate(prevProps) {
-    const {imageItem, data, base64Data} = this.props.route.params;
-    let photoTaken = {...this.state.photoTaken};
+    const { imageItem, data, base64Data } = this.props.route.params;
+    let photoTaken = { ...this.state.photoTaken };
     if (this.props.isFocused !== prevProps.isFocused) {
       if (imageItem && data && base64Data) {
         if (imageItem === 'pose1') {
@@ -77,7 +77,7 @@ class GroupPoseGuide extends React.Component {
           photoTaken.base64Data3 = base64Data;
         }
 
-        this.setState({photoTaken}, () => {
+        this.setState({ photoTaken }, () => {
           this.saveDataToLocal(imageItem, data, base64Data);
         });
       }
@@ -122,17 +122,17 @@ class GroupPoseGuide extends React.Component {
   };
 
   handleRemoveTakenPhoto = (item) => {
-    let removeItem = {...this.state.removeItem};
+    let removeItem = { ...this.state.removeItem };
 
     removeItem.status = true;
     removeItem.item = item;
 
-    this.setState({removeItem});
+    this.setState({ removeItem });
   };
 
   handleRemovePhoto = (item, status) => {
-    let photoTaken = {...this.state.photoTaken};
-    let removeItem = {...this.state.removeItem};
+    let photoTaken = { ...this.state.photoTaken };
+    let removeItem = { ...this.state.removeItem };
     if (status) {
       photoTaken[item] = '';
       removeItem.item = '';
@@ -141,11 +141,11 @@ class GroupPoseGuide extends React.Component {
       removeItem.status = false;
     }
 
-    this.setState({removeItem, photoTaken});
+    this.setState({ removeItem, photoTaken });
   };
 
   uploadTakenPhoto = (callback) => {
-    const {formData, photoTaken} = this.state;
+    const { formData, photoTaken } = this.state;
 
     let pose1 = false;
     let pose2 = false;
@@ -177,7 +177,7 @@ class GroupPoseGuide extends React.Component {
                     if (res) {
                       pose3 = true;
                       console.log('All APIS Are Done');
-                      this.setState({isLoading: false}, async () => {
+                      this.setState({ isLoading: false }, async () => {
                         const data = {
                           data: formData,
                           screen: 'GroupPortraitPoseGuide',
@@ -209,7 +209,7 @@ class GroupPoseGuide extends React.Component {
     let payload = {
       photo: '',
     };
-    this.setState({isLoading: true}, () => {
+    this.setState({ isLoading: true }, () => {
       let data = 'data:image/jpg;base64,' + imageData;
       payload.photo = data;
 
@@ -217,12 +217,12 @@ class GroupPoseGuide extends React.Component {
         .post(BaseUrlSchool + '/api/student/' + id + '/photo', payload)
         .then((res) => {
           console.log('res image upload ', res.data, type);
-          this.setState({isLoading: false}, () => {
+          this.setState({ isLoading: false }, () => {
             if (callback) callback(true);
           });
         })
         .catch((err) => {
-          this.setState({isLoading: false});
+          this.setState({ isLoading: false });
           if (callback) callback(false);
           console.log('Err in upload photos', err.response);
         });
@@ -230,7 +230,7 @@ class GroupPoseGuide extends React.Component {
   };
 
   handleSubmit = () => {
-    const {photoTaken} = this.state;
+    const { photoTaken } = this.state;
     photoTaken.pose1 !== '' &&
       photoTaken.pose2 !== '' &&
       photoTaken.pose3 !== '' &&
@@ -242,15 +242,15 @@ class GroupPoseGuide extends React.Component {
   };
 
   render() {
-    const {formData, photoTaken, removeItem, isLoading} = this.state;
+    const { formData, photoTaken, removeItem, isLoading } = this.state;
     console.warn(photoTaken);
-    const {TTComDB18} = CommonStyles;
+    const { TTComDB18 } = CommonStyles;
     return (
       <>
         <CustomStatusBar />
         {/* <StatusBar /> */}
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-          <View style={{zIndex: 4, width: '100%'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+          <View style={{ zIndex: 4, width: '100%' }}>
             <CustomHeaderPrim
               leftIcon={LeftArrowIcon}
               centerLabel="Group Poses Guide"
@@ -258,137 +258,185 @@ class GroupPoseGuide extends React.Component {
             />
           </View>
           {isLoading ? (
-            <Loader />
-          ) : (
-            <ScrollView
+            // <Loader />
+            <View
               style={{
                 paddingHorizontal: 20,
-
-                paddingTop: 30,
-              }}
-              contentContainerStyle={{paddingBottom: 30}}>
-              <View style={{marginVertical: 15}}>
-                <CustomTracker stage={1} label="schoolSection" />
+                paddingTop: 40,
+              }}>
+              <View style={{ marginVertical: 15 }}>
+                <CustomTracker stage={2} label="schoolSection" />
               </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 170, borderTopLeftRadius: 27, borderTopRightRadius: 27 }}>
+                  <View
+                    style={{
+                      borderRadius: 27
+                    }}>
 
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <SchoolPhotoInitialTexts
-                  width={140}
-                  label1="Please take your"
-                  label2="3 full size photos"
-                  label3="following the different"
-                  label4="poses shown here."
-                />
-                <View style={{marginHorizontal: 20}} />
-                <SchoolPhotoInitial
-                  width={140}
-                  isPoseImg={photoTaken.pose1 !== '' ? false : true}
-                  img={
-                    photoTaken.pose1 !== ''
-                      ? {uri: photoTaken.pose1}
-                      : formData.gender === 'male'
-                      ? boyGroupPose1Icon
-                      : girlGroupPose1Icon
-                  }
-                  actionLabel1="Click Here to "
-                  actionLabel2="Take Photo"
-                  actionLabel={photoTaken.pose1 !== '' ? 'Remove' : ''}
-                  onAction={() =>
-                    this.props.navigation.navigate('CameraSectionScreen', {
-                      fromScreen: 'GroupPoseGuide',
-                      item: 'pose1',
-                      showDemoTip:
-                        photoTaken.pose1 === '' &&
-                        photoTaken.pose2 === '' &&
-                        photoTaken.pose3 === ''
-                          ? true
-                          : false,
-                    })
-                  }
-                  onActionRemove={() => this.handleRemoveTakenPhoto('pose1')}
-                />
+                  </View>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 170, marginLeft: '10%', borderTopLeftRadius: 27, borderTopRightRadius: 27 }}>
+                  <View
+                    style={{
+                      borderRadius: 27
+                    }}>
+
+                  </View>
+                </Shimmer>
               </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 170, marginTop: 20, borderTopLeftRadius: 27, borderTopRightRadius: 27 }}>
+                  <View
+                    style={{
+                      borderRadius: 27
+                    }}>
 
-              <View
+                  </View>
+                </Shimmer>
+                <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '45%', height: 170, marginLeft: '10%', marginTop: 20, borderTopLeftRadius: 27, borderTopRightRadius: 27 }}>
+                  <View
+                    style={{
+                      borderRadius: 27
+                    }}>
+
+                  </View>
+                </Shimmer>
+              </View>
+              <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Text>Name</Text>
+              </Shimmer>
+            </View>
+          ) : (
+              <ScrollView
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginTop: 50,
-                }}>
-                <SchoolPhotoInitial
-                  width={140}
-                  isPoseImg={photoTaken.pose2 !== '' ? false : true}
-                  img={
-                    photoTaken.pose2 !== ''
-                      ? {uri: photoTaken.pose2}
-                      : formData.gender === 'male'
-                      ? boyGroupPose2Icon
-                      : girlGroupPose2Icon
-                  }
-                  actionLabel1="Click Here to "
-                  actionLabel2="Take Photo"
-                  actionLabel={photoTaken.pose2 !== '' ? 'Remove' : ''}
-                  onAction={() =>
-                    this.props.navigation.navigate('CameraSectionScreen', {
-                      fromScreen: 'GroupPoseGuide',
-                      item: 'pose2',
-                      showDemoTip:
-                        photoTaken.pose1 === '' &&
-                        photoTaken.pose2 === '' &&
-                        photoTaken.pose3 === ''
-                          ? true
-                          : false,
-                    })
-                  }
-                  onActionRemove={() => this.handleRemoveTakenPhoto('pose2')}
-                />
-                <View style={{marginHorizontal: 20}} />
-                <SchoolPhotoInitial
-                  width={140}
-                  isPoseImg={photoTaken.pose3 !== '' ? false : true}
-                  img={
-                    photoTaken.pose3 !== ''
-                      ? {uri: photoTaken.pose3}
-                      : formData.gender === 'male'
-                      ? boyGroupPose3Icon
-                      : girlGroupPose3Icon
-                  }
-                  actionLabel1="Click Here to "
-                  actionLabel2="Take Photo"
-                  actionLabel={photoTaken.pose3 !== '' ? 'Remove' : ''}
-                  onAction={() =>
-                    this.props.navigation.navigate('CameraSectionScreen', {
-                      fromScreen: 'GroupPoseGuide',
-                      item: 'pose3',
-                      showDemoTip:
-                        photoTaken.pose1 === '' &&
-                        photoTaken.pose2 === '' &&
-                        photoTaken.pose3 === ''
-                          ? true
-                          : false,
-                    })
-                  }
-                  onActionRemove={() => this.handleRemoveTakenPhoto('pose3')}
-                />
-              </View>
+                  paddingHorizontal: 20,
 
-              <View style={{marginVertical: 30}}>
-                <CustomButton
-                  buttonStyles={
-                    photoTaken.pose1 !== '' &&
-                    photoTaken.pose2 !== '' &&
-                    photoTaken.pose3 !== ''
-                      ? 'btn-primary'
-                      : 'btn-primary-color'
-                  }
-                  textStyles="txt-primary"
-                  text="Submit"
-                  width="100%"
-                  onAction={() => this.handleSubmit()}
-                />
-              </View>
-            </ScrollView>
-          )}
+                  paddingTop: 30,
+                }}
+                contentContainerStyle={{ paddingBottom: 30 }}>
+                <View style={{ marginVertical: 15 }}>
+                  <CustomTracker stage={1} label="schoolSection" />
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                  <SchoolPhotoInitialTexts
+                    width={140}
+                    label1="Please take your"
+                    label2="3 full size photos"
+                    label3="following the different"
+                    label4="poses shown here."
+                  />
+                  <View style={{ marginHorizontal: 20 }} />
+                  <SchoolPhotoInitial
+                    width={140}
+                    isPoseImg={photoTaken.pose1 !== '' ? false : true}
+                    img={
+                      photoTaken.pose1 !== ''
+                        ? { uri: photoTaken.pose1 }
+                        : formData.gender === 'male'
+                          ? boyGroupPose1Icon
+                          : girlGroupPose1Icon
+                    }
+                    actionLabel1="Click Here to "
+                    actionLabel2="Take Photo"
+                    actionLabel={photoTaken.pose1 !== '' ? 'Remove' : ''}
+                    onAction={() =>
+                      this.props.navigation.navigate('CameraSectionScreen', {
+                        fromScreen: 'GroupPoseGuide',
+                        item: 'pose1',
+                        showDemoTip:
+                          photoTaken.pose1 === '' &&
+                            photoTaken.pose2 === '' &&
+                            photoTaken.pose3 === ''
+                            ? true
+                            : false,
+                      })
+                    }
+                    onActionRemove={() => this.handleRemoveTakenPhoto('pose1')}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginTop: 50,
+                  }}>
+                  <SchoolPhotoInitial
+                    width={140}
+                    isPoseImg={photoTaken.pose2 !== '' ? false : true}
+                    img={
+                      photoTaken.pose2 !== ''
+                        ? { uri: photoTaken.pose2 }
+                        : formData.gender === 'male'
+                          ? boyGroupPose2Icon
+                          : girlGroupPose2Icon
+                    }
+                    actionLabel1="Click Here to "
+                    actionLabel2="Take Photo"
+                    actionLabel={photoTaken.pose2 !== '' ? 'Remove' : ''}
+                    onAction={() =>
+                      this.props.navigation.navigate('CameraSectionScreen', {
+                        fromScreen: 'GroupPoseGuide',
+                        item: 'pose2',
+                        showDemoTip:
+                          photoTaken.pose1 === '' &&
+                            photoTaken.pose2 === '' &&
+                            photoTaken.pose3 === ''
+                            ? true
+                            : false,
+                      })
+                    }
+                    onActionRemove={() => this.handleRemoveTakenPhoto('pose2')}
+                  />
+                  <View style={{ marginHorizontal: 20 }} />
+                  <SchoolPhotoInitial
+                    width={140}
+                    isPoseImg={photoTaken.pose3 !== '' ? false : true}
+                    img={
+                      photoTaken.pose3 !== ''
+                        ? { uri: photoTaken.pose3 }
+                        : formData.gender === 'male'
+                          ? boyGroupPose3Icon
+                          : girlGroupPose3Icon
+                    }
+                    actionLabel1="Click Here to "
+                    actionLabel2="Take Photo"
+                    actionLabel={photoTaken.pose3 !== '' ? 'Remove' : ''}
+                    onAction={() =>
+                      this.props.navigation.navigate('CameraSectionScreen', {
+                        fromScreen: 'GroupPoseGuide',
+                        item: 'pose3',
+                        showDemoTip:
+                          photoTaken.pose1 === '' &&
+                            photoTaken.pose2 === '' &&
+                            photoTaken.pose3 === ''
+                            ? true
+                            : false,
+                      })
+                    }
+                    onActionRemove={() => this.handleRemoveTakenPhoto('pose3')}
+                  />
+                </View>
+
+                <View style={{ marginVertical: 30 }}>
+                  <CustomButton
+                    buttonStyles={
+                      photoTaken.pose1 !== '' &&
+                        photoTaken.pose2 !== '' &&
+                        photoTaken.pose3 !== ''
+                        ? 'btn-primary'
+                        : 'btn-primary-color'
+                    }
+                    textStyles="txt-primary"
+                    text="Submit"
+                    width="100%"
+                    onAction={() => this.handleSubmit()}
+                  />
+                </View>
+              </ScrollView>
+            )}
           {removeItem.status && (
             <Modal
               visible={removeItem.status}
@@ -411,7 +459,7 @@ class GroupPoseGuide extends React.Component {
                     alignItems: 'center',
                   }}>
                   <Text style={TTComDB18}>Remove Photo?</Text>
-                  <View style={{marginVertical: 10}} />
+                  <View style={{ marginVertical: 10 }} />
                   <CustomButton
                     buttonStyles="btn-primary"
                     textStyles="txt-primary"
@@ -421,7 +469,7 @@ class GroupPoseGuide extends React.Component {
                       this.handleRemovePhoto(removeItem.item, true)
                     }
                   />
-                  <View style={{marginVertical: 10}} />
+                  <View style={{ marginVertical: 10 }} />
                   <CustomButton
                     buttonStyles="btn-primary"
                     textStyles="txt-primary"
@@ -448,39 +496,39 @@ export default (function (props) {
 });
 
 const SchoolPhotoInitialTexts = (props) => {
-  const {width, label1, label2, label3, label4} = props;
-  const {TTComDB14} = CommonStyles;
+  const { width, label1, label2, label3, label4 } = props;
+  const { TTComDB14 } = CommonStyles;
   return (
     <View
       style={
         width
           ? {
-              width: width,
-              borderRadius: 27,
-              borderStyle: 'dashed',
-              borderWidth: 1,
-              paddingVertical: 15,
-              paddingHorizontal: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: 200,
-            }
+            width: width,
+            borderRadius: 27,
+            borderStyle: 'dashed',
+            borderWidth: 1,
+            paddingVertical: 15,
+            paddingHorizontal: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 200,
+          }
           : {
-              borderRadius: 27,
-              borderStyle: 'dashed',
-              borderWidth: 1,
-              paddingVertical: 15,
-              paddingHorizontal: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: 200,
-            }
+            borderRadius: 27,
+            borderStyle: 'dashed',
+            borderWidth: 1,
+            paddingVertical: 15,
+            paddingHorizontal: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: 200,
+          }
       }>
       <View>
-        <Text style={[TTComDB14, {textAlign: 'center'}]}>{label1}</Text>
-        <Text style={[TTComDB14, {textAlign: 'center'}]}>{label2}</Text>
-        <Text style={[TTComDB14, {textAlign: 'center'}]}>{label3}</Text>
-        <Text style={[TTComDB14, {textAlign: 'center'}]}>{label4}</Text>
+        <Text style={[TTComDB14, { textAlign: 'center' }]}>{label1}</Text>
+        <Text style={[TTComDB14, { textAlign: 'center' }]}>{label2}</Text>
+        <Text style={[TTComDB14, { textAlign: 'center' }]}>{label3}</Text>
+        <Text style={[TTComDB14, { textAlign: 'center' }]}>{label4}</Text>
       </View>
       <View
         style={{
@@ -505,47 +553,47 @@ const SchoolPhotoInitial = (props) => {
     actionLabel,
     onActionRemove,
   } = props;
-  const {TTComDB18} = CommonStyles;
+  const { TTComDB16 } = CommonStyles;
   return (
     <View
       style={
         width
           ? {
-              width: width,
-              borderRadius: 27,
-              borderWidth: 0.5,
-              paddingVertical: 0,
-              paddingHorizontal: 0,
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 200,
-              borderColor: '#70707026',
+            width: width,
+            borderRadius: 27,
+            borderWidth: 0.5,
+            paddingVertical: 0,
+            paddingHorizontal: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 200,
+            borderColor: '#70707026',
 
-              // borderRadius: 5,
-              // shadowColor: '#000',
-              // shadowOffset: {
-              //   width: 0,
-              //   height: 12,
-              // },
-              // shadowOpacity: 0.58,
-              // shadowRadius: 16.0,
-              // elevation: 25,
-            }
+            // borderRadius: 5,
+            // shadowColor: '#000',
+            // shadowOffset: {
+            //   width: 0,
+            //   height: 12,
+            // },
+            // shadowOpacity: 0.58,
+            // shadowRadius: 16.0,
+            // elevation: 25,
+          }
           : {}
       }>
-      <View style={{height: '80%'}}>
+      <View style={{ height: '80%' }}>
         <Image
           source={img}
           style={
             isPoseImg
               ? {}
               : {
-                  width: width,
-                  height: '100%',
-                  resizeMode: 'cover',
-                  borderTopLeftRadius: 27,
-                  borderTopRightRadius: 27,
-                }
+                width: width,
+                height: '100%',
+                resizeMode: 'cover',
+                borderTopLeftRadius: 27,
+                borderTopRightRadius: 27,
+              }
           }
         />
       </View>
@@ -563,34 +611,34 @@ const SchoolPhotoInitial = (props) => {
         }}>
         {actionLabel !== '' ? (
           <Text
-            style={[TTComDB18, {color: '#fff', lineHeight: 20}]}
+            style={[TTComDB16, { color: '#fff', lineHeight: 20 }]}
             allowFontScaling={false}>
             {actionLabel}
           </Text>
         ) : (
-          <>
-            <Text
-              style={[TTComDB18, {color: '#fff', lineHeight: 20}]}
-              allowFontScaling={false}>
-              {actionLabel1}
-            </Text>
-            <Text
-              style={[TTComDB18, {color: '#fff', lineHeight: 20}]}
-              allowFontScaling={false}>
-              {actionLabel2}
-            </Text>
-          </>
-        )}
+            <>
+              <Text
+                style={[TTComDB16, { color: '#fff', lineHeight: 20, height: '50%' }]}
+                allowFontScaling={false}>
+                {actionLabel1}
+              </Text>
+              <Text
+                style={[TTComDB16, { color: '#fff', lineHeight: 20, height: '50%' }]}
+                allowFontScaling={false}>
+                {actionLabel2}
+              </Text>
+            </>
+          )}
       </TouchableOpacity>
     </View>
   );
 };
 
 const PoweredBy = () => {
-  const {TTComM16} = CommonStyles;
+  const { TTComM16 } = CommonStyles;
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <Text style={[TTComM16, {marginRight: 5}]}>Powered by</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Text style={[TTComM16, { marginRight: 5 }]}>Powered by</Text>
       <Image source={newSignatureIcon} />
     </View>
   );
