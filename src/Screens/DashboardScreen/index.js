@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import axios from 'axios';
 import {
   CustomHeaderPrim,
@@ -24,7 +24,7 @@ import {
 } from '../../SharedComponents';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import {
   logoSmall,
@@ -39,17 +39,21 @@ import {
   DemoSection,
 } from './components';
 import Styles from './DashboardStyles';
-import { CommonStyles } from '../../SharedComponents/CustomStyles';
-import { BaseUrl, base64Auth } from '../../utils/constants';
+import {CommonStyles} from '../../SharedComponents/CustomStyles';
+import {BaseUrl, base64Auth} from '../../utils/constants';
 
-import { Demo1, Demo2, Demo3 } from '../../Screens';
+import {Demo1, Demo2, Demo3} from '../../Screens';
 
 import Swiper from 'react-native-swiper';
 import AuthScreen from '../AuthScreen';
 
-import { setCartItem } from '../../store/actions';
+import {setCartItem} from '../../store/actions';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-import { headerImage, closeIcon, rightArrowIcon } from '../../SharedComponents/CommonIcons';
+import {
+  headerImage,
+  closeIcon,
+  rightArrowIcon,
+} from '../../SharedComponents/CommonIcons';
 import Shimmer from '../../SharedComponents/Shimmer';
 class DashboardScreen extends Component {
   constructor(props) {
@@ -92,14 +96,14 @@ class DashboardScreen extends Component {
     }
 
     if (this.props.route.params && this.props.route.params.fromLogin) {
-      this.setState({ isDemoShow: false });
+      this.setState({isDemoShow: false});
     }
 
     this.getProductList();
   }
 
   componentDidUpdate(prevProps) {
-    const { params } = this.props.route;
+    const {params} = this.props.route;
 
     if (params && params.fromScreen && params.fromScreen !== '') {
       console.log('In dashboard Screen Before ', this.props.route.params);
@@ -135,7 +139,7 @@ class DashboardScreen extends Component {
       firstName: 'Guest User',
       id: '1wf23gv3erty3jt1234he',
       lastName: null,
-      orders: { edges: [] },
+      orders: {edges: []},
       phone: null,
     };
     try {
@@ -156,7 +160,7 @@ class DashboardScreen extends Component {
   };
 
   getProductList = (id) => {
-    this.setState({ isLoading: true }, async () => {
+    this.setState({isLoading: true}, async () => {
       if (id) {
         this.props.navigation.navigate('ItemDetailsScreen', {
           productId: id,
@@ -165,7 +169,7 @@ class DashboardScreen extends Component {
         axios
           .get(
             BaseUrl +
-            '/admin/api/2020-07/products.json?collection_id=224252428453',
+              '/admin/api/2020-07/products.json?collection_id=224252428453',
             {
               headers: {
                 Authorization: base64Auth,
@@ -177,7 +181,7 @@ class DashboardScreen extends Component {
 
             if (res.data.products && res.data.products.length) {
               this.setState(
-                { productList: res.data.products, isLoading: false },
+                {productList: res.data.products, isLoading: false},
                 () => {
                   // console.log("Res get Product list in Dashboard ",this.state.productList);
                 },
@@ -185,7 +189,7 @@ class DashboardScreen extends Component {
             }
           })
           .catch((err) => {
-            this.setState({ isLoading: false });
+            this.setState({isLoading: false});
             console.log('Err in get Product list in Dashboard', err);
           });
       }
@@ -193,14 +197,14 @@ class DashboardScreen extends Component {
   };
 
   handleDemoScreen = (status) => {
-    this.setState({ demoScreenNum: this.state.demoScreenNum + 1 }, () => {
+    this.setState({demoScreenNum: this.state.demoScreenNum + 1}, () => {
       // console.log('this.state.demoScreenNum', this.state.demoScreenNum);
       if (this.state.demoScreenNum === 4) {
-        this.setState({ isDemoShow: false });
+        this.setState({isDemoShow: false});
       }
     });
 
-    if (status) this.setState({ isDemoShow: false });
+    if (status) this.setState({isDemoShow: false});
   };
 
   getDataFromStore = async (value, fromdata) => {
@@ -209,7 +213,7 @@ class DashboardScreen extends Component {
       console.warn('Is Logged', loggedData);
 
       if (loggedData !== null) {
-        this.setState({ isDemoShow: false, asyncData: JSON.parse(loggedData) });
+        this.setState({isDemoShow: false, asyncData: JSON.parse(loggedData)});
       } else {
         this.setState(
           {
@@ -230,9 +234,9 @@ class DashboardScreen extends Component {
       console.warn('Is Logged', loggedData);
 
       if (loggedData !== null) {
-        this.setState({ asyncData: JSON.parse(loggedData) });
+        this.setState({asyncData: JSON.parse(loggedData)});
       } else {
-        this.setState({ asyncData: '' });
+        this.setState({asyncData: ''});
       }
     } catch (err) {
       console.log('Is Logged', err);
@@ -248,20 +252,20 @@ class DashboardScreen extends Component {
   };
 
   handleSection = () => {
-    this.setState({ isSection: !this.state.isSection });
+    this.setState({isSection: !this.state.isSection});
   };
 
   TakePictureCurrentScreen = async () => {
     const data = await AsyncStorage.getItem('AlreadyTakePhoto');
     if (data !== null) {
       const parsedData = JSON.parse(data);
-      this.setState({ screen: parsedData });
+      this.setState({screen: parsedData});
     } else {
       const data = {
         data: '',
         screen: 'SchoolSubmitPhotoScreen',
       };
-      this.setState({ screen: data });
+      this.setState({screen: data});
     }
   };
 
@@ -277,7 +281,7 @@ class DashboardScreen extends Component {
           'search data',
           res.data.products.map((item) => item.id),
         );
-        this.setState({ productList: res.data.products });
+        this.setState({productList: res.data.products});
       });
   };
 
@@ -302,11 +306,11 @@ class DashboardScreen extends Component {
     //       }),
     //     );
     //   });
-    this.props.navigation.navigate("Search");
+    this.props.navigation.navigate('Search');
   };
 
   render() {
-    const { tabNavContainer } = Styles;
+    const {tabNavContainer} = Styles;
     const {
       isSection,
       isDemoShow,
@@ -318,9 +322,9 @@ class DashboardScreen extends Component {
     } = this.state;
     const count = 0;
 
-    const { TTComDB28, TTComDB16 } = CommonStyles;
+    const {TTComDB28, TTComDB16} = CommonStyles;
 
-    const { cartList } = this.props;
+    const {cartList} = this.props;
 
     return (
       <>
@@ -338,25 +342,29 @@ class DashboardScreen extends Component {
 
           {isLoading ? (
             // <Loader />
-            <View style={{ flex: 11, paddingHorizontal: 20 }}>
+            <View style={{flex: 11, paddingHorizontal: 20}}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ flex: 1, marginTop: 170 }}>
-                  <Shimmer autoRun={true} visible={false} duration={3000} style={{ width: '100%', height: 450 }}>
+                <View style={{flex: 1, marginTop: 170}}>
+                  <Shimmer
+                    autoRun={true}
+                    visible={false}
+                    duration={3000}
+                    style={{width: '100%', height: 450}}>
                     <View />
                   </Shimmer>
                 </View>
-                <View style={{ marginVertical: 5 }}>
+                <View style={{marginVertical: 5}}>
                   <Shimmer autoRun={true} visible={false} duration={3000}>
                     <Image
                       source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
                     />
                   </Shimmer>
                 </View>
-                <View style={{ marginTop: 30, paddingBottom: 100 }}>
+                <View style={{marginTop: 30, paddingBottom: 100}}>
                   <Shimmer autoRun={true} visible={false} duration={3000}>
-                    <Text style={[CommonStyles.TTComDB28, { color: 'black' }]}>
+                    <Text style={[CommonStyles.TTComDB28, {color: 'black'}]}>
                       Featured Products
-                  </Text>
+                    </Text>
                   </Shimmer>
 
                   <View
@@ -364,180 +372,185 @@ class DashboardScreen extends Component {
                       flexWrap: 'wrap',
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      paddingVertical: 10
+                      paddingVertical: 10,
                     }}>
-
                     {productList && productList.length
                       ? productList.map((item, index) => {
-                        // console.warn(item.variants[0].compare_at_price);
+                          // console.warn(item.variants[0].compare_at_price);
 
-                        return (
-                          <Shimmer autoRun={true} visible={false} duration={3000}>
-                            <ItemList
-                              discount={
-                                item.variants &&
+                          return (
+                            <Shimmer
+                              autoRun={true}
+                              visible={false}
+                              duration={3000}>
+                              <ItemList
+                                discount={
+                                  item.variants &&
                                   item.variants[0] &&
                                   item.variants[0].price &&
                                   item.variants[0].compare_at_price
-                                  ?
-                                  'AED ' + (item.variants[0].price -
-                                    item.variants[0].compare_at_price)
-                                  : '0'
-                              }
-                              key={index}
-                              label={item.title}
-                              price={
-                                item.variants &&
+                                    ? 'AED ' +
+                                      (item.variants[0].price -
+                                        item.variants[0].compare_at_price)
+                                    : '0'
+                                }
+                                key={index}
+                                label={item.title}
+                                price={
+                                  item.variants &&
                                   item.variants[0] &&
                                   item.variants[0].price
-                                  ? 'AED  ' + Math.floor(item.variants[0].price)
-                                  : '12 AED'
-                              }
-                              itemImage={
-                                item.image &&
-                                item.image.src !== '' &&
-                                item.image.src !== null &&
-                                item.image.src
-                              }
-                              onAction={() =>
-                                this.props.navigation.navigate(
-                                  'ItemDetailsScreen',
-                                  { productId: productList[index].id },
-                                )
-                              }
-                            />
-                          </Shimmer>
-                        );
-                      })
+                                    ? 'AED  ' +
+                                      Math.floor(item.variants[0].price)
+                                    : '12 AED'
+                                }
+                                itemImage={
+                                  item.image &&
+                                  item.image.src !== '' &&
+                                  item.image.src !== null &&
+                                  item.image.src
+                                }
+                                onAction={() =>
+                                  this.props.navigation.navigate(
+                                    'ItemDetailsScreen',
+                                    {productId: productList[index].id},
+                                  )
+                                }
+                              />
+                            </Shimmer>
+                          );
+                        })
                       : null}
-
                   </View>
                 </View>
               </ScrollView>
             </View>
           ) : (
-              <View style={{ flex: 11, paddingHorizontal: 20 }}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <View style={{ flex: 1, marginTop: 170 }}>
-                    <ImageBackground
-                      source={SchoolBg}
-                      style={{ width: '100%', height: 450 }}
+            <View style={{flex: 11, paddingHorizontal: 20}}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{flex: 1, marginTop: 170}}>
+                  <ImageBackground
+                    source={SchoolBg}
+                    style={{width: '100%', height: 450}}
                     // imageStyle={{borderRadius: 25, borderWidth: 1.5}}
-                    >
-                      <LinearGradient
-                        colors={['#ffffff00', '#00000091']}
-                        locations={[0.1, 0.9]}
-                        style={{ flex: 1, zIndex: 10, borderRadius: 25 }}>
+                  >
+                    <LinearGradient
+                      colors={['#ffffff00', '#00000091']}
+                      locations={[0.1, 0.9]}
+                      style={{flex: 1, zIndex: 10, borderRadius: 25}}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'flex-end',
+                          padding: 10,
+                        }}>
                         <View
                           style={{
-                            flex: 1,
-                            justifyContent: 'flex-end',
-                            padding: 10,
+                            flexDirection: 'row',
+                            alignItems: 'flex-end',
+                            marginBottom: 5,
                           }}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'flex-end',
-                              marginBottom: 5,
-                            }}>
-                            <Text style={[TTComDB16, { color: '#fff' }]}>
-                              Powered by
+                          <Text style={[TTComDB16, {color: '#fff'}]}>
+                            Powered by
                           </Text>
-                            <Image source={signature} />
-                          </View>
-                          <View>
-                            <Text
-                              style={[CommonStyles.TTComDB28, { color: '#fff' }]}>
-                              Take your at-home
-                          </Text>
-                            <Text
-                              style={[CommonStyles.TTComDB28, { color: '#fff' }]}>
-                              School Photo!
-                          </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                              paddingVertical: 5,
-                            }}>
-                            <CustomButton
-                              buttonStyles="btn-primary"
-                              // textStyles="txt-primary"
-                              text="Take Picture"
-                              width="49%"
-                              onAction={() => {
-                                this.props.navigation.navigate(
-                                  this.state.screen.screen,
-                                  {
-                                    fromScreen: 'GroupPortraitPoseGuide',
-                                    formData: this.state.screen.data,
-                                  },
-                                );
-                              }}
-                            // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
-                            />
-                            <CustomButton
-                              buttonStyles="btn-secondary"
-                              // textStyles="txt-primary"
-                              text="Upload"
-                              width="50%"
-                              onAction={() => {
-                                if (
-                                  asyncData &&
-                                  asyncData.id !== '1wf23gv3erty3jt1234he'
-                                ) {
-                                  this.props.navigation.navigate(
-                                    'CustomGalleryScreen',
-                                  );
-                                } else {
-                                  this.props.navigation.navigate('LoginScreen');
-                                }
-                              }}
-                            />
-                          </View>
+                          <Image source={signature} />
                         </View>
-                      </LinearGradient>
-                    </ImageBackground>
-                  </View>
-                  <View style={{ marginVertical: 5 }}>
-                    <Image
-                      source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
-                    />
-                  </View>
-                  <View style={{ marginTop: 30, paddingBottom: 100 }}>
-                    <Text style={[CommonStyles.TTComDB28, { color: 'black' }]}>
-                      Featured Products
+                        <View>
+                          <Text
+                            style={[CommonStyles.TTComDB28, {color: '#fff'}]}>
+                            Take your at-home
+                          </Text>
+                          <Text
+                            style={[CommonStyles.TTComDB28, {color: '#fff'}]}>
+                            School Photo!
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            paddingVertical: 5,
+                          }}>
+                          <CustomButton
+                            buttonStyles="btn-primary"
+                            // textStyles="txt-primary"
+                            text="Take Picture"
+                            width="49%"
+                            onAction={() => {
+                              this.props.navigation.navigate(
+                                this.state.screen.screen,
+                                {
+                                  fromScreen: 'GroupPortraitPoseGuide',
+                                  formData: this.state.screen.data,
+                                },
+                              );
+                            }}
+                            // onAction        = {()=>this.props.navigation.navigate('DemoOverlay1')}
+                          />
+                          <CustomButton
+                            buttonStyles="btn-secondary"
+                            // textStyles="txt-primary"
+                            text="Upload"
+                            width="50%"
+                            onAction={() => {
+                              if (
+                                asyncData &&
+                                asyncData.id !== '1wf23gv3erty3jt1234he'
+                              ) {
+                                this.props.navigation.navigate(
+                                  'CustomGalleryScreen',
+                                );
+                              } else {
+                                this.props.navigation.navigate('LoginScreen');
+                              }
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </LinearGradient>
+                  </ImageBackground>
+                </View>
+                <View style={{marginVertical: 5}}>
+                  <Image
+                    source={require('../../../assests/Common/newDashboardDesign/LensmanLogo.png')}
+                  />
+                </View>
+                <View style={{marginTop: 30, paddingBottom: 100}}>
+                  <Text style={[CommonStyles.TTComDB28, {color: 'black'}]}>
+                    Featured Products
                   </Text>
-                    <View
-                      style={{
-                        flexWrap: 'wrap',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingVertical: 10
-                      }}>
-                      {productList && productList.length
-                        ? productList.map((item, index) => {
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingVertical: 10,
+                    }}>
+                    {productList && productList.length
+                      ? productList.map((item, index) => {
                           // console.warn(item.variants[0].compare_at_price);
 
                           return (
                             <ItemList
                               discount={
                                 item.variants &&
-                                  item.variants[0] &&
-                                  item.variants[0].price &&
-                                  item.variants[0].compare_at_price
-                                  ?
-                                  'AED ' + (item.variants[0].price -
-                                    item.variants[0].compare_at_price)
+                                item.variants[0] &&
+                                item.variants[0].price &&
+                                item.variants[0].compare_at_price
+                                  ? Math.floor(
+                                      100 -
+                                        (item.variants[0].price /
+                                          item.variants[0].compare_at_price) *
+                                          100,
+                                    ) + '% OFF'
                                   : '0'
                               }
                               key={index}
                               label={item.title}
                               price={
                                 item.variants &&
-                                  item.variants[0] &&
-                                  item.variants[0].price
+                                item.variants[0] &&
+                                item.variants[0].price
                                   ? 'AED  ' + Math.floor(item.variants[0].price)
                                   : '12 AED'
                               }
@@ -550,18 +563,18 @@ class DashboardScreen extends Component {
                               onAction={() =>
                                 this.props.navigation.navigate(
                                   'ItemDetailsScreen',
-                                  { productId: productList[index].id },
+                                  {productId: productList[index].id},
                                 )
                               }
                             />
                           );
                         })
-                        : null}
-                    </View>
+                      : null}
                   </View>
-                </ScrollView>
-              </View>
-            )}
+                </View>
+              </ScrollView>
+            </View>
+          )}
 
           {!isSearchData && (
             <SafeAreaView>
@@ -594,9 +607,9 @@ class DashboardScreen extends Component {
                   loop={false}
                   index={this.state.index}
                   onIndexChanged={(i) =>
-                    this.setState({ index: i }, () => {
+                    this.setState({index: i}, () => {
                       if (this.state.index < 0) {
-                        this.setState({ index: 0 }, () =>
+                        this.setState({index: 0}, () =>
                           this.swiper.scrollBy(this.state.index + 1, true),
                         );
                       }
@@ -611,7 +624,7 @@ class DashboardScreen extends Component {
                     changeScreen={() =>
                       this.swiper.scrollBy(this.state.index + 1, true)
                     }
-                    closeModal={() => this.setState({ isDemoShow: false })}
+                    closeModal={() => this.setState({isDemoShow: false})}
                   />
 
                   <Demo2
@@ -619,7 +632,7 @@ class DashboardScreen extends Component {
                     changeScreen={() =>
                       this.swiper.scrollBy(this.state.index, true)
                     }
-                    closeModal={() => this.setState({ isDemoShow: false })}
+                    closeModal={() => this.setState({isDemoShow: false})}
                   />
 
                   <Demo3
@@ -627,7 +640,7 @@ class DashboardScreen extends Component {
                     changeScreen={() =>
                       this.swiper.scrollBy(this.state.index, true)
                     }
-                    closeModal={(cb) => this.setState({ isDemoShow: false })}
+                    closeModal={(cb) => this.setState({isDemoShow: false})}
                   />
                   <AuthScreen
                     {...this.props}
@@ -635,7 +648,7 @@ class DashboardScreen extends Component {
                       this.swiper.scrollBy(this.state.index + 1, true)
                     }
                     handleCloseModal={(cb) =>
-                      this.setState({ isDemoShow: false })
+                      this.setState({isDemoShow: false})
                     }
                   />
                 </Swiper>
@@ -650,7 +663,7 @@ class DashboardScreen extends Component {
                 backgroundColor: 'transparent',
                 width: '100%',
               },
-              isSearchData && { height: '100%' },
+              isSearchData && {height: '100%'},
             ]}>
             <CustomHeaderPrim
               leftIcon={logoSmall}
@@ -660,7 +673,7 @@ class DashboardScreen extends Component {
               data={productList}
               filterData={this.filterData}
               onSearchEvent={(isShow) => {
-                this.setState({ isSearchData: isShow });
+                this.setState({isSearchData: isShow});
               }}
             />
             {/* <View>

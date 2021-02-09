@@ -137,7 +137,7 @@ class ContactUsScreen extends Component {
           <View style={{height: 15}} />
           <View style={{flex: 10, paddingHorizontal: 20}}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={{marginTop: 130}}>
+              <View style={{marginTop: 145}}>
                 <Container>
                   <CustomInput
                     placeholder="Full Name"

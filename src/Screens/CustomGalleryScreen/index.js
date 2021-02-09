@@ -9,16 +9,17 @@ import {
   Dimensions,
   ToastAndroid,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import axios from 'axios';
-import { LeftArrowIcon } from '../../SharedComponents/CommonIcons';
+import {LeftArrowIcon} from '../../SharedComponents/CommonIcons';
 import {
   CustomHeaderPrim,
   Loader,
   CustomToaster,
   CommonStyles,
 } from '../../SharedComponents';
-import { BaseUrlSchool, BaseUrl } from '../../utils/constants';
+import {BaseUrlSchool, BaseUrl} from '../../utils/constants';
 import AsyncStorage from '@react-native-community/async-storage';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 import Shimmer from '../../SharedComponents/Shimmer';
@@ -40,7 +41,7 @@ class CustomGalleryScreen extends React.Component {
   getPhotosList = (id) => {
     console.warn(id);
 
-    this.setState({ isLoading: true }, async () => {
+    this.setState({isLoading: true}, async () => {
       await axios
         .get(`http://15.185.152.100/api/student/${id}/photos`)
         .then((res) => {
@@ -84,33 +85,35 @@ class CustomGalleryScreen extends React.Component {
     let data = await AsyncStorage.getItem('loginDetails');
     if (data !== null) {
       let datas = JSON.parse(data);
-      this.setState({ id: datas.id }, () => this.getPhotosList(this.state.id));
+      this.setState({id: datas.id}, () => this.getPhotosList(this.state.id));
     }
   };
   render() {
-    const { isLoading, photsList, isCustomToaster, id } = this.state;
+    const {isLoading, photsList, isCustomToaster, id} = this.state;
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{ flex: 1 }}>
-          <View style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1}}>
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
             {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
-            <View
-              style={{
-                height: 120,
-                zIndex: 4,
-                backgroundColor: 'transparent',
-              }}>
-              <CustomHeaderPrim
-                leftIcon={LeftArrowIcon}
-                leftIconAction={() => this.props.navigation.goBack()}
-                centerLabel="Select"
-              />
-            </View>
+            {Platform.OS == 'android' && (
+              <View
+                style={{
+                  height: 120,
+                  zIndex: 4,
+                  backgroundColor: 'transparent',
+                }}>
+                <CustomHeaderPrim
+                  leftIcon={LeftArrowIcon}
+                  leftIconAction={() => this.props.navigation.goBack()}
+                  centerLabel="Select"
+                />
+              </View>
+            )}
 
             {isLoading ? (
               // <Loader />
-              <View style={{ flex: 9, paddingHorizontal: 10 }}>
+              <View style={{flex: 9, paddingHorizontal: 10}}>
                 <View
                   style={{
                     flex: 1,
@@ -119,52 +122,61 @@ class CustomGalleryScreen extends React.Component {
                     justifyContent: 'center',
                     paddingBottom: 10,
                   }}>
-                  <Shimmer autoRun={true} visible={false} duration={3000} style={{
-                    width: '100%', height: '100%', marginTop: 10
-                  }}>
+                  <Shimmer
+                    autoRun={true}
+                    visible={false}
+                    duration={3000}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      marginTop: 10,
+                    }}>
                     <View />
                   </Shimmer>
                 </View>
               </View>
             ) : (
-                <View style={{ flex: 9, paddingHorizontal: 10 }}>
-                  <ScrollView
-                    contentContainerStyle={{ paddingTop: 60 }}
-                    showsVerticalScrollIndicator={false}
-                    style={{ maxHeight: Dimensions.get('screen').height * 0.9 }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        flexWrap: 'wrap',
-                        justifyContent: 'center',
-                        paddingBottom: 10,
-                      }}>
-                      {photsList && id && photsList.length ? (
-                        photsList.map((images, index) => {
-                          return (
-                            <ImageCard
-                              image={{
-                                uri: images,
-                              }}
-                              key={index}
-                            />
-                          );
-                        })
-                      ) : (
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: Dimensions.get('screen').height * 0.5,
-                            }}>
-                            <Text style={CommonStyles.TTComDB14}>
-                              No Photos Avaliable
+              <View style={{flex: 9, paddingHorizontal: 10}}>
+                <ScrollView
+                  contentContainerStyle={{paddingTop: 60}}
+                  showsVerticalScrollIndicator={false}
+                  style={{
+                    maxHeight: Dimensions.get('screen').height * 0.9,
+                    marginTop: Platform.OS == 'ios' ? 120 : 0,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      paddingBottom: 10,
+                    }}>
+                    {photsList && id && photsList.length ? (
+                      photsList.map((images, index) => {
+                        return (
+                          <ImageCard
+                            image={{
+                              uri: images,
+                            }}
+                            key={index}
+                          />
+                        );
+                      })
+                    ) : (
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: Dimensions.get('screen').height * 0.5,
+                        }}>
+                        <Text style={CommonStyles.TTComDB14}>
+                          No Photos Avaliable
                         </Text>
-                          </View>
-                        )}
-                      {/* <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
+                      </View>
+                    )}
+                    {/* <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
@@ -183,19 +195,32 @@ class CustomGalleryScreen extends React.Component {
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} />
                                         <ImageCard image = {require('../../../assests/Test/martin-pechy-veoAiHnM3AI-unsplash.png')} /> */}
-                    </View>
-                  </ScrollView>
-                </View>
-              )}
+                  </View>
+                </ScrollView>
+              </View>
+            )}
             {isCustomToaster !== '' && (
               <CustomToaster
                 position="flex-end"
-                onend={() => this.setState({ isCustomToaster: '' })}
+                onend={() => this.setState({isCustomToaster: ''})}
                 isCustomToaster={true}
                 message={isCustomToaster}
               />
             )}
           </View>
+          {Platform.OS == 'ios' && (
+            <View
+              style={{
+                height: 120,
+                position: 'absolute',
+              }}>
+              <CustomHeaderPrim
+                leftIcon={LeftArrowIcon}
+                leftIconAction={() => this.props.navigation.goBack()}
+                centerLabel="Select"
+              />
+            </View>
+          )}
         </SafeAreaView>
       </>
     );
@@ -205,11 +230,11 @@ class CustomGalleryScreen extends React.Component {
 export default CustomGalleryScreen;
 
 const ImageCard = (props) => {
-  const { image } = props;
+  const {image} = props;
   console.warn(Dimensions.get('screen').width);
-  const { width } = Dimensions.get('screen');
+  const {width} = Dimensions.get('screen');
   return (
-    <TouchableOpacity style={{ padding: 5 }}>
+    <TouchableOpacity style={{padding: 5}}>
       <Image
         defaultSource={require('../../../assests/Common/imagePlaceholder/placeholder.jpg')}
         source={image}

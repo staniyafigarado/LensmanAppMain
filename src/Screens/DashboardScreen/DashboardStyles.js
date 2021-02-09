@@ -1,6 +1,6 @@
-import { StyleSheet, Platform, Dimensions } from 'react-native';
-import { RFPercentage } from 'react-native-responsive-fontsize';
-const { width, height } = Dimensions.get('window');
+import {StyleSheet, Platform, Dimensions} from 'react-native';
+import {RFPercentage} from 'react-native-responsive-fontsize';
+const {width, height} = Dimensions.get('window');
 const Styles = StyleSheet.create({
   notificationBubble: {
     backgroundColor: '#FF6C00',
@@ -53,7 +53,7 @@ const Styles = StyleSheet.create({
   },
   discountBadge: {
     // width: '50%',
-    width: width * .23,
+    width: Platform.OS == 'ios' ? width * 0.23 : width * 0.21,
     height: 25,
     backgroundColor: '#FA3838',
     borderRadius: 13,
@@ -63,6 +63,7 @@ const Styles = StyleSheet.create({
     zIndex: 2,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: Platform.OS == 'ios' ? 3 : 0,
   },
   discountBadgeText: {
     color: '#fff',

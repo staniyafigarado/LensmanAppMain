@@ -8,20 +8,20 @@ import {
   Platform,
 } from 'react-native';
 
-import { RFPercentage } from 'react-native-responsive-fontsize';
+import {RFPercentage} from 'react-native-responsive-fontsize';
 
-import { CommonStyles } from '..';
+import {CommonStyles} from '..';
 
 const Container = (props) => {
   return (
-    <View style={{ marginVertical: 15, alignItems: 'center' }}>
+    <View style={{marginVertical: 15, alignItems: 'center'}}>
       {props.children}
     </View>
   );
 };
 
 const Button = (props) => {
-  const { buttonStyles, textStyles, text, icon, onAction, width } = props.data;
+  const {buttonStyles, textStyles, text, icon, onAction, width} = props.data;
   const {
     btnPrimary,
     btnSecondary,
@@ -34,30 +34,30 @@ const Button = (props) => {
       onPress={() => onAction && onAction()}
       style={
         buttonStyles === 'btn-primary' && width
-          ? [btnPrimary, { width: width }]
+          ? [btnPrimary, {width: width}]
           : buttonStyles === 'btn-primary-color' && width
-            ? [btnPrimaryColor, { width: width }]
-            : buttonStyles === 'btn-primary'
-              ? btnPrimary
-              : buttonStyles === 'btn-secondary' && width
-                ? [btnSecondary, { width: width }]
-                : buttonStyles === 'btn-secondary'
-                  ? btnSecondary
-                  : buttonStyles === 'btn-secondary-black' && width
-                    ? [btnSecondaryBlack, { width: width }]
-                    : buttonStyles === 'btn-secondary-black'
-                      ? btnSecondaryBlack
-                      : buttonStyles
+          ? [btnPrimaryColor, {width: width}]
+          : buttonStyles === 'btn-primary'
+          ? btnPrimary
+          : buttonStyles === 'btn-secondary' && width
+          ? [btnSecondary, {width: width}]
+          : buttonStyles === 'btn-secondary'
+          ? btnSecondary
+          : buttonStyles === 'btn-secondary-black' && width
+          ? [btnSecondaryBlack, {width: width}]
+          : buttonStyles === 'btn-secondary-black'
+          ? btnSecondaryBlack
+          : buttonStyles
       }>
-      {icon && <Image source={icon} style={{ marginHorizontal: '5%' }} />}
+      {icon && <Image source={icon} style={{marginHorizontal: '5%'}} />}
       <Text
         allowFontScaling={false}
         style={
           textStyles === 'txt-primary'
             ? CommonStyles.txtPrimary
             : textStyles === 'txt-secondary'
-              ? CommonStyles.txtSecondary
-              : [CommonStyles.TTComDB18, { color: '#fff' }]
+            ? CommonStyles.txtSecondary
+            : [CommonStyles.TTComDB18, {color: '#fff'}]
         }>
         {text && text}
       </Text>
@@ -105,7 +105,8 @@ const Styles = StyleSheet.create({
     paddingVertical: 15,
     // height          : 49,
     justifyContent: 'center',
-    alignItems: 'center', flexDirection: 'row'
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   btnSecondaryBlack: {
     borderRadius: 26,

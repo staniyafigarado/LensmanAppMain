@@ -113,8 +113,12 @@ const CustomTracker = (props) => {
           <>
             {label === 'schoolSection' ? (
               <>
-                <Text style={TTComM16}>Upload</Text>
-                <Text style={TTComM16}>Complete</Text>
+                <Text allowFontScaling={false} style={TTComM16}>
+                  Upload
+                </Text>
+                <Text allowFontScaling={false} style={TTComM16}>
+                  Complete
+                </Text>
               </>
             ) : (
               <Text style={TTComM16}>Order</Text>

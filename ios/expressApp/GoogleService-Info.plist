@@ -7,7 +7,7 @@
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.607392749221-18vjubfhipjpiooop07g7sp8lqcqvs6d</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>607392749221-rqio0h12pouhtp4cgo2beo3p5oehcuco.apps.googleusercontent.com</string>
+	<string>607392749221-mi3lugo66hkmi4rqt4e8hadr9qq5khl2.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAw7_FCP9WdzoqCA4I7hfBOuoEbLaqCzpI</string>
 	<key>GCM_SENDER_ID</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:607392749221:ios:54389cb69d020a498a9f4c</string>
+	<string>1:607392749221:ios:ba0278ddbfb545338a9f4c</string>
 	<key>DATABASE_URL</key>
 	<string>https://lensman-express.firebaseio.com</string>
 </dict>

@@ -1,21 +1,30 @@
-import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import { setLoginData } from '../../store/actions';
+import {RFPercentage} from 'react-native-responsive-fontsize';
+import {setLoginData} from '../../store/actions';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 // custom components
-import { CustomButton } from '../../SharedComponents';
+import {CustomButton} from '../../SharedComponents';
 
-import { CommonStyles } from '../../SharedComponents/CustomStyles';
+import {CommonStyles} from '../../SharedComponents/CustomStyles';
 // import CustomFonts from "../../utils/CommonUtils";
 import {
   closeIcon,
   googleWhiteIcon,
   fbWhiteIcon,
 } from '../../SharedComponents/CommonIcons';
+import {SignInWithAppleButton} from 'react-native-apple-authentication';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   AccessToken,
@@ -26,9 +35,9 @@ import {
 import {
   GoogleSigninButton,
   GoogleSignin,
-  statusCodes
+  statusCodes,
 } from '@react-native-community/google-signin';
-import { BaseUrl, base64Auth } from '../../utils/constants';
+import {BaseUrl, base64Auth} from '../../utils/constants';
 import base64 from 'react-native-base64';
 import graphqlFetchHandler from '../../utils/graphqlFetchHandler';
 import axios from 'axios';
@@ -51,7 +60,14 @@ class AuthScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: {}, userInfoG: {}, profile: '', username: '', email: '', password: '', user: '', setGettingLoginStatus: true,
+      userInfo: {},
+      userInfoG: {},
+      profile: '',
+      username: '',
+      email: '',
+      password: '',
+      user: '',
+      setGettingLoginStatus: true,
       form: {
         fullName: '',
         email: '',
@@ -112,7 +128,9 @@ class AuthScreen extends Component {
     GoogleSignin.configure({
       scopes: ['openid', 'email', 'profile'],
       // scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-      webClientId: '607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com'
+      webClientId:
+        '607392749221-b9418slbfpqbko1ddo5h0u553gu6s5li.apps.googleusercontent.com',
+      // iosClientId:'AIzaSyCxVs_-wjMkyXpfspaNWfXV-dUHx6Rs0cw'
     });
     // this._isSignedIn();
   }
@@ -151,14 +169,14 @@ class AuthScreen extends Component {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo + JSON.stringify(userInfo))
+      console.log(userInfo + JSON.stringify(userInfo));
       // this.setState({ userInfo, error: null });
       // Alert.alert("success:" + JSON.stringify(userInfo));
       this.setState({
         profile: userInfo.user.photo,
         username: userInfo.user.name,
         email: userInfo.user.email,
-        password: userInfo.user.id
+        password: userInfo.user.id,
       });
       AsyncStorage.setItem('profile', this.state.profile);
       // AsyncStorage.setItem('username', this.state.username);
@@ -170,15 +188,15 @@ class AuthScreen extends Component {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // sign in was cancelled
         // Alert.alert('cancelled');
-        console.log('cancelled')
+        console.log('cancelled');
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log("in progress")
+        console.log('in progress');
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('play services not available or outdated')
+        console.log('play services not available or outdated');
       } else {
-        console.log(error)
+        console.log(error);
         // Alert.alert('Something went wrong', error.toString());
-        console.log('Something went wrong', error.toString())
+        console.log('Something went wrong', error.toString());
         this.setState({
           error,
         });
@@ -188,10 +206,10 @@ class AuthScreen extends Component {
 
   logoutWithFacebook = () => {
     LoginManager.logOut();
-    this.setState({ userInfo: {} });
+    this.setState({userInfo: {}});
   };
 
-  getInfoFromToken = token => {
+  getInfoFromToken = (token) => {
     const PROFILE_REQUEST_PARAMS = {
       fields: {
         string: 'email,name,id,picture.type(large)',
@@ -199,7 +217,7 @@ class AuthScreen extends Component {
     };
     const profileRequest = new GraphRequest(
       '/me',
-      { token, parameters: PROFILE_REQUEST_PARAMS },
+      {token, parameters: PROFILE_REQUEST_PARAMS},
       (error, user) => {
         if (error) {
           console.log('login info has error: ' + error);
@@ -209,7 +227,7 @@ class AuthScreen extends Component {
             profile: user.picture.data.url,
             username: user.name,
             email: user.email,
-            password: user.id
+            password: user.id,
           });
           // AsyncStorage.setItem('user_id', this.state.userInfo.email);
 
@@ -251,34 +269,32 @@ class AuthScreen extends Component {
   // };
 
   loginWithFacebook = () => {
-    if (Platform.OS === "android") {
-      LoginManager.setLoginBehavior("web_only")
+    if (Platform.OS === 'android') {
+      LoginManager.setLoginBehavior('web_only');
     }
     // Attempt a login using the Facebook login dialog asking for default permissions.
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(
       (result) => {
         if (result.isCancelled) {
-          console.log('Login cancelled')
+          console.log('Login cancelled');
         } else {
-          AccessToken.getCurrentAccessToken().then(
-            (data) => {
-              const accessToken = data.accessToken;
-              console.log(accessToken);
-              // this._fbHome();// Navigatin to next screen
-              const infoRequest = new GraphRequest(
-                `/me?fields=name,email,picture.type(large)&access_token=${accessToken}`,
-                null,
-                this._responseInfoCallback
-              );
-              new GraphRequestManager().addRequest(infoRequest).start();
-            }
-          )
+          AccessToken.getCurrentAccessToken().then((data) => {
+            const accessToken = data.accessToken;
+            console.warn(data);
+            // this._fbHome();// Navigatin to next screen
+            const infoRequest = new GraphRequest(
+              `/me?fields=name,email,picture.type(large)&access_token=${accessToken}`,
+              null,
+              this._responseInfoCallback,
+            );
+            new GraphRequestManager().addRequest(infoRequest).start();
+          });
         }
       },
       (error) => {
-        console.log('Login fail with error: ' + error)
-      }
-    )
+        console.log('Login fail with error: ' + error);
+      },
+    );
   };
 
   _responseInfoCallback = (error, user) => {
@@ -290,7 +306,7 @@ class AuthScreen extends Component {
         profile: user.picture.data.url,
         username: user.name,
         email: user.email,
-        password: user.id
+        password: user.id,
       });
       // AsyncStorage.setItem('user_id', this.state.userInfo.email);
 
@@ -301,17 +317,17 @@ class AuthScreen extends Component {
       this.submitRegister();
       // alert("Picture" + this.state.profile + "Name" + this.state.username + "Email" + this.state.email);
     }
-  }
+  };
 
   //  Passing data to api
   submitRegister = () => {
-    const apiStatus = { ...this.state.apiStatus };
+    const apiStatus = {...this.state.apiStatus};
     let input = {
       firstName: this.state.username,
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
-    this.setState({ isLoading: true }, () => {
+    this.setState({isLoading: true}, () => {
       /*axios
         .post(BaseUrl + '/admin/api/2020-07/customers.json', payload, {
           headers: {Authorization: base64Auth},
@@ -362,15 +378,14 @@ class AuthScreen extends Component {
         }`;
     const onSuccess = (res) => {
       console.warn(res);
-      this.setState({ isLoading: false });
-      console.log('Registeration page', JSON.stringify(res.data.customerCreate.customerUserErrors));
+      this.setState({isLoading: false});
+      console.log(
+        'Registeration page',
+        JSON.stringify(res.data.customerCreate.customerUserErrors),
+      );
       // console.log("status:",res.status)
-      console.log(res)
-      if (
-        res &&
-        res.data.customerCreate &&
-        res.data.customerCreate.customer
-      ) {
+      console.log(res);
+      if (res && res.data.customerCreate && res.data.customerCreate.customer) {
         apiStatus.message = 'Successfully Registered ..!';
         apiStatus.status = true;
         this.setState(
@@ -385,11 +400,9 @@ class AuthScreen extends Component {
           //   });
           // },
           // 100,
-
-        ); this.checkLoginData();
-
-      }
-      else {
+        );
+        this.checkLoginData();
+      } else {
         apiStatus.message = 'Some error occured';
         if (
           res.data.customerCreate &&
@@ -399,11 +412,11 @@ class AuthScreen extends Component {
           apiStatus.message =
             res.data.customerCreate.customerUserErrors[0].message;
           // alert(apiStatus.message)
-          ToastAndroid.show(apiStatus.message, ToastAndroid.SHORT)
+          ToastAndroid.show(apiStatus.message, ToastAndroid.SHORT);
           this.checkLoginData();
         }
         // else
-        console.log("message", apiStatus.message);
+        console.log('message', apiStatus.message);
         apiStatus.status = false;
         this.setState({
           isCustomToaster: true,
@@ -421,10 +434,10 @@ class AuthScreen extends Component {
       //     apiStatus,
       //   });
       // }
-      this.setState({ isLoading: false });
+      this.setState({isLoading: false});
     };
 
-    graphqlFetchHandler({ query, variables: { input } }, onSuccess, onFail);
+    graphqlFetchHandler({query, variables: {input}}, onSuccess, onFail);
 
     // const {fullName, email, password, phone} = this.state.form;
 
@@ -453,10 +466,10 @@ class AuthScreen extends Component {
     }
 `;
     const {
-      form: { userName: email, password },
+      form: {userName: email, password},
     } = this.state;
     const onSuccess = (response) => {
-      this.setState({ isLoader: false });
+      this.setState({isLoader: false});
 
       if (
         response &&
@@ -475,11 +488,11 @@ class AuthScreen extends Component {
     };
     const input = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
-    this.setState({ isLoader: true });
-    graphqlFetchHandler({ query, variables: { input } }, onSuccess, (error) => {
-      this.setState({ isCustomToaster: 'Something wrong', isLoader: false });
+    this.setState({isLoader: true});
+    graphqlFetchHandler({query, variables: {input}}, onSuccess, (error) => {
+      this.setState({isCustomToaster: 'Something wrong', isLoader: false});
       console.log(error);
     });
     /* axios
@@ -543,9 +556,9 @@ class AuthScreen extends Component {
     `;
     const onSuccess = (response) => {
       if (response) {
-        this.setState({ isLoader: false });
+        this.setState({isLoader: false});
         this.saveDataLocal(response.data.customer);
-        console.log('hiii')
+        console.log('hiii');
         this.props.handleCloseModal && this.props.handleCloseModal();
         this.props.navigation.navigate('DashboardScreen', {
           fromLogin: true,
@@ -557,21 +570,32 @@ class AuthScreen extends Component {
         });
       }
     };
-    this.setState({ isLoader: true });
-    graphqlFetchHandler({ query }, onSuccess, (error) => {
-      this.setState({ isCustomToaster: 'Something wrong', isLoader: false });
+    this.setState({isLoader: true});
+    graphqlFetchHandler({query}, onSuccess, (error) => {
+      this.setState({isCustomToaster: 'Something wrong', isLoader: false});
       console.log(error);
     });
   };
 
-
+  appleSignIn = (result) => {
+    if (result && result.email) {
+      let data = {
+        picture: {data: {url: ''}},
+        name: result.fullName.givenName + ' ' + result.fullName.familyName,
+        email: result.email,
+        id: result.user.substring(0, 35),
+      };
+      this._responseInfoCallback(undefined, data);
+    } else {
+    }
+  };
   render() {
     const isLogin = this.state.userInfo.name;
     const buttonText = isLogin ? 'Logout With Facebook' : 'Login From Facebook';
     const onPressButton = isLogin
       ? this.logoutWithFacebook
       : this.loginWithFacebook;
-    const { TTComDB16, TTComL16 } = CommonStyles;
+    const {TTComDB16, TTComL16} = CommonStyles;
     return (
       <SafeAreaView
         style={{
@@ -611,7 +635,7 @@ class AuthScreen extends Component {
             <Image source={closeIcon} />
           </TouchableOpacity>
           <View
-            style={{ flex: 5, justifyContent: 'flex-end', alignItems: 'center' }}>
+            style={{flex: 5, justifyContent: 'flex-end', alignItems: 'center'}}>
             <Image
               source={require('../../../assests/Common/logo/icon[-20.png')}
             />
@@ -629,7 +653,7 @@ class AuthScreen extends Component {
           </View>
 
           <View
-            style={{ flex: 7, justifyContent: 'center', alignItems: 'center' }}>
+            style={{flex: 7, justifyContent: 'center', alignItems: 'center'}}>
             <View
               style={{
                 justifyContent: 'space-around',
@@ -647,29 +671,37 @@ class AuthScreen extends Component {
                 }}
               />
 
-              <View style={{ marginVertical: 5 }} />
+              <View style={{marginVertical: 5}} />
 
-              <CustomButton
+              {/* <CustomButton
                 text="Continue with Google"
                 buttonStyles="btn-secondary"
                 textStyles="txt-primary"
                 icon={googleWhiteIcon}
                 onAction={() => this.GoogleSignin()}
               />
-              <View style={{ marginVertical: 5 }} />
+              <View style={{marginVertical: 5}} />
 
               <CustomButton
                 text="Continue with Facebook"
                 buttonStyles="btn-secondary"
                 textStyles="txt-primary"
                 icon={fbWhiteIcon}
-                onAction={() => { this.loginWithFacebook(); }}
+                onAction={() => {
+                  this.loginWithFacebook();
+                }}
               />
+              <View style={{marginVertical: 5}} />
+              <View style={{height: 44, width: 304, borderRadius: 26}}>
+                {SignInWithAppleButton({
+                  buttonStyle: {height: 44, width: 304, borderRadius: 26},
+                  callBack: this.appleSignIn,
+                })}
+              </View>
+              <View style={{marginVertical: 5}} /> */}
 
-              <View style={{ marginVertical: 5 }} />
-
-              <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-                <Text style={[TTComL16, { color: '#fff' }]}>
+              <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+                <Text style={[TTComL16, {color: '#fff'}]}>
                   Already have an account?
                 </Text>
                 <TouchableOpacity
@@ -682,7 +714,7 @@ class AuthScreen extends Component {
                     allowFontScaling={false}
                     style={[
                       TTComL16,
-                      { color: '#fff', fontFamily: 'TTCommons-Bold' },
+                      {color: '#fff', fontFamily: 'TTCommons-Bold'},
                     ]}>
                     {''} Login
                   </Text>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -30,10 +30,10 @@ import {
   greyCircleWithGreyIcon,
 } from '../../SharedComponents/CommonIcons';
 
-import { connect } from 'react-redux';
-import { setCartItem, removeFromCart, updateCart } from '../../store/actions';
+import {connect} from 'react-redux';
+import {setCartItem, removeFromCart, updateCart} from '../../store/actions';
 import Shimmer from '../../SharedComponents/Shimmer';
-import { CommonStyles } from '../../SharedComponents/CustomStyles';
+import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
 
 class CheckoutDetailsForm extends Component {
@@ -49,17 +49,17 @@ class CheckoutDetailsForm extends Component {
       showStates: false,
       showCountries: false,
       statesList: [
-        { name: 'Abu Dhabi', isSelected: false },
-        { name: 'Ajman', isSelected: false },
-        { name: 'Dubai', isSelected: false },
-        { name: 'Fujairah', isSelected: false },
-        { name: 'Ras al-khaimah', isSelected: false },
-        { name: 'Sharjah', isSelected: false },
-        { name: 'Umm al-Quwain', isSelected: false },
+        {name: 'Abu Dhabi', isSelected: false},
+        {name: 'Ajman', isSelected: false},
+        {name: 'Dubai', isSelected: false},
+        {name: 'Fujairah', isSelected: false},
+        {name: 'Ras al-khaimah', isSelected: false},
+        {name: 'Sharjah', isSelected: false},
+        {name: 'Umm al-Quwain', isSelected: false},
       ],
       selectedState: '',
       countriesList: [
-        { name: 'United Arab Emirates', isSelected: false, iso: 'AE' },
+        {name: 'United Arab Emirates', isSelected: false, iso: 'AE'},
       ],
       selectedCountry: '',
       Address: {
@@ -84,9 +84,9 @@ class CheckoutDetailsForm extends Component {
       console.warn('Is Logged', loggedData);
 
       if (loggedData !== null) {
-        this.setState({ UserData: JSON.parse(loggedData) });
+        this.setState({UserData: JSON.parse(loggedData)});
       } else {
-        this.setState({ UserData: '' });
+        this.setState({UserData: ''});
       }
     } catch (err) {
       console.log('Is Logged', err);
@@ -124,13 +124,13 @@ class CheckoutDetailsForm extends Component {
         options.option1 = false;
       }
     }
-    this.setState({ options });
+    this.setState({options});
   };
 
-  toggleStatesList = () => this.setState({ showStates: !this.state.showStates });
+  toggleStatesList = () => this.setState({showStates: !this.state.showStates});
 
   toggleCountrieList = () =>
-    this.setState({ showCountries: !this.state.showCountries });
+    this.setState({showCountries: !this.state.showCountries});
 
   handleChooseState = (index) => {
     let statesList = [...this.state.statesList];
@@ -175,17 +175,17 @@ class CheckoutDetailsForm extends Component {
 
   handleDropdownClose = () => {
     if (this.state.showCountries) {
-      this.setState({ showCountries: false });
+      this.setState({showCountries: false});
     }
     if (this.state.showStates) {
-      this.setState({ showStates: false });
+      this.setState({showStates: false});
     }
   };
   handleProductDetailApi = async () => {
-    const { UserData, Address } = this.state;
+    const {UserData, Address} = this.state;
     let products = [];
     let GrandTotal = 0;
-    const { productQty, itemdata } = this.props.route.params || {};
+    const {productQty, itemdata} = this.props.route.params || {};
     if (productQty) {
       products.push({
         id: itemdata.variants[0].id,
@@ -206,7 +206,7 @@ class CheckoutDetailsForm extends Component {
     });
     const payload = {
       uid: UserData.id,
-      items: { products: products, GrandTotal: GrandTotal },
+      items: {products: products, GrandTotal: GrandTotal},
       uname: UserData.firstName,
       uaddress: Address,
     };
@@ -229,7 +229,7 @@ class CheckoutDetailsForm extends Component {
   };
 
   handleTextInput = (text, type) => {
-    const { Address } = this.state;
+    const {Address} = this.state;
     if (type == 'first_name') Address.first_name = text;
     else if (type == 'phone') Address.phone = text;
     else if (type == 'email') Address.email = text;
@@ -243,7 +243,7 @@ class CheckoutDetailsForm extends Component {
     console.warn(loadweb);
   };
   render() {
-    const { TTComM16, TTComDB16, TTComL16, TTComDB28 } = CommonStyles;
+    const {TTComM16, TTComDB16, TTComL16, TTComDB28} = CommonStyles;
 
     const {
       isLoading,
@@ -261,12 +261,12 @@ class CheckoutDetailsForm extends Component {
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
           {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
           {isLoading ? (
             // <Loader />
-            <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 80 }}>
+            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 80}}>
               <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
@@ -277,249 +277,329 @@ class CheckoutDetailsForm extends Component {
                 <Shimmer autoRun={true} visible={false} duration={3000}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
               </ScrollView>
             </View>
           ) : (
-              <TouchableOpacity
-                onPress={() => this.handleDropdownClose()}
-                activeOpacity={1}
-                style={{ flex: 9, paddingHorizontal: 20 }}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <View style={{ marginTop: 160 }} />
+            <TouchableOpacity
+              onPress={() => this.handleDropdownClose()}
+              activeOpacity={1}
+              style={{flex: 9, paddingHorizontal: 20}}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{marginTop: 160}} />
 
-                  <CustomTracker stage={1} />
+                <CustomTracker stage={1} />
 
-                  <View style={{ marginVertical: 20 }}>
-                    {UserData.id == '1wf23gv3erty3jt1234he' && (
-                      <CustomInput
-                        placeholder="Email Address"
-                        keyboardType="email-address"
-                        onchange={(data) => this.handleTextInput(data, 'email')}
-                        onFocus={() => this.handleDropdownClose()}
-                      />
-                    )}
-
-                    <View style={{ marginVertical: 10 }} />
+                <View style={{marginVertical: 20}}>
+                  {UserData.id == '1wf23gv3erty3jt1234he' && (
                     <CustomInput
-                      placeholder="First Name"
+                      placeholder="Email Address"
                       keyboardType="email-address"
-                      onchange={(data) =>
-                        this.handleTextInput(data, 'first_name')
-                      }
+                      onchange={(data) => this.handleTextInput(data, 'email')}
                       onFocus={() => this.handleDropdownClose()}
                     />
+                  )}
 
-                    <View style={{ marginVertical: 10 }} />
+                  <View style={{marginVertical: 10}} />
+                  <CustomInput
+                    placeholder="First Name"
+                    keyboardType="email-address"
+                    onchange={(data) =>
+                      this.handleTextInput(data, 'first_name')
+                    }
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Last Name"
-                      keyboardType="email-address"
-                      onchange={(data) => this.handleTextInput(data, 'last_name')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{ marginVertical: 10 }} />
+                  <CustomInput
+                    placeholder="Last Name"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'last_name')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Phone Number"
-                      keyboardType="number-pad"
-                      onchange={(data) => this.handleTextInput(data, 'phone')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{ marginVertical: 10 }} />
+                  <CustomInput
+                    placeholder="Phone Number"
+                    keyboardType="number-pad"
+                    onchange={(data) => this.handleTextInput(data, 'phone')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Address "
-                      keyboardType="email-address"
-                      onchange={(data) => this.handleTextInput(data, 'address1')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{ marginVertical: 10 }} />
+                  <CustomInput
+                    placeholder="Address "
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleTextInput(data, 'address1')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInput
-                      placeholder="Apartment, Suits etc (optional)"
-                      onchange={(data) => this.handleTextInput(data, 'address2')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    <View style={{ marginVertical: 10 }} />
-                    <CustomInput
-                      placeholder="City"
-                      onchange={(data) => this.handleTextInput(data, 'city')}
-                      onFocus={() => this.handleDropdownClose()}
-                    />
+                  <CustomInput
+                    placeholder="Apartment, Suits etc (optional)"
+                    onchange={(data) => this.handleTextInput(data, 'address2')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <View style={{ marginVertical: 10 }} />
+                  <View style={{marginVertical: 10}} />
+                  <CustomInput
+                    placeholder="City"
+                    onchange={(data) => this.handleTextInput(data, 'city')}
+                    onFocus={() => this.handleDropdownClose()}
+                  />
 
-                    <CustomInputDropdown
-                      value={selectedCountry}
-                      placeholder="Country"
-                      onAction={() => this.toggleCountrieList()}
-                    />
+                  <View style={{marginVertical: 10}} />
 
-                    {showCountries && (
-                      <View
-                        style={{
-                          maxHeight: 200,
-                          borderColor: '#E9E9E9',
-                          borderWidth: 1.5,
-                          borderRadius: 12,
-                        }}>
-                        <ScrollView nestedScrollEnabled={true}>
-                          {countriesList &&
-                            countriesList.length &&
-                            countriesList.map((list, index) => {
-                              return (
-                                <TouchableOpacity
-                                  key={index}
-                                  onPress={() => this.handleChooseCountry(index)}
-                                  style={{
-                                    paddingVertical: 15,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}>
-                                  <View
-                                    style={
-                                      list.isSelected
-                                        ? {
+                  <CustomInputDropdown
+                    value={selectedCountry}
+                    placeholder="Country"
+                    onAction={() => this.toggleCountrieList()}
+                  />
+
+                  {showCountries && (
+                    <View
+                      style={{
+                        maxHeight: 200,
+                        borderColor: '#E9E9E9',
+                        borderWidth: 1.5,
+                        borderRadius: 12,
+                      }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {countriesList &&
+                          countriesList.length &&
+                          countriesList.map((list, index) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => this.handleChooseCountry(index)}
+                                style={{
+                                  paddingVertical: 15,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <View
+                                  style={
+                                    list.isSelected
+                                      ? {
                                           paddingVertical: 15,
                                           width: 5,
                                           backgroundColor: '#FFC000',
                                         }
-                                        : {}
-                                    }
-                                  />
-                                  <Text
-                                    style={[
-                                      list.isSelected ? TTComM16 : TTComL16,
-                                      { paddingLeft: 15 },
-                                    ]}>
-                                    {list.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              );
-                            })}
-                        </ScrollView>
-                      </View>
-                    )}
+                                      : {}
+                                  }
+                                />
+                                <Text
+                                  style={[
+                                    list.isSelected ? TTComM16 : TTComL16,
+                                    {paddingLeft: 15},
+                                  ]}>
+                                  {list.name}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                      </ScrollView>
+                    </View>
+                  )}
 
-                    <View style={{ marginVertical: 10 }} />
-                    <CustomInputDropdown
-                      value={selectedState}
-                      placeholder="States"
-                      onAction={() => this.toggleStatesList()}
-                    />
+                  <View style={{marginVertical: 10}} />
+                  <CustomInputDropdown
+                    value={selectedState}
+                    placeholder="States"
+                    onAction={() => this.toggleStatesList()}
+                  />
 
-                    {showStates && (
-                      <View
-                        style={{
-                          maxHeight: 200,
-                          borderColor: '#E9E9E9',
-                          borderWidth: 1.5,
-                          borderRadius: 12,
-                        }}>
-                        <ScrollView nestedScrollEnabled={true}>
-                          {statesList &&
-                            statesList.length &&
-                            statesList.map((list, index) => {
-                              return (
-                                <TouchableOpacity
-                                  key={index}
-                                  onPress={() => this.handleChooseState(index)}
-                                  style={{
-                                    paddingVertical: 15,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                  }}>
-                                  <View
-                                    style={
-                                      list.isSelected
-                                        ? {
+                  {showStates && (
+                    <View
+                      style={{
+                        maxHeight: 200,
+                        borderColor: '#E9E9E9',
+                        borderWidth: 1.5,
+                        borderRadius: 12,
+                      }}>
+                      <ScrollView nestedScrollEnabled={true}>
+                        {statesList &&
+                          statesList.length &&
+                          statesList.map((list, index) => {
+                            return (
+                              <TouchableOpacity
+                                key={index}
+                                onPress={() => this.handleChooseState(index)}
+                                style={{
+                                  paddingVertical: 15,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <View
+                                  style={
+                                    list.isSelected
+                                      ? {
                                           paddingVertical: 15,
                                           width: 5,
                                           backgroundColor: '#FFC000',
                                         }
-                                        : {}
-                                    }
-                                  />
-                                  <Text
-                                    style={[
-                                      list.isSelected ? TTComM16 : TTComL16,
-                                      { paddingLeft: 15 },
-                                    ]}>
-                                    {list.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              );
-                            })}
-                        </ScrollView>
-                      </View>
-                    )}
-                  </View>
+                                      : {}
+                                  }
+                                />
+                                <Text
+                                  style={[
+                                    list.isSelected ? TTComM16 : TTComL16,
+                                    {paddingLeft: 15},
+                                  ]}>
+                                  {list.name}
+                                </Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                      </ScrollView>
+                    </View>
+                  )}
+                </View>
 
-                  {/* <View
+                {/* <View
                   style={{
                     borderWidth: 1.5,
                     borderColor: '#E9E9E9',
@@ -544,20 +624,20 @@ class CheckoutDetailsForm extends Component {
                   />
                 </View> */}
 
-                  <View style={{ marginBottom: 30 }}>
-                    <CustomButton
-                      buttonStyles="btn-primary"
-                      textStyles="txt-primary"
-                      text="Next"
-                      width="100%"
-                      onAction={() => {
-                        this.handleProductDetailApi();
-                      }}
-                    />
-                  </View>
-                </ScrollView>
-              </TouchableOpacity>
-            )}
+                <View style={{marginBottom: 30}}>
+                  <CustomButton
+                    buttonStyles="btn-primary"
+                    textStyles="txt-primary"
+                    text="Next"
+                    width="100%"
+                    onAction={() => {
+                      this.handleProductDetailApi();
+                    }}
+                  />
+                </View>
+              </ScrollView>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               flex: 1,
@@ -594,27 +674,27 @@ export default connect(
 )(CheckoutDetailsForm);
 
 const CustomSelector = (props) => {
-  const { text, days, price, option, toggleOption } = props;
-  const { TTComM16, TTComDB16 } = CommonStyles;
+  const {text, days, price, option, toggleOption} = props;
+  const {TTComM16, TTComDB16} = CommonStyles;
   return (
     <TouchableOpacity
       onPress={() => toggleOption && toggleOption()}
-      style={{ flexDirection: 'row', marginVertical: 10, marginHorizontal: 20 }}>
+      style={{flexDirection: 'row', marginVertical: 10, marginHorizontal: 20}}>
       <Image
         source={option ? radioButtonFill : radioButton}
-        style={{ marginRight: 15 }}
+        style={{marginRight: 15}}
       />
       <Text style={TTComM16}>{text && text}</Text>
-      <Text style={[TTComDB16, { color: '#7E82E6', marginHorizontal: 5 }]}>
+      <Text style={[TTComDB16, {color: '#7E82E6', marginHorizontal: 5}]}>
         {days && days}
       </Text>
-      <Text style={[TTComDB16, { color: '#7E82E6' }]}>{price && price}</Text>
+      <Text style={[TTComDB16, {color: '#7E82E6'}]}>{price && price}</Text>
     </TouchableOpacity>
   );
 };
 
 const CustomInputDropdown = (props) => {
-  const { label, value, onAction, placeholder } = props;
+  const {label, value, onAction, placeholder} = props;
   console.log('value', value);
   return (
     <View>
@@ -634,7 +714,11 @@ const CustomInputDropdown = (props) => {
           }}>
           <Text
             style={{
-              color: placeholder ? '#8C8C8C' : '#000',
+              color: value
+                ? '#000'
+                : Platform.OS == 'ios'
+                ? '#5D5D5D'
+                : '#8C8C8C',
               fontSize: 16,
               fontFamily: 'TTCommons-Medium',
               textAlignVertical: 'center',
@@ -642,13 +726,13 @@ const CustomInputDropdown = (props) => {
             {value === '' && placeholder
               ? placeholder
               : value === ''
-                ? 'Country'
-                : value}
+              ? 'Country'
+              : value}
           </Text>
         </View>
         <Image
           source={require('../../../assests/RegisterScreen/dropdownDownIcon/Polygon2.png')}
-          style={{ position: 'absolute', top: '40%', right: 20 }}
+          style={{position: 'absolute', top: '40%', right: 20}}
         />
       </TouchableOpacity>
     </View>

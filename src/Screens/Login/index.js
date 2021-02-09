@@ -236,17 +236,24 @@ class LoginScreen extends Component {
       <>
         <CustomStatusBar />
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff', width: '100%'}}>
-          <CustomHeader
-            leftIcon={closeIcon}
-            rightIcon={logoSmall}
-            leftIconAction={() =>
-              this.props.navigation.navigate('AuthScreen', {
-                fromLogin: true,
-              })
-            }
-          />
+          {Platform.OS == 'android' && (
+            <CustomHeader
+              leftIcon={closeIcon}
+              rightIcon={logoSmall}
+              leftIconAction={() =>
+                this.props.navigation.navigate('AuthScreen', {
+                  fromLogin: true,
+                })
+              }
+            />
+          )}
 
-          <View style={{flex: 9, paddingHorizontal: 20, marginTop: 25}}>
+          <View
+            style={{
+              flex: 9,
+              paddingHorizontal: 20,
+              marginTop: Platform.OS == 'android' ? 25 : 164,
+            }}>
             <InputContainer>
               <CustomInput
                 placeholder="Email"
@@ -294,6 +301,19 @@ class LoginScreen extends Component {
               />
             )}
           </View>
+          {Platform.OS == 'ios' && (
+            <View style={{position: 'absolute', width: '100%'}}>
+              <CustomHeader
+                leftIcon={closeIcon}
+                rightIcon={logoSmall}
+                leftIconAction={() =>
+                  this.props.navigation.navigate('AuthScreen', {
+                    fromLogin: true,
+                  })
+                }
+              />
+            </View>
+          )}
         </SafeAreaView>
       </>
     );

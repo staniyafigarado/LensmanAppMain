@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, {Component, useState} from 'react';
 import {
   View,
   Text,
@@ -28,18 +28,18 @@ import {
   radioButtonFillYellowIcon,
 } from '../../SharedComponents/CommonIcons';
 
-import { CommonStyles } from '../../SharedComponents/CustomStyles';
+import {CommonStyles} from '../../SharedComponents/CustomStyles';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import { setLoginData } from '../../store/actions';
+import {setLoginData} from '../../store/actions';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { BaseUrlSchool } from '../../utils/constants';
+import {BaseUrlSchool} from '../../utils/constants';
 import CustomStatusBar from '../../SharedComponents/CustomStatusBar/CustomStatusBar';
-import { TextInput } from 'react-native-gesture-handler';
+import {TextInput} from 'react-native-gesture-handler';
 import Shimmer from '../../SharedComponents/Shimmer';
-const { height } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
 class SchoolSubmitPhotoScreen extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +57,8 @@ class SchoolSubmitPhotoScreen extends Component {
         division: '',
         email: '',
         phone: '',
-        gender: 'male', Country: ''
+        gender: 'male',
+        Country: '',
       },
       isLoading: false,
       SchoolImage: '',
@@ -68,12 +69,17 @@ class SchoolSubmitPhotoScreen extends Component {
         division: false,
         phone: false,
         address: false,
-        city: false, school: false, Country: false
+        city: false,
+        school: false,
+        Country: false,
       },
       selectedSchoolDetails: '',
       loginData: '',
       isCustomToaster: '',
-      schoolListsave: [], setlistVisible: false, schoolValidation: false, refferenceId: ''
+      schoolListsave: [],
+      setlistVisible: false,
+      schoolValidation: false,
+      refferenceId: '',
     };
   }
 
@@ -83,7 +89,7 @@ class SchoolSubmitPhotoScreen extends Component {
       let data = await AsyncStorage.getItem('loginDetails');
       console.log('Data 100', data);
       if (data !== null) {
-        this.setState({ loginData: JSON.parse(data) });
+        this.setState({loginData: JSON.parse(data)});
         this.props.setLoginData(data);
       }
       // this.setState({SchoolImage: JSON.parse(data)}, () =>
@@ -95,7 +101,7 @@ class SchoolSubmitPhotoScreen extends Component {
   }
 
   getSchoolList = () => {
-    this.setState({ isLoading: true }, () => {
+    this.setState({isLoading: true}, () => {
       axios
         .get(BaseUrlSchool + '/api/schools')
         .then((res) => {
@@ -118,12 +124,12 @@ class SchoolSubmitPhotoScreen extends Component {
   };
 
   addStudent = (payload) => {
-    this.setState({ isLoading: true }, () => {
+    this.setState({isLoading: true}, () => {
       axios
         .post(BaseUrlSchool + '/api/student', payload)
         .then((res) => {
           console.log('Res add Student 1 ', res.data.result.id);
-          let form = { ...this.state.form };
+          let form = {...this.state.form};
           form.schoolId = res.data.result.id;
           this.props.navigation.navigate('SchoolIntructionScreen', {
             formData: form,
@@ -132,7 +138,7 @@ class SchoolSubmitPhotoScreen extends Component {
             {
               isLoading: false,
               isCustomToaster: 'Successfully Added',
-              refferenceId: res.data.result.id
+              refferenceId: res.data.result.id,
             },
 
             async () => {
@@ -145,13 +151,15 @@ class SchoolSubmitPhotoScreen extends Component {
                 JSON.stringify(data),
               );
             },
-
           );
-          AsyncStorage.setItem('refferenceId', JSON.stringify(this.state.refferenceId));
-          console.log(this.state.refferenceId)
+          AsyncStorage.setItem(
+            'refferenceId',
+            JSON.stringify(this.state.refferenceId),
+          );
+          console.log(this.state.refferenceId);
         })
         .catch((err) => {
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
           if (err.response.data.error.message) {
             this.setState({
               isLoading: false,
@@ -172,7 +180,7 @@ class SchoolSubmitPhotoScreen extends Component {
 
   handleSchoolList = () => {
     if (this.state.schoolList.length) {
-      this.setState({ isSchoolList: !this.state.isSchoolList });
+      this.setState({isSchoolList: !this.state.isSchoolList});
     } else {
       this.setState({
         isLoading: false,
@@ -183,7 +191,7 @@ class SchoolSubmitPhotoScreen extends Component {
 
   handleSelectSchool = (index) => {
     let schoolList = [...this.state.schoolList];
-    let form = { ...this.state.form };
+    let form = {...this.state.form};
 
     schoolList[index].isSelected = true;
 
@@ -206,7 +214,7 @@ class SchoolSubmitPhotoScreen extends Component {
   };
 
   handleForm = (data, type) => {
-    let form = { ...this.state.form };
+    let form = {...this.state.form};
     if (type === 'name') {
       form.name = data;
     } else if (type === 'class') {
@@ -219,13 +227,12 @@ class SchoolSubmitPhotoScreen extends Component {
       form.phone = data;
     } else if (type === 'city') {
       form.city = data;
-
     } else if (type === 'Country') {
       form.Country = data;
     } else if (type === 'address') {
       form.address = data;
     }
-    this.setState({ form });
+    this.setState({form});
   };
 
   validateEmail = (email) => {
@@ -250,8 +257,8 @@ class SchoolSubmitPhotoScreen extends Component {
   };
 
   handleSubmit = () => {
-    const { form, validationError } = this.state;
-    const { name, email, division, phone, address, city, school, Country } = form;
+    const {form, validationError} = this.state;
+    const {name, email, division, phone, address, city, school, Country} = form;
 
     if (name === '') {
       validationError.name = true;
@@ -300,13 +307,13 @@ class SchoolSubmitPhotoScreen extends Component {
     }
     if (school === '') {
       validationError.school = true;
-      this.setState({ schoolValidation: true })
+      this.setState({schoolValidation: true});
     } else {
       validationError.school = false;
-      this.setState({ schoolValidation: false })
+      this.setState({schoolValidation: false});
     }
 
-    this.setState({ validationError }, () => {
+    this.setState({validationError}, () => {
       console.log('1001', validationError);
       if (
         validationError.name &&
@@ -367,16 +374,16 @@ class SchoolSubmitPhotoScreen extends Component {
   };
 
   handleRadioButton = (type) => {
-    let form = { ...this.state.form };
+    let form = {...this.state.form};
     if (type === 'male') {
       form.gender = 'male';
     } else if (type === 'female') {
       form.gender = 'female';
     }
-    this.setState({ form });
+    this.setState({form});
   };
   handleSchoolListSearch = (e) => {
-    const { schoolList, schoolListsave, isSchoolList } = this.state;
+    const {schoolList, schoolListsave, isSchoolList} = this.state;
     if (e !== 'toggle') {
       let filterlist = schoolList.filter((item) => {
         let lowercasename = item.name.toLowerCase();
@@ -396,11 +403,11 @@ class SchoolSubmitPhotoScreen extends Component {
         });
       }
     } else {
-      this.setState({ isSchoolList: !isSchoolList });
+      this.setState({isSchoolList: !isSchoolList});
     }
   };
   render() {
-    const { TTComM16, TTComL16 } = CommonStyles;
+    const {TTComM16, TTComL16} = CommonStyles;
 
     const {
       isSchoolList,
@@ -414,12 +421,12 @@ class SchoolSubmitPhotoScreen extends Component {
     return (
       <>
         <CustomStatusBar />
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
           {/* <StatusBar backgroundColor="#fff" barStyle="dark-content" /> */}
 
           {isLoading ? (
             // <Loader />
-            <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 80 }}>
+            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 80}}>
               <ScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
@@ -430,116 +437,196 @@ class SchoolSubmitPhotoScreen extends Component {
                 <Shimmer autoRun={true} visible={false} duration={3000}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 5 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 5}}>
                   <Text>Name</Text>
                 </Shimmer>
-                <Shimmer autoRun={true} visible={false} duration={3000} style={{ height: 50, width: '100%', marginTop: 10 }}>
+                <Shimmer
+                  autoRun={true}
+                  visible={false}
+                  duration={3000}
+                  style={{height: 50, width: '100%', marginTop: 10}}>
                   <Text>Name</Text>
                 </Shimmer>
               </ScrollView>
             </View>
           ) : (
-              <View style={{ flex: 9, paddingHorizontal: 20, marginTop: 80 }}>
-                <ScrollView
-                  keyboardShouldPersistTaps="handled"
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingTop: 100,
-                    paddingBottom: Platform.OS == 'ios' ? 100 : 0,
-                  }}>
-                  <CustomWrapper>
-                    <CustomInput
-                      placeholder="Student’s Name"
-                      label="Student’s Name"
-                      onchange={(data) => this.handleForm(data, 'name')}
-                      isValidationErr={validationError.name}
-                    />
-                  </CustomWrapper>
-                  <CustomInputRadio
-                    label="Student’s Gender"
-                    onAction={this.handleRadioButton}
-                    value={form.gender}
+            <View style={{flex: 9, paddingHorizontal: 20, marginTop: 80}}>
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingTop: 100,
+                  paddingBottom: Platform.OS == 'ios' ? 100 : 0,
+                }}>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Student’s Name"
+                    label="Student’s Name"
+                    onchange={(data) => this.handleForm(data, 'name')}
+                    isValidationErr={validationError.name}
                   />
+                </CustomWrapper>
+                <CustomInputRadio
+                  label="Student’s Gender"
+                  onAction={this.handleRadioButton}
+                  value={form.gender}
+                />
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Address"
+                    label="Address"
+                    onchange={(data) => this.handleForm(data, 'address')}
+                    isValidationErr={validationError.address}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
                   <CustomWrapper>
                     <CustomInput
-                      placeholder="Address"
-                      label="Address"
-                      onchange={(data) => this.handleForm(data, 'address')}
-                      isValidationErr={validationError.address}
+                      placeholder="State"
+                      label="State"
+                      onchange={(data) => this.handleForm(data, 'city')}
+                      isValidationErr={validationError.city}
                     />
                   </CustomWrapper>
                   <CustomWrapper>
-                    <CustomWrapper>
-                      <CustomInput
-                        placeholder="State"
-                        label="State"
-                        onchange={(data) => this.handleForm(data, 'city')}
-                        isValidationErr={validationError.city}
-                      />
-                    </CustomWrapper>
-                    <CustomWrapper>
-                      <CustomInput
-                        placeholder="Country"
-                        label="Country"
-                        onchange={(data) => this.handleForm(data, 'Country')}
-                        isValidationErr={validationError.Country}
-                      />
-                    </CustomWrapper>
-                    {/* <CustomInputDropdown
+                    <CustomInput
+                      placeholder="Country"
+                      label="Country"
+                      onchange={(data) => this.handleForm(data, 'Country')}
+                      isValidationErr={validationError.Country}
+                    />
+                  </CustomWrapper>
+                  {/* <CustomInputDropdown
                       label="School"
                       onSearch={this.handleSchoolListSearch}
                       onPress={(index) => this.handleSelectSchool(index)}
@@ -548,38 +635,30 @@ class SchoolSubmitPhotoScreen extends Component {
                       isValidationErr={validationError.name}
                       schoolList={schoolList}
                     /> */}
-                    <View>
-                      <Text style={CommonStyles.customInputLabel}>School</Text>
-                      <TouchableOpacity onPress={() => this.handleSchoolList()} style={{}}>
-                        <TextInput
-                          value={form.school}
-                          onChangeText={(e) => {
-                            if (e.length > 0) {
-                              this.handleSchoolListSearch(e);
-                              this.setState({ setlistVisible: true });
-                            } else {
-                              this.setState({ setlistVisible: false });
-                              this.handleSchoolListSearch(e);
-                            }
-                          }}
-                          placeholder="School"
-                          onFocus={() => this.handleSchoolListSearch('toggle')}
-                          style={
-                            this.state.schoolValidation == false ? {
-                              color: '#000',
-                              fontSize: 16,
-                              borderRadius: 12,
-                              backgroundColor: '#fff',
-                              fontFamily: 'TTCommons-Medium',
-                              borderWidth: 1.5,
-                              borderColor: '#E9E9E9',
-                              paddingLeft: 20,
-                              paddingTop: 15,
-                              paddingBottom: 15,
-                              // height: 50,
-                              // textAlignVertical: 'center',
-                              paddingRight: 40
-                            } : {
+                  <View>
+                    <Text style={CommonStyles.customInputLabel}>School</Text>
+                    <TouchableOpacity
+                      onPress={() => this.handleSchoolList()}
+                      style={{}}>
+                      <TextInput
+                        value={form.school}
+                        onChangeText={(e) => {
+                          if (e.length > 0) {
+                            this.handleSchoolListSearch(e);
+                            this.setState({setlistVisible: true});
+                          } else {
+                            this.setState({setlistVisible: false});
+                            this.handleSchoolListSearch(e);
+                          }
+                        }}
+                        placeholderTextColor={
+                          Platform.OS === 'ios' ? '#5D5D5D' : 'default'
+                        }
+                        placeholder="School"
+                        onFocus={() => this.handleSchoolListSearch('toggle')}
+                        style={
+                          this.state.schoolValidation == false
+                            ? {
                                 color: '#000',
                                 fontSize: 16,
                                 borderRadius: 12,
@@ -592,135 +671,152 @@ class SchoolSubmitPhotoScreen extends Component {
                                 paddingBottom: 15,
                                 // height: 50,
                                 // textAlignVertical: 'center',
-                                paddingRight: 40, borderWidth: 2, borderColor: 'red'
+                                paddingRight: 40,
                               }
-                          }
-                        />
-                        <Image
-                          source={require('../../../assests/RegisterScreen/dropdownDownIcon/Polygon2.png')}
-                          style={{
-                            position: 'absolute',
-                            top: '40%',
-                            right: 20,
-                            alignSelf: 'center',
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
+                            : {
+                                color: '#000',
+                                fontSize: 16,
+                                borderRadius: 12,
+                                backgroundColor: '#fff',
+                                fontFamily: 'TTCommons-Medium',
+                                borderWidth: 1.5,
+                                borderColor: '#E9E9E9',
+                                paddingLeft: 20,
+                                paddingTop: 15,
+                                paddingBottom: 15,
+                                // height: 50,
+                                // textAlignVertical: 'center',
+                                paddingRight: 40,
+                                borderWidth: 2,
+                                borderColor: 'red',
+                              }
+                        }
+                      />
+                      <Image
+                        source={require('../../../assests/RegisterScreen/dropdownDownIcon/Polygon2.png')}
+                        style={{
+                          position: 'absolute',
+                          top: '40%',
+                          right: 20,
+                          alignSelf: 'center',
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
 
-                    <View
-                      style={{
-                        maxHeight: isSchoolList ? 200 : 0,
-                        borderColor: '#E9E9E9',
-                        borderWidth: isSchoolList ? 1.5 : 0,
-                        borderRadius: 12,
-                      }}>
-                      <ScrollView nestedScrollEnabled={true}>
-                        {schoolList.length == 0 && (
-                          <Text
-                            style={{
-                              alignSelf: 'center',
-                              marginTop: 10,
-                              marginBottom: 10,
-                            }}>
-                            no matches found
-                          </Text>
-                        )}
-                        {schoolList &&
-                          schoolList.length !== 0 &&
-                          schoolList.map((list, index) => {
-                            return (
-                              <TouchableOpacity
-                                key={index}
-                                onPress={() => {
-                                  list.name !== 'no matches found' &&
-                                    this.handleSelectSchool(index);
-                                }}
-                                style={{
-                                  paddingVertical: 15,
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
-                                <View
-                                  style={
-                                    form.school == list.name && list.isSelected
-                                      ? {
+                  <View
+                    style={{
+                      maxHeight: isSchoolList ? 200 : 0,
+                      borderColor: '#E9E9E9',
+                      borderWidth: isSchoolList ? 1.5 : 0,
+                      borderRadius: 12,
+                    }}>
+                    <ScrollView nestedScrollEnabled={true}>
+                      {schoolList.length == 0 && (
+                        <Text
+                          style={{
+                            alignSelf: 'center',
+                            marginTop: 10,
+                            marginBottom: 10,
+                          }}>
+                          no matches found
+                        </Text>
+                      )}
+                      {schoolList &&
+                        schoolList.length !== 0 &&
+                        schoolList.map((list, index) => {
+                          return (
+                            <TouchableOpacity
+                              key={index}
+                              onPress={() => {
+                                list.name !== 'no matches found' &&
+                                  this.handleSelectSchool(index);
+                              }}
+                              style={{
+                                paddingVertical: 15,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <View
+                                style={
+                                  form.school == list.name && list.isSelected
+                                    ? {
                                         paddingVertical: 15,
                                         width: 5,
                                         backgroundColor: '#FFC000',
                                       }
-                                      : {}
-                                  }
-                                />
-                                <Text
-                                  style={[
-                                    form.school == list.name && list.isSelected
-                                      ? TTComM16
-                                      : TTComL16,
-                                    { paddingLeft: 15 },
-                                  ]}>
-                                  {list.name}
-                                </Text>
-                              </TouchableOpacity>
-                            );
-                          })}
-                      </ScrollView>
-                    </View>
-                  </CustomWrapper>
-                  <CustomWrapper>
-                    <CustomInput
-                      placeholder="Class"
-                      label="Grade"
-                      onchange={(data) => this.handleForm(data, 'class')}
-                      isValidationErr={validationError.class}
-                    />
-                  </CustomWrapper>
-                  <CustomWrapper>
-                    <CustomInput
-                      placeholder="Divison"
-                      label="Section"
-                      onchange={(data) => this.handleForm(data, 'division')}
-                      isValidationErr={validationError.division}
-                    />
-                  </CustomWrapper>
-                  <CustomWrapper>
-                    <CustomInput
-                      placeholder="Email"
-                      label="Email"
-                      keyboardType="email-address"
-                      onchange={(data) => this.handleForm(data, 'email')}
-                      isValidationErr={validationError.email}
-                    />
-                  </CustomWrapper>
-                  <CustomWrapper>
-                    <CustomInput
-                      placeholder="Phone Number"
-                      label="Phone Number"
-                      type="phone"
-                      keyboardType="phone-pad"
-                      onchange={(data) => this.handleForm(data, 'phone')}
-                      isValidationErr={validationError.phone}
-                    />
-                  </CustomWrapper>
-
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: 20,
-                      marginBottom: 150,
-                    }}>
-                    <CustomButton
-                      buttonStyles="btn-secondary-black"
-                      textStyles="txt-secondary"
-                      text="Next"
-                      onAction={() => this.handleSubmit()}
-                      width="100%"
-                    />
+                                    : {}
+                                }
+                              />
+                              <Text
+                                style={[
+                                  form.school == list.name && list.isSelected
+                                    ? TTComM16
+                                    : TTComL16,
+                                  {paddingLeft: 15},
+                                ]}>
+                                {list.name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                    </ScrollView>
                   </View>
-                </ScrollView>
-              </View>
-            )}
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Class"
+                    label="Grade"
+                    onchange={(data) => this.handleForm(data, 'class')}
+                    isValidationErr={validationError.class}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Divison"
+                    label="Section"
+                    onchange={(data) => this.handleForm(data, 'division')}
+                    isValidationErr={validationError.division}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Email"
+                    label="Email"
+                    keyboardType="email-address"
+                    onchange={(data) => this.handleForm(data, 'email')}
+                    isValidationErr={validationError.email}
+                  />
+                </CustomWrapper>
+                <CustomWrapper>
+                  <CustomInput
+                    placeholder="Phone Number"
+                    label="Phone Number"
+                    type="phone"
+                    keyboardType="phone-pad"
+                    onchange={(data) => this.handleForm(data, 'phone')}
+                    isValidationErr={validationError.phone}
+                  />
+                </CustomWrapper>
+
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 20,
+                    marginBottom: 150,
+                  }}>
+                  <CustomButton
+                    buttonStyles="btn-secondary-black"
+                    textStyles="txt-secondary"
+                    text="Next"
+                    onAction={() => this.handleSubmit()}
+                    width="100%"
+                  />
+                </View>
+              </ScrollView>
+            </View>
+          )}
           {
             // isSchoolList &&
             // <Modal
@@ -760,7 +856,7 @@ class SchoolSubmitPhotoScreen extends Component {
           {isCustomToaster !== '' && (
             <CustomToaster
               position="flex-end"
-              onend={() => this.setState({ isCustomToaster: '' })}
+              onend={() => this.setState({isCustomToaster: ''})}
               isCustomToaster={true}
               message={isCustomToaster}
             />
@@ -799,14 +895,14 @@ export default connect(
 )(SchoolSubmitPhotoScreen);
 
 const CustomWrapper = (props) => {
-  return <View style={{ marginVertical: 10 }}>{props.children}</View>;
+  return <View style={{marginVertical: 10}}>{props.children}</View>;
 };
 
 const CustomInputDropdown = (props) => {
-  const { label, value, onAction, onSearch, schoolList, onPress } = props;
+  const {label, value, onAction, onSearch, schoolList, onPress} = props;
   const [listVisible, setlistVisible] = useState(false);
   const [listitem, setlistitem] = useState('');
-  const { TTComM16, TTComL16 } = CommonStyles;
+  const {TTComM16, TTComL16} = CommonStyles;
   return (
     <View>
       {label && <Text style={CommonStyles.customInputLabel}>{label}</Text>}
@@ -900,17 +996,17 @@ const CustomInputDropdown = (props) => {
 };
 
 const CustomInputRadio = (props) => {
-  const { label, onAction, value } = props;
+  const {label, onAction, value} = props;
   console.log('value', value);
-  const { TTComDB18 } = CommonStyles;
+  const {TTComDB18} = CommonStyles;
   return (
-    <View style={{ marginTop: 20 }}>
+    <View style={{marginTop: 20}}>
       <Text style={TTComDB18}>{label && label}</Text>
 
-      <View style={{ flexDirection: 'row', marginTop: 15 }}>
+      <View style={{flexDirection: 'row', marginTop: 15}}>
         <TouchableOpacity
           onPress={() => onAction('male')}
-          style={{ flexDirection: 'row' }}>
+          style={{flexDirection: 'row'}}>
           <Image
             source={
               value === 'male'
@@ -918,14 +1014,14 @@ const CustomInputRadio = (props) => {
                 : radioButtonEmptyIcon
             }
           />
-          <Text style={{ marginHorizontal: 10, fontFamily: 'TTCommons-Medium' }}>
+          <Text style={{marginHorizontal: 10, fontFamily: 'TTCommons-Medium'}}>
             Male
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => onAction('female')}
-          style={{ flexDirection: 'row', marginLeft: 15 }}>
+          style={{flexDirection: 'row', marginLeft: 15}}>
           <Image
             source={
               value === 'female'
@@ -933,7 +1029,7 @@ const CustomInputRadio = (props) => {
                 : radioButtonEmptyIcon
             }
           />
-          <Text style={{ marginHorizontal: 10, fontFamily: 'TTCommons-Medium' }}>
+          <Text style={{marginHorizontal: 10, fontFamily: 'TTCommons-Medium'}}>
             Female
           </Text>
         </TouchableOpacity>
